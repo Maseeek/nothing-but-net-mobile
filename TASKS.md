@@ -8,7 +8,7 @@
 - [ ] Define API Contract with Backend <!-- id: 4 -->
 
 ## 🛠 Phase 2: Implementation (Mobile MVP)
-- [ ] Initialize Android Project Structure (`src/`) <!-- id: 5 -->
+- [x] Initialize Android Project Structure (`src/`) <!-- id: 5 -->
 - [ ] Implement Authentication Flow <!-- id: 6 -->
 - [ ] Build Main Dashboard (Compose) <!-- id: 7 -->
 - [ ] Integrate Camera and Video Upload <!-- id: 8 -->
@@ -25,13 +25,16 @@
 ## 🧠 AGENT MEMORY (Current State)
 
 **Last Updated**: 2026-04-27
-**Current Phase**: Phase 1 (Planning)
+**Current Phase**: Phase 2 (Implementation)
 
 ### Accomplishments
 - Established the ICM (Folders as State) architecture.
 - Defined the "Thin Client" architecture for the basketball analysis app.
 - Created root `README.md` and initial `TASKS.md`.
+- Scaffolded Android Jetpack Compose project with Clean Architecture folders (`data/`, `domain/`, `ui/`).
+- Added dependencies: Hilt, Room, Retrofit, Navigation Compose, Coroutines.
+- Created base `HomeScreen` and `HomeViewModel` to verify setup.
 
 ### Pending
-- Need to start creating the actual Android project structure in `src/`.
-- Wireframes and API contracts are next on the planning list.
+- Implement Authentication Flow (Login UI and Backend Integration).
+- Build the full Main Dashboard with stats visualization.
