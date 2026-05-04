@@ -1,0 +1,105 @@
+package com.example.nothingbutnetmobile.ui.components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lightbulb
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.nothingbutnetmobile.ui.theme.CardBackground
+import com.example.nothingbutnetmobile.ui.theme.OrangePrimary
+
+@Composable
+fun AIInsightsCard(
+    insight: String,
+    tip: String,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.AutoAwesome,
+                contentDescription = null,
+                tint = OrangePrimary,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = "AI Training Insights",
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = Color.White
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(CardBackground, RoundedCornerShape(24.dp))
+                .padding(2.dp) // Border thickness
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(OrangePrimary.copy(alpha = 0.3f), Color.Transparent)
+                    ),
+                    RoundedCornerShape(24.dp)
+                )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(CardBackground, RoundedCornerShape(22.dp))
+                    .padding(24.dp)
+            ) {
+                Text(
+                    text = buildAnnotatedString {
+                        append("Based on your last 10 shots, your release point is ")
+                        withStyle(style = SpanStyle(color = OrangePrimary, fontWeight = FontWeight.Bold)) {
+                            append("consistent")
+                        }
+                        append(", but your entry angle is peaking too early.")
+                    },
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.White,
+                    lineHeight = 24.sp
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Row(
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Lightbulb,
+                        contentDescription = null,
+                        tint = Color.Gray,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = tip,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray,
+                        lineHeight = 20.sp
+                    )
+                }
+            }
+        }
+    }
+}

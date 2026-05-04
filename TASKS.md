@@ -10,13 +10,13 @@
 ## 🛠 Phase 2: Implementation (Mobile MVP)
 - [x] Initialize Android Project Structure (`src/`) <!-- id: 5 -->
 - [ ] Implement Authentication Flow <!-- id: 6 -->
-- [ ] Build Main Dashboard (Compose) <!-- id: 7 -->
-    - [ ] Implement Dashboard Header with User Greeting <!-- id: 14 -->
-    - [ ] Create Live Session Status Card (Stats + Controls) <!-- id: 15 -->
-    - [ ] Implement Quick Stats Grid (Total Shots, Streak, Avg Angle) <!-- id: 16 -->
-    - [ ] Design AI Training Insights Component <!-- id: 17 -->
-    - [ ] Build Arc Analysis Graph using Canvas/Library <!-- id: 18 -->
-    - [ ] Configure Bottom Navigation Bar with custom Floating Action Button <!-- id: 19 -->
+- [x] Build Main Dashboard (Compose) <!-- id: 7 -->
+    - [x] Implement Dashboard Header with User Greeting <!-- id: 14 -->
+    - [x] Create Live Session Status Card (Stats + Controls) <!-- id: 15 -->
+    - [x] Implement Quick Stats Grid (Total Shots, Streak, Avg Angle) <!-- id: 16 -->
+    - [x] Design AI Training Insights Component <!-- id: 17 -->
+    - [x] Build Arc Analysis Graph using Canvas/Library <!-- id: 18 -->
+    - [x] Configure Bottom Navigation Bar with custom Floating Action Button <!-- id: 19 -->
 - [ ] Integrate Camera and Video Upload <!-- id: 8 -->
 - [ ] Add Shot Analysis Visualization <!-- id: 9 -->
 
@@ -41,9 +41,11 @@
 - Scaffolded Android Jetpack Compose project with Clean Architecture folders (`data/`, `domain/`, `ui/`) in the `app/` module.
 - Added dependencies: Hilt, Room, Retrofit, Navigation Compose, Coroutines.
 - Created base `HomeScreen` and `HomeViewModel` to verify setup.
-- Analyzed `dashboard-mockup.png` and updated `TASKS.md` with granular UI components.
+- **Implemented core dashboard UI components matching the mockup (`dashboard-mockup.png`).**
+- **Updated project theme with brand colors (Orange/Dark) and disabled dynamic colors for brand consistency.**
+- **Created modular UI components: `StatCard`, `LiveSessionCard`, `AIInsightsCard`, `ArcAnalysisGraph`, `DashboardHeader`, and `BottomNavigationBar`.**
 
 ### Pending
 - Implement Authentication Flow (Login UI and Backend Integration).
-- Build the full Main Dashboard components (Header, Live Session, Stats, Insights, Arc Analysis).
-- Design and implement the custom Bottom Navigation Bar.
+- Integrate Camera and Video Upload functionality.
+- Add real-time Shot Analysis Visualization on top of video feed.
