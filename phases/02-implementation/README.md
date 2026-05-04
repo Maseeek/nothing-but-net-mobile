@@ -11,3 +11,9 @@
 - [x] Establish Clean Architecture folder structure (`data/`, `domain/`, `ui/`).
 - [x] Create initial `HomeScreen` and `HomeViewModel` with Hilt setup.
 - [x] Updated root `README.md` with correct Android Studio import instructions and project layout.
+- [ ] Implement Dashboard Header with User Greeting.
+- [ ] Create Live Session Status Card (Stats + Controls).
+- [ ] Implement Quick Stats Grid (Total Shots, Streak, Avg Angle).
+- [ ] Design AI Training Insights Component.
+- [ ] Build Arc Analysis Graph.
+- [ ] Configure Bottom Navigation Bar with custom FAB.
