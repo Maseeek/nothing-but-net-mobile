@@ -24,14 +24,15 @@
 
 ## 🧠 AGENT MEMORY (Current State)
 
-**Last Updated**: 2026-04-27
+**Last Updated**: 2026-05-04
 **Current Phase**: Phase 2 (Implementation)
 
 ### Accomplishments
 - Established the ICM (Folders as State) architecture.
 - Defined the "Thin Client" architecture for the basketball analysis app.
 - Created root `README.md` and initial `TASKS.md`.
-- Scaffolded Android Jetpack Compose project with Clean Architecture folders (`data/`, `domain/`, `ui/`).
+- Updated root `README.md` with correct Android Studio import instructions (pointing to root instead of `src/`).
+- Scaffolded Android Jetpack Compose project with Clean Architecture folders (`data/`, `domain/`, `ui/`) in the `app/` module.
 - Added dependencies: Hilt, Room, Retrofit, Navigation Compose, Coroutines.
 - Created base `HomeScreen` and `HomeViewModel` to verify setup.
 

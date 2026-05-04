@@ -24,21 +24,21 @@ mobile-app-coursework/
 │   └─ skills/               # reusable skill scripts (state‑update, task‑manager)
 │
 ├─ phases/                    # state folders for each development phase
-│   ├─ 01‑planning/          # active phase currently (README.md with objectives)
-│   └─ 02‑implementation/   # next phase (TODO list, scaffold)
+│   ├─ 01‑planning/          # phase completed (README.md with objectives)
+│   └─ 02‑implementation/   # active phase (TODO list, scaffold)
 │
 ├─ resources/                 # specifications, markdown outlines, PDFs
 │   ├─ project_outline.md    # full spec for the app (see below)
 │   └─ 25COB155_CW_Specification.md
 │
-└─ src/                       # **will hold the Android source tree** once generated
-    └─ (empty presently)
+├─ app/                       # Main Android application module
+│   └─ src/                   # Source code and resources
 ```
 
 ## ✅ How to Test / Verify
 
 1. **Clone the repo** (already in your local workspace).
-2. **Open the project in Android Studio** (or VS Code with the _Kotlin_ plugin). Choose **File → New → Import Project** and point at the `src/` folder once it exists.
+2. **Open the project in Android Studio** (or VS Code with the _Kotlin_ plugin). Choose **File → Open** and select the project root directory (`nothing-but-net-mobile`).
 3. **Build the app** – run `./gradlew assembleDebug` (or click _Run_ in Android Studio). The build should succeed with no source files yet; this validates the Gradle wrapper.
 4. **Run unit tests** – placeholder tests will appear in `src/test/`. Execute `./gradlew test` to confirm the test runner works.
 5. **Manual UI test** – after the first implementation step (login screen), run the app on an emulator or device and verify navigation works.
