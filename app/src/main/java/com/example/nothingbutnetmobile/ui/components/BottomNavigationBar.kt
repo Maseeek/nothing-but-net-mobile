@@ -5,10 +5,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.BarChart
-import androidx.compose.material.icons.filled.Psychology
+import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.SportsBasketball
+import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.nothingbutnetmobile.ui.theme.DarkSurface
 import com.example.nothingbutnetmobile.ui.theme.OrangePrimary
 
 @Composable
@@ -39,16 +38,26 @@ fun BottomNavigationBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             NavItem(Icons.Default.Home, "Home", true)
-            NavItem(Icons.Default.BarChart, "Analysis", false)
+            NavItem(Icons.Default.Analytics, "Analysis", false)
             
-            // Spacer for the center FAB
-            Spacer(modifier = Modifier.width(56.dp))
+            // Space for Record FAB and its label
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.width(64.dp)
+            ) {
+                Spacer(modifier = Modifier.height(36.dp))
+                Text(
+                    text = "Record",
+                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+                    color = Color.Gray
+                )
+            }
             
-            NavItem(Icons.Default.Psychology, "AI Coach", false)
+            NavItem(Icons.Default.History, "History", false)
             NavItem(Icons.Default.Person, "Profile", false)
         }
         
-        // Large Center FAB
+        // Large Center FAB (Record)
         Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -62,8 +71,8 @@ fun BottomNavigationBar(
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = Icons.Default.SportsBasketball,
-                contentDescription = "Capture",
+                imageVector = Icons.Default.RadioButtonChecked,
+                contentDescription = "Record",
                 tint = Color.White,
                 modifier = Modifier.size(32.dp)
             )

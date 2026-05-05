@@ -18,3 +18,6 @@
 - [x] Design AI Training Insights Component.
 - [x] Build Arc Analysis Graph.
 - [x] Configure Bottom Navigation Bar with custom FAB.
+- [x] Migrate and rename brand assets (logos/mockups) to standard Android `res/drawable` and `assets` folders.
+- [x] Implemented Auth Flow (Login UI, ViewModels, Network APIs, and State Management) ported from Node backend.
+- [x] Update Dashboard bottom navigation to new spec: Home, Analysis, Record, History, Profile.
