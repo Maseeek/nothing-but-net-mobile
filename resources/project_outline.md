@@ -262,3 +262,6 @@ The mobile app:
 - Easier to update ML models
 - Lower device requirements
 - Centralized logic
+
+
+## UI Concepts
