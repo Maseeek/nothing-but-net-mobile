@@ -10,3 +10,4 @@
 - [x] Scaffold Android Project with Jetpack Compose.
 - [x] Establish Clean Architecture folder structure (`data/`, `domain/`, `ui/`).
 - [x] Create initial `HomeScreen` and `HomeViewModel` with Hilt setup.
+- [x] Pushed changes to private remote repository.

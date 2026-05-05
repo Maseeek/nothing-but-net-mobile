@@ -34,6 +34,7 @@
 - Scaffolded Android Jetpack Compose project with Clean Architecture folders (`data/`, `domain/`, `ui/`).
 - Added dependencies: Hilt, Room, Retrofit, Navigation Compose, Coroutines.
 - Created base `HomeScreen` and `HomeViewModel` to verify setup.
+- Committed and pushed changes to the private `origin` repository.
 
 ### Pending
 - Implement Authentication Flow (Login UI and Backend Integration).
