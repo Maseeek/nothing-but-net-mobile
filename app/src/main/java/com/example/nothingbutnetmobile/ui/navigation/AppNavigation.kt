@@ -11,6 +11,7 @@ import com.example.nothingbutnetmobile.data.local.TokenManager
 import com.example.nothingbutnetmobile.ui.screens.auth.AuthState
 import com.example.nothingbutnetmobile.ui.screens.auth.AuthViewModel
 import com.example.nothingbutnetmobile.ui.screens.auth.LoginScreen
+import com.example.nothingbutnetmobile.ui.screens.auth.RegisterScreen
 import com.example.nothingbutnetmobile.ui.screens.home.HomeScreen
 
 @Composable

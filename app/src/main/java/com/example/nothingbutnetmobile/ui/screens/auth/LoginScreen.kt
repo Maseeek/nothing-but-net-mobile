@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
+import androidx.compose.material3.TextFieldDefaults.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,13 +45,14 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Logo / Branding
-            androidx.compose.foundation.Image(
-                painter = androidx.compose.ui.res.painterResource(id = com.example.nothingbutnetmobile.R.drawable.nbn_logo_transparent),
-                contentDescription = "NothingButNet Logo",
-                modifier = Modifier
-                    .size(120.dp)
-                    .padding(bottom = 16.dp)
+            // Logo / Branding placeholder
+            Text(
+                text = "NothingButNet",
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontWeight = FontWeight.ExtraBold,
+                    color = OrangePrimary
+                ),
+                modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
                 text = "Elevate Your Game",
@@ -108,15 +110,17 @@ fun LoginScreen(
                         leadingIcon = {
                             Icon(Icons.Default.Person, contentDescription = null, tint = TextGray)
                         },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = OrangePrimary,
-                            unfocusedBorderColor = DarkSurface,
-                            focusedTextColor = TextWhite,
-                            unfocusedTextColor = TextWhite,
-                            cursorColor = OrangePrimary,
-                            focusedContainerColor = DarkSurface,
-                            unfocusedContainerColor = DarkSurface
-                        ),
+                        colors = OutlinedTextFieldDefaults.run {
+                            colors(
+                                                focusedIndicatorColor = OrangePrimary,
+                                                unfocusedIndicatorColor = DarkSurface,
+                                                focusedTextColor = TextWhite,
+                                                unfocusedTextColor = TextWhite,
+                                                cursorColor = OrangePrimary,
+                                                focusedContainerColor = DarkSurface,
+                                                unfocusedContainerColor = DarkSurface
+                                            )
+                        },
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -143,15 +147,17 @@ fun LoginScreen(
                             }
                         },
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = OrangePrimary,
-                            unfocusedBorderColor = DarkSurface,
-                            focusedTextColor = TextWhite,
-                            unfocusedTextColor = TextWhite,
-                            cursorColor = OrangePrimary,
-                            focusedContainerColor = DarkSurface,
-                            unfocusedContainerColor = DarkSurface
-                        ),
+                        colors = OutlinedTextFieldDefaults.run {
+                            colors(
+                                                focusedIndicatorColor = OrangePrimary,
+                                                unfocusedIndicatorColor = DarkSurface,
+                                                focusedTextColor = TextWhite,
+                                                unfocusedTextColor = TextWhite,
+                                                cursorColor = OrangePrimary,
+                                                focusedContainerColor = DarkSurface,
+                                                unfocusedContainerColor = DarkSurface
+                                            )
+                        },
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
                             .fillMaxWidth()

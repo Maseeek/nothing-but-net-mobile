@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
+import androidx.compose.material3.TextFieldDefaults.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -107,13 +108,16 @@ fun RegisterScreen(
                         onValueChange = { username = it },
                         label = { Text("Username", color = TextGray) },
                         leadingIcon = { Icon(Icons.Default.Person, null, tint = TextGray) },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = OrangePrimary,
-                            unfocusedBorderColor = DarkSurface,
-                            focusedTextColor = TextWhite,
-                            unfocusedTextColor = TextWhite,
-                            containerColor = DarkSurface
-                        ),
+                        colors = OutlinedTextFieldDefaults.run {
+                            colors(
+                                                focusedIndicatorColor = OrangePrimary,
+                                                unfocusedIndicatorColor = DarkSurface,
+                                                focusedTextColor = TextWhite,
+                                                unfocusedTextColor = TextWhite,
+                                                focusedContainerColor = DarkSurface,
+                                                unfocusedContainerColor = DarkSurface
+                                            )
+                        },
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
                         enabled = authState !is AuthState.Loading
@@ -124,13 +128,16 @@ fun RegisterScreen(
                         onValueChange = { email = it },
                         label = { Text("Email", color = TextGray) },
                         leadingIcon = { Icon(Icons.Default.Email, null, tint = TextGray) },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = OrangePrimary,
-                            unfocusedBorderColor = DarkSurface,
-                            focusedTextColor = TextWhite,
-                            unfocusedTextColor = TextWhite,
-                            containerColor = DarkSurface
-                        ),
+                        colors = OutlinedTextFieldDefaults.run {
+                            colors(
+                                                focusedIndicatorColor = OrangePrimary,
+                                                unfocusedIndicatorColor = DarkSurface,
+                                                focusedTextColor = TextWhite,
+                                                unfocusedTextColor = TextWhite,
+                                                focusedContainerColor = DarkSurface,
+                                                unfocusedContainerColor = DarkSurface
+                                            )
+                        },
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
                         enabled = authState !is AuthState.Loading
@@ -148,13 +155,16 @@ fun RegisterScreen(
                             }
                         },
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = OrangePrimary,
-                            unfocusedBorderColor = DarkSurface,
-                            focusedTextColor = TextWhite,
-                            unfocusedTextColor = TextWhite,
-                            containerColor = DarkSurface
-                        ),
+                        colors = OutlinedTextFieldDefaults.run {
+                            colors(
+                                                focusedIndicatorColor = OrangePrimary,
+                                                unfocusedIndicatorColor = DarkSurface,
+                                                focusedTextColor = TextWhite,
+                                                unfocusedTextColor = TextWhite,
+                                                focusedContainerColor = DarkSurface,
+                                                unfocusedContainerColor = DarkSurface
+                                            )
+                        },
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
                         enabled = authState !is AuthState.Loading

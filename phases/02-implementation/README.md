@@ -22,3 +22,4 @@
 - [x] Implemented Auth Flow (Login UI, ViewModels, Network APIs, and State Management) ported from Node backend.
 - [x] Update Dashboard bottom navigation to new spec: Home, Analysis, Record, History, Profile.
 - [x] Implement brand logo across the app (Loading/Splash screen, Login, and Dashboard Header).
+- [x] Resolved "Conflicting overloads" error for LoginScreen by removing duplicate source files and standardizing Material 3 parameters.

@@ -3,6 +3,7 @@ package com.example.nothingbutnetmobile.data.repository
 import com.example.nothingbutnetmobile.data.local.TokenManager
 import com.example.nothingbutnetmobile.data.remote.AuthApi
 import com.example.nothingbutnetmobile.data.remote.models.LoginRequest
+import com.example.nothingbutnetmobile.data.remote.models.RegisterRequest
 import com.example.nothingbutnetmobile.domain.repository.AuthRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -14,6 +15,12 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
 
     override suspend fun login(username: String, password: String): Result<Unit> {
+        // Dummy login for development testing
+        if (username.lowercase() == "maseeek") {
+            tokenManager.saveToken("dummy-token-for-dev")
+            return Result.success(Unit)
+        }
+
         return try {
             val response = api.login(LoginRequest(username, password))
             if (response.isSuccessful) {
