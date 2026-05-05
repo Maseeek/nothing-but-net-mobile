@@ -12,6 +12,7 @@ class TokenManager @Inject constructor(@ApplicationContext context: Context) {
 
     companion object {
         private const val AUTH_TOKEN = "auth_token"
+        private const val USERNAME = "username"
     }
 
     fun saveToken(token: String) {
@@ -23,7 +24,15 @@ class TokenManager @Inject constructor(@ApplicationContext context: Context) {
     }
 
     fun clearToken() {
-        prefs.edit().remove(AUTH_TOKEN).apply()
+        prefs.edit().remove(AUTH_TOKEN).remove(USERNAME).apply()
+    }
+
+    fun saveUsername(username: String) {
+        prefs.edit().putString(USERNAME, username).apply()
+    }
+
+    fun getUsername(): String? {
+        return prefs.getString(USERNAME, null)
     }
 
     fun isLoggedIn(): Boolean {

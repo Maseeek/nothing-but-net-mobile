@@ -4,6 +4,7 @@ import com.example.nothingbutnetmobile.data.local.TokenManager
 import com.example.nothingbutnetmobile.data.remote.AuthApi
 import com.example.nothingbutnetmobile.data.remote.models.LoginRequest
 import com.example.nothingbutnetmobile.data.remote.models.RegisterRequest
+import com.example.nothingbutnetmobile.domain.model.User
 import com.example.nothingbutnetmobile.domain.repository.AuthRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,6 +19,7 @@ class AuthRepositoryImpl @Inject constructor(
         // Dummy login for development testing
         if (username.lowercase() == "maseeek") {
             tokenManager.saveToken("dummy-token-for-dev")
+            tokenManager.saveUsername(username)
             return Result.success(Unit)
         }
 
@@ -27,6 +29,7 @@ class AuthRepositoryImpl @Inject constructor(
                 val body = response.body()
                 if (body?.token != null) {
                     tokenManager.saveToken(body.token)
+                    tokenManager.saveUsername(username)
                     Result.success(Unit)
                 } else {
                     Result.failure(Exception(body?.error ?: "Unknown error occurred"))
@@ -58,6 +61,10 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun isLoggedIn(): Boolean {
         return tokenManager.isLoggedIn()
+    }
+
+    override fun getUser(): User? {
+        return tokenManager.getUsername()?.let { User(it) }
     }
 
     override fun logout() {

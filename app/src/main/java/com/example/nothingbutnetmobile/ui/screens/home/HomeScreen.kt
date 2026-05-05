@@ -42,7 +42,7 @@ fun HomeScreen(
                 .verticalScroll(scrollState)
                 .padding(horizontal = 20.dp)
         ) {
-            DashboardHeader(userName = "User")
+            DashboardHeader(userName = uiState.userName)
 
             Spacer(modifier = Modifier.height(24.dp))
 

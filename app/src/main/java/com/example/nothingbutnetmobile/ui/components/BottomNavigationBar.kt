@@ -20,7 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
+import com.example.nothingbutnetmobile.R
 import com.example.nothingbutnetmobile.ui.theme.OrangePrimary
 
 @Composable
@@ -84,24 +86,22 @@ fun BottomNavigationBar(
             }
         }
         
-        // Large Center FAB (Record)
+        // Premium Basketball Record Button (Dome Shape)
         Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .offset(y = (-22).dp)
-                .size(72.dp)
-                .background(OrangePrimary, CircleShape)
-                .padding(4.dp)
-                .background(Color.Black, CircleShape)
-                .padding(4.dp)
-                .background(OrangePrimary, CircleShape),
+                .offset(y = 17.dp) // Aligns dome bottom with standard icon baseline (62dp)
+                .width(80.dp)
+                .height(45.dp)
+                .clickable { navigateTo("record") },
             contentAlignment = Alignment.Center
         ) {
+            // The Basketball Dome Icon
             Icon(
-                imageVector = Icons.Default.RadioButtonChecked,
+                painter = painterResource(id = R.drawable.ic_basketball),
                 contentDescription = "Record",
-                tint = Color.White,
-                modifier = Modifier.size(32.dp)
+                tint = Color.Unspecified, // Preserve the SVG colors (orange dome, black seams)
+                modifier = Modifier.fillMaxSize()
             )
         }
     }

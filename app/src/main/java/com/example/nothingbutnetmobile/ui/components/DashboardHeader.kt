@@ -35,7 +35,7 @@ fun DashboardHeader(
         Row(verticalAlignment = Alignment.CenterVertically) {
             // App Logo
             Image(
-                painter = painterResource(id = com.example.nothingbutnetmobile.R.drawable.nbn_logo_transparent),
+                painter = painterResource(id = com.example.nothingbutnetmobile.R.drawable.nbn_light),
                 contentDescription = "NothingButNet Logo",
                 modifier = Modifier.size(32.dp)
             )

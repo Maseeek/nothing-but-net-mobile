@@ -27,3 +27,6 @@
 - [x] Create skeleton screens for Analysis, History, and Profile.
 - [x] Implement interactive bottom navigation with active state tracking.
 - [x] Wire all screens to the main navigation graph.
+- [x] Redesign Record button to a "premium basketball" rising icon matching the new brand spec.
+- [x] Update Loading Screen to show `nbn_light` icon and `nbn_logo_transparent` text side-by-side.
+- [x] Update Dashboard Header to use `nbn_light` asset.

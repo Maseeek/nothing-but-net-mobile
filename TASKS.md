@@ -58,6 +58,7 @@
   - Integrated `AppNavigation` to route users based on authentication status.
 - Implemented brand logo across the app (Splash, Login, Header).
 - Adjusted the vertical position of the Record FAB in the BottomNavigationBar for improved UI alignment.
+- Updated `LoadingScreen` to show the `nbn_light` icon and `nbn_logo_transparent` text side-by-side, and `DashboardHeader` to use the `nbn_light` asset.
 
 
 ### Pending

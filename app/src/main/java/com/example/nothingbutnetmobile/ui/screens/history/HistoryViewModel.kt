@@ -1,4 +1,4 @@
-package com.example.nothingbutnetmobile.ui.screens.home
+package com.example.nothingbutnetmobile.ui.screens.history
 
 import androidx.lifecycle.ViewModel
 import com.example.nothingbutnetmobile.domain.repository.AuthRepository
@@ -9,12 +9,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class HistoryViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomeUiState())
-    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(HistoryUiState())
+    val uiState: StateFlow<HistoryUiState> = _uiState.asStateFlow()
 
     init {
         val user = authRepository.getUser()
@@ -22,14 +22,8 @@ class HomeViewModel @Inject constructor(
             userName = user?.username ?: "User"
         )
     }
-
-    fun updateLoading(isLoading: Boolean) {
-        _uiState.value = _uiState.value.copy(isLoading = isLoading)
-    }
 }
 
-data class HomeUiState(
-    val isLoading: Boolean = false,
-    val title: String = "Welcome to Nothing But Net!",
+data class HistoryUiState(
     val userName: String = "User"
 )

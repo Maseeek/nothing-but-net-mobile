@@ -8,12 +8,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
 import com.example.nothingbutnetmobile.ui.components.BottomNavigationBar
 import com.example.nothingbutnetmobile.ui.components.DashboardHeader
 
 @Composable
-fun AnalysisScreen(navController: NavController) {
+fun AnalysisScreen(
+    navController: NavController,
+    viewModel: AnalysisViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
     Scaffold(
         bottomBar = {
             BottomNavigationBar(navController = navController)
@@ -27,7 +35,7 @@ fun AnalysisScreen(navController: NavController) {
                 .background(Color.Black)
                 .padding(horizontal = 20.dp)
         ) {
-            DashboardHeader(userName = "User")
+            DashboardHeader(userName = uiState.userName)
             
             Spacer(modifier = Modifier.height(24.dp))
             
