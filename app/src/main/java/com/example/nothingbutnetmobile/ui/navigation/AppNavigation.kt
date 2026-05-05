@@ -16,9 +16,19 @@ import com.example.nothingbutnetmobile.ui.screens.home.HomeScreen
 @Composable
 fun AppNavigation(tokenManager: TokenManager) {
     val navController = rememberNavController()
-    val startDestination = if (tokenManager.isLoggedIn()) "home" else "login"
 
-    NavHost(navController = navController, startDestination = startDestination) {
+    NavHost(navController = navController, startDestination = "splash") {
+        composable("splash") {
+            com.example.nothingbutnetmobile.ui.screens.splash.LoadingScreen(
+                onTimeout = {
+                    val destination = if (tokenManager.isLoggedIn()) "home" else "login"
+                    navController.navigate(destination) {
+                        popUpTo("splash") { inclusive = true }
+                    }
+                }
+            )
+        }
+
         composable("login") {
             val authViewModel: AuthViewModel = hiltViewModel()
             val authState by authViewModel.authState.collectAsState()
@@ -37,7 +47,26 @@ fun AppNavigation(tokenManager: TokenManager) {
                     authViewModel.login(username, password)
                 },
                 onRegisterClick = {
-                    // Navigate to register screen (to be implemented)
+                    authViewModel.resetState()
+                    navController.navigate("register")
+                }
+            )
+        }
+
+        composable("register") {
+            val authViewModel: AuthViewModel = hiltViewModel()
+            val authState by authViewModel.authState.collectAsState()
+
+            RegisterScreen(
+                authState = authState,
+                onRegisterClick = { username, email, password ->
+                    authViewModel.register(username, email, password)
+                },
+                onLoginClick = {
+                    authViewModel.resetState()
+                    navController.navigate("login") {
+                        popUpTo("register") { inclusive = true }
+                    }
                 }
             )
         }

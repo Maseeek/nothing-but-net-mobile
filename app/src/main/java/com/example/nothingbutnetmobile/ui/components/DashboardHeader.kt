@@ -32,22 +32,14 @@ fun DashboardHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                // Placeholder for App Logo
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .background(OrangePrimary, RoundedCornerShape(8.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "N",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp
-                    )
-                }
-                Spacer(modifier = Modifier.width(12.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            // App Logo
+            Image(
+                painter = painterResource(id = com.example.nothingbutnetmobile.R.drawable.nbn_logo_transparent),
+                contentDescription = "NothingButNet Logo",
+                modifier = Modifier.size(32.dp)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = "nothingbutnet",
                     style = MaterialTheme.typography.titleLarge.copy(

@@ -14,6 +14,7 @@ sealed class AuthState {
     object Idle : AuthState()
     object Loading : AuthState()
     object Success : AuthState()
+    data class RegisterSuccess(val message: String) : AuthState()
     data class Error(val message: String) : AuthState()
 }
 
@@ -41,7 +42,24 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
-    
+
+    fun register(username: String, email: String, password: String) {
+        if (username.isBlank() || email.isBlank() || password.isBlank()) {
+            _authState.value = AuthState.Error("All fields are required")
+            return
+        }
+
+        _authState.value = AuthState.Loading
+        viewModelScope.launch {
+            val result = repository.register(username, email, password)
+            result.onSuccess { message ->
+                _authState.value = AuthState.RegisterSuccess(message)
+            }.onFailure { exception ->
+                _authState.value = AuthState.Error(exception.message ?: "An unknown error occurred")
+            }
+        }
+    }
+
     fun resetState() {
         _authState.value = AuthState.Idle
     }

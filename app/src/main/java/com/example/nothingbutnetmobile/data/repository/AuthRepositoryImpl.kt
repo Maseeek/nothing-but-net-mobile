@@ -34,6 +34,21 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun register(username: String, email: String, password: String): Result<String> {
+        return try {
+            val response = api.register(RegisterRequest(username, email, password))
+            if (response.isSuccessful) {
+                val body = response.body()
+                Result.success(body?.message ?: "Registration successful")
+            } else {
+                val errorMsg = response.errorBody()?.string() ?: response.message()
+                Result.failure(Exception("Registration failed: $errorMsg"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     override fun isLoggedIn(): Boolean {
         return tokenManager.isLoggedIn()
     }

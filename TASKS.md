@@ -56,6 +56,7 @@
   - Created `AuthViewModel` with `StateFlow` for state management.
   - Built `LoginScreen` matching the dark/orange brand aesthetic.
   - Integrated `AppNavigation` to route users based on authentication status.
+- Implemented brand logo across the app (Splash, Login, Header).
 
 ### Pending
 - Integrate Camera and Video Upload functionality.
