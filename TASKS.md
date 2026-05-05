@@ -57,6 +57,8 @@
   - Built `LoginScreen` matching the dark/orange brand aesthetic.
   - Integrated `AppNavigation` to route users based on authentication status.
 - Implemented brand logo across the app (Splash, Login, Header).
+- Adjusted the vertical position of the Record FAB in the BottomNavigationBar for improved UI alignment.
+
 
 ### Pending
 - Integrate Camera and Video Upload functionality.

@@ -16,11 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.nothingbutnetmobile.ui.components.*
 
 @Composable
 fun HomeScreen(
+    navController: NavController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -28,7 +30,7 @@ fun HomeScreen(
 
     Scaffold(
         bottomBar = {
-            BottomNavigationBar()
+            BottomNavigationBar(navController = navController)
         },
         containerColor = Color.Black
     ) { innerPadding ->

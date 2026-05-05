@@ -13,6 +13,9 @@ import com.example.nothingbutnetmobile.ui.screens.auth.AuthViewModel
 import com.example.nothingbutnetmobile.ui.screens.auth.LoginScreen
 import com.example.nothingbutnetmobile.ui.screens.auth.RegisterScreen
 import com.example.nothingbutnetmobile.ui.screens.home.HomeScreen
+import com.example.nothingbutnetmobile.ui.screens.analysis.AnalysisScreen
+import com.example.nothingbutnetmobile.ui.screens.history.HistoryScreen
+import com.example.nothingbutnetmobile.ui.screens.profile.ProfileScreen
 
 @Composable
 fun AppNavigation(tokenManager: TokenManager) {
@@ -73,7 +76,19 @@ fun AppNavigation(tokenManager: TokenManager) {
         }
         
         composable("home") {
-            HomeScreen()
+            HomeScreen(navController = navController)
+        }
+
+        composable("analysis") {
+            AnalysisScreen(navController = navController)
+        }
+
+        composable("history") {
+            HistoryScreen(navController = navController)
+        }
+
+        composable("profile") {
+            ProfileScreen(navController = navController)
         }
     }
 }

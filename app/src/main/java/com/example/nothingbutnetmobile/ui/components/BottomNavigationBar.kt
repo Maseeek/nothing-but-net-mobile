@@ -9,8 +9,12 @@ import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.RadioButtonChecked
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,8 +25,23 @@ import com.example.nothingbutnetmobile.ui.theme.OrangePrimary
 
 @Composable
 fun BottomNavigationBar(
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    val navigateTo = { route: String ->
+        if (currentRoute != route) {
+            navController.navigate(route) {
+                popUpTo("home") {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
+    }
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -37,8 +56,12 @@ fun BottomNavigationBar(
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            NavItem(Icons.Default.Home, "Home", true)
-            NavItem(Icons.Default.Analytics, "Analysis", false)
+            NavItem(Icons.Default.Home, "Home", currentRoute == "home") {
+                navigateTo("home")
+            }
+            NavItem(Icons.Default.Analytics, "Analysis", currentRoute == "analysis") {
+                navigateTo("analysis")
+            }
             
             // Space for Record FAB and its label
             Column(
@@ -53,15 +76,19 @@ fun BottomNavigationBar(
                 )
             }
             
-            NavItem(Icons.Default.History, "History", false)
-            NavItem(Icons.Default.Person, "Profile", false)
+            NavItem(Icons.Default.History, "History", currentRoute == "history") {
+                navigateTo("history")
+            }
+            NavItem(Icons.Default.Person, "Profile", currentRoute == "profile") {
+                navigateTo("profile")
+            }
         }
         
         // Large Center FAB (Record)
         Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .offset(y = (-30).dp)
+                .offset(y = (-22).dp)
                 .size(72.dp)
                 .background(OrangePrimary, CircleShape)
                 .padding(4.dp)
@@ -81,10 +108,16 @@ fun BottomNavigationBar(
 }
 
 @Composable
-private fun NavItem(icon: ImageVector, label: String, isSelected: Boolean) {
+private fun NavItem(
+    icon: ImageVector,
+    label: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.clickable(onClick = onClick)
     ) {
         Icon(
             imageVector = icon,

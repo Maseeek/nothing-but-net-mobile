@@ -23,3 +23,7 @@
 - [x] Update Dashboard bottom navigation to new spec: Home, Analysis, Record, History, Profile.
 - [x] Implement brand logo across the app (Loading/Splash screen, Login, and Dashboard Header).
 - [x] Resolved "Conflicting overloads" error for LoginScreen by removing duplicate source files and standardizing Material 3 parameters.
+- [x] Adjusted Record button (FAB) vertical alignment in the bottom navigation bar for better visual balance.
+- [x] Create skeleton screens for Analysis, History, and Profile.
+- [x] Implement interactive bottom navigation with active state tracking.
+- [x] Wire all screens to the main navigation graph.
