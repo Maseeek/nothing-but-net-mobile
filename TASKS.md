@@ -25,6 +25,11 @@
 - [x] Integrate Camera and Video Upload (CameraX Implementation and Gallery Selection Done) <!-- id: 8 -->
 - [x] Add Shot Analysis Visualization <!-- id: 9 -->
 - [x] Implement Session History and Profile Integration <!-- id: 22 -->
+    - [x] Implemented HistoryViewModel to fetch all past sessions from StatsRepository.
+    - [x] Built a premium HistoryScreen with a scrollable list of session cards showing date, FG%, and streaks.
+    - [x] Updated ProfileScreen to include a "RECENT SESSIONS" section displaying the last 3 sessions.
+    - [x] Added navigation from Profile to History via a "View All" link.
+    - [x] Integrated real database data into Profile charts (LineChart and DonutChart) and session items.
 
 ## 🧪 Phase 3: Testing & Polish
 - [ ] Unit Testing for ViewModels <!-- id: 10 -->
@@ -116,14 +121,18 @@
   - Updated branding in `strings.xml` and `DashboardHeader.kt`: changed "Nothing But Net Mobile" to "Nothing But Net" to ensure the header displays the cleaner "nothingbutnet" brand identity.
   - **Coordinate Selection & Analysis Flow (2026-05-13)**:
   - Improved the `AnalysisScreen` workflow by adding a "Confirmation" step; users now select both hoop edges and see markers before triggering the server upload.
-  - Implemented the **Shot Analysis Visualization** (id: 9): added a vertical list of shot results to the `AnalysisScreen` success state, displaying shot number, result (swish/miss), and arc angle for each attempt.
-  - Refactored `AnalysisViewModel` to support the new `READY` state and persist shot data for visualization.
-  - Polished the `ShotRow` UI with premium Material 3 icons and color-coded status badges.
+  - Implemented the **Shot Analysis Visualization** (id: 9): added a vertical list of shot results to the `AnalysisScreen` success state, displaying shot number, arc angle, and result (swish/miss).
+- **Build Fixes (2026-05-13)**:
+  - Fixed `PROCESSING_ERROR` in KSP caused by missing `androidx.lifecycle.ViewModel` import in `AnalysisViewModel.kt`.
+  - Resolved "Unresolved reference" errors for `CheckCircle`, `Error`, and `ArrowBack` icons by adding missing imports and updating to `AutoMirrored` icons where appropriate.
+  - **NEW**: Resolved a major build failure in `AnalysisScreen.kt` by adding missing `kotlinx.coroutines.withContext` and `kotlinx.coroutines.Dispatchers` imports.
+  - Verified build with `deploy.bat` (Success).
 - **Session History & Profile Integration**:
   - Implemented `HistoryViewModel` to fetch all past sessions from `StatsRepository`.
   - Built a premium `HistoryScreen` with a scrollable list of session cards showing date, FG%, and streaks.
   - Updated `ProfileScreen` to include a "RECENT SESSIONS" section displaying the last 3 sessions.
   - Added navigation from Profile to History via a "View All" link.
+  - Ensured all Profile and History data is dynamically pulled from the Room database, including FG% history charts and donut distribution charts.
 
 ### Pending
 - Unit Testing for ViewModels.

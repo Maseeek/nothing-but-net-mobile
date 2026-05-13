@@ -32,19 +32,25 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.shape.RoundedCornerShape
 
+import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import com.example.nothingbutnetmobile.ui.utils.VideoUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import androidx.compose.ui.platform.LocalConfiguration
+import android.content.res.Configuration
 import java.io.File
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
 
 @Composable
 fun AnalysisScreen(
@@ -56,14 +62,17 @@ fun AnalysisScreen(
     val context = LocalContext.current
     var videoFile by remember { mutableStateOf<File?>(null) }
     var videoThumbnail by remember { mutableStateOf<ImageBitmap?>(null) }
+    var scale by remember { mutableFloatStateOf(1f) }
+    var offsetX by remember { mutableFloatStateOf(0f) }
+    var offsetY by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(videoUri) {
         videoUri?.let { uriString ->
             val uri = Uri.parse(uriString)
-            videoFile = FileUtils.getFileFromUri(context, uri)
             viewModel.startSelection()
             
             withContext(Dispatchers.IO) {
+                videoFile = FileUtils.getFileFromUri(context, uri)
                 val bitmap = VideoUtils.getVideoThumbnail(context, uri)
                 if (bitmap != null) {
                     videoThumbnail = bitmap.asImageBitmap()
@@ -106,128 +115,315 @@ fun AnalysisScreen(
             ) {
                 when (uiState.status) {
                     AnalysisStatus.IDLE -> {
-                        Text(
-                            text = if (videoUri == null) "Select a video to begin analysis" else "Preparing video...",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Color.Gray
-                        )
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text(
+                                text = if (videoUri == null) "Select a video to begin analysis" else "Preparing video...",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.Gray
+                            )
+                        }
                     }
                     AnalysisStatus.SELECTING_LEFT, AnalysisStatus.SELECTING_RIGHT, AnalysisStatus.READY -> {
+                        val configuration = LocalConfiguration.current
+                        val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
                         val isLeft = uiState.status == AnalysisStatus.SELECTING_LEFT
                         val isRight = uiState.status == AnalysisStatus.SELECTING_RIGHT
                         val isReady = uiState.status == AnalysisStatus.READY
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            // Step indicator
-                            Box(
+
+                        if (isLandscape) {
+                            // Landscape layout: Side-by-side
+                            Row(
                                 modifier = Modifier
-                                    .background(Color(0xFFD84A1A), RoundedCornerShape(16.dp))
-                                    .padding(horizontal = 12.dp, vertical = 6.dp)
+                                    .fillMaxSize()
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                Text(
-                                    text = when {
-                                        isLeft -> "Step 1 of 2"
-                                        isRight -> "Step 2 of 2"
-                                        else -> "Ready to Analyze"
-                                    },
-                                    color = Color.White,
-                                    style = MaterialTheme.typography.labelMedium,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(16.dp))
-                            
-                            Text(
-                                text = when {
-                                    isLeft -> "Click the left edge of the basketball hoop"
-                                    isRight -> "Click the right edge of the basketball hoop"
-                                    else -> "Confirm hoop coordinates"
-                                },
-                                color = Color.White,
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                            )
-                            Spacer(modifier = Modifier.height(24.dp))
-                            
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .weight(1f)
-                                    .border(2.dp, Color(0xFFFB5607), RoundedCornerShape(12.dp))
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(Color.Black),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                videoThumbnail?.let { bitmap ->
-                                    val aspectRatio = bitmap.width.toFloat() / bitmap.height.toFloat()
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .aspectRatio(aspectRatio, matchHeightConstraintsFirst = false)
-                                    ) {
-                                        Image(
-                                            bitmap = bitmap,
-                                            contentDescription = "Video Frame",
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                                .pointerInput(uiState.status) {
-                                                    detectTapGestures { offset ->
-                                                        val normX = offset.x / size.width
-                                                        val normY = offset.y / size.height
-                                                        val x = (normX * bitmap.width).toInt()
-                                                        val y = (normY * bitmap.height).toInt()
-                                                        
-                                                        if (isLeft) {
-                                                            viewModel.setHoopLeft(x, y, normX, normY)
-                                                        } else if (isRight) {
-                                                            viewModel.setHoopRight(x, y, normX, normY)
+                                // Left side: Image selection area
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1.2f)
+                                        .fillMaxHeight()
+                                        .border(2.dp, Color(0xFFFB5607), RoundedCornerShape(12.dp))
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(Color.Black),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    videoThumbnail?.let { bitmap ->
+                                        val aspectRatio = bitmap.width.toFloat() / bitmap.height.toFloat()
+                                        BoxWithConstraints(
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            val containerWidth = maxWidth
+                                            val containerHeight = maxHeight
+                                            val containerRatio = containerWidth / containerHeight
+                                            
+                                            val finalModifier = if (containerRatio > aspectRatio) {
+                                                Modifier.fillMaxHeight().aspectRatio(aspectRatio)
+                                            } else {
+                                                Modifier.fillMaxWidth().aspectRatio(aspectRatio)
+                                            }
+
+                                            Box(
+                                                modifier = Modifier
+                                                    .then(finalModifier)
+                                                    .clipToBounds()
+                                                    .pointerInput(Unit) {
+                                                        detectTransformGestures { _, pan, zoom, _ ->
+                                                            scale = (scale * zoom).coerceIn(1f, 5f)
+                                                            val maxOffsetX = (size.width * (scale - 1f)) / 2f
+                                                            val maxOffsetY = (size.height * (scale - 1f)) / 2f
+                                                            offsetX = (offsetX + pan.x).coerceIn(-maxOffsetX, maxOffsetX)
+                                                            offsetY = (offsetY + pan.y).coerceIn(-maxOffsetY, maxOffsetY)
                                                         }
                                                     }
-                                                },
-                                            contentScale = ContentScale.Fit
-                                        )
+                                                    .graphicsLayer {
+                                                        scaleX = scale
+                                                        scaleY = scale
+                                                        translationX = offsetX
+                                                        translationY = offsetY
+                                                    }
+                                            ) {
+                                                Image(
+                                                    bitmap = bitmap,
+                                                    contentDescription = "Video Frame",
+                                                    modifier = Modifier
+                                                        .fillMaxSize()
+                                                        .pointerInput(uiState.status) {
+                                                            detectTapGestures { offset ->
+                                                                val normX = offset.x / size.width
+                                                                val normY = offset.y / size.height
+                                                                
+                                                                if (normX.isNaN() || normY.isNaN()) return@detectTapGestures
 
-                                        // Selection markers overlay
-                                        SelectionMarker(uiState.hoopLeftNormalized, "L")
-                                        SelectionMarker(uiState.hoopRightNormalized, "R")
-                                    }
-                                } ?: run {
-                                    CircularProgressIndicator(color = Color(0xFFFB5607))
+                                                                val x = (normX * bitmap.width).toInt()
+                                                                val y = (normY * bitmap.height).toInt()
+                                                                
+                                                                if (isLeft) {
+                                                                    viewModel.setHoopLeft(x, y, normX, normY)
+                                                                } else if (isRight) {
+                                                                    viewModel.setHoopRight(x, y, normX, normY)
+                                                                }
+                                                            }
+                                                        },
+                                                    contentScale = ContentScale.Fit
+                                                )
+                                                SelectionMarker(uiState.hoopLeftNormalized, "L")
+                                                SelectionMarker(uiState.hoopRightNormalized, "R")
+                                            }
+                                        }
+                                    } ?: CircularProgressIndicator(color = Color(0xFFFB5607))
                                 }
-                            }
-                            
-                            // Bottom Actions
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    IconButton(onClick = { navController.popBackStack() }) {
-                                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
-                                    }
-                                    
-                                    if (isReady) {
-                                        Button(
-                                            onClick = { 
-                                                videoFile?.let { viewModel.confirmAnalysis(it) }
+
+                                // Right side: Controls and instructions
+                                Column(
+                                    modifier = Modifier
+                                        .weight(0.8f)
+                                        .fillMaxHeight(),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .background(Color(0xFFD84A1A), RoundedCornerShape(16.dp))
+                                            .padding(horizontal = 12.dp, vertical = 6.dp)
+                                    ) {
+                                        Text(
+                                            text = when {
+                                                isLeft -> "Step 1 of 2"
+                                                isRight -> "Step 2 of 2"
+                                                else -> "Ready"
                                             },
-                                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFB5607)),
-                                            modifier = Modifier.padding(start = 8.dp)
-                                        ) {
-                                            Text("Analyze Now")
+                                            color = Color.White,
+                                            style = MaterialTheme.typography.labelMedium,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    Text(
+                                        text = when {
+                                            isLeft -> "Select left edge of hoop"
+                                            isRight -> "Select right edge of hoop"
+                                            else -> "Coordinates confirmed"
+                                        },
+                                        color = Color.White,
+                                        style = MaterialTheme.typography.titleSmall,
+                                        fontWeight = FontWeight.Bold,
+                                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                                    )
+                                    Spacer(modifier = Modifier.height(24.dp))
+                                    
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        IconButton(onClick = { 
+                                            scale = 1f
+                                            offsetX = 0f
+                                            offsetY = 0f
+                                            viewModel.startSelection() 
+                                        }) {
+                                            Icon(Icons.Default.Refresh, contentDescription = "Reset", tint = Color.White)
+                                        }
+                                        
+                                        if (isReady) {
+                                            Button(
+                                                onClick = { videoFile?.let { viewModel.confirmAnalysis(it) } },
+                                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFB5607))
+                                            ) {
+                                                Text("Analyze")
+                                            }
                                         }
                                     }
                                 }
+                            }
+                        } else {
+                            // Portrait layout
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                // Step indicator
+                                Box(
+                                    modifier = Modifier
+                                        .background(Color(0xFFD84A1A), RoundedCornerShape(16.dp))
+                                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                                ) {
+                                    Text(
+                                        text = when {
+                                            isLeft -> "Step 1 of 2"
+                                            isRight -> "Step 2 of 2"
+                                            else -> "Ready to Analyze"
+                                        },
+                                        color = Color.White,
+                                        style = MaterialTheme.typography.labelMedium,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(16.dp))
                                 
-                                IconButton(onClick = { viewModel.startSelection() }) {
-                                    Icon(Icons.Default.Refresh, contentDescription = "Reset Selection", tint = Color.White)
+                                Text(
+                                    text = when {
+                                        isLeft -> "Click the left edge of the basketball hoop"
+                                        isRight -> "Click the right edge of the basketball hoop"
+                                        else -> "Confirm hoop coordinates"
+                                    },
+                                    color = Color.White,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                                )
+                                Spacer(modifier = Modifier.height(20.dp))
+                                
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f)
+                                        .border(2.dp, Color(0xFFFB5607), RoundedCornerShape(12.dp))
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(Color.Black),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    videoThumbnail?.let { bitmap ->
+                                        val aspectRatio = bitmap.width.toFloat() / bitmap.height.toFloat()
+                                        BoxWithConstraints(
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            val containerWidth = maxWidth
+                                            val containerHeight = maxHeight
+                                            val containerRatio = containerWidth / containerHeight
+                                            
+                                            val finalModifier = if (containerRatio > aspectRatio) {
+                                                Modifier.fillMaxHeight().aspectRatio(aspectRatio)
+                                            } else {
+                                                Modifier.fillMaxWidth().aspectRatio(aspectRatio)
+                                            }
+
+                                            Box(
+                                                modifier = Modifier
+                                                    .then(finalModifier)
+                                                    .clipToBounds()
+                                                    .pointerInput(Unit) {
+                                                        detectTransformGestures { _, pan, zoom, _ ->
+                                                            scale = (scale * zoom).coerceIn(1f, 5f)
+                                                            val maxOffsetX = (size.width * (scale - 1f)) / 2f
+                                                            val maxOffsetY = (size.height * (scale - 1f)) / 2f
+                                                            offsetX = (offsetX + pan.x).coerceIn(-maxOffsetX, maxOffsetX)
+                                                            offsetY = (offsetY + pan.y).coerceIn(-maxOffsetY, maxOffsetY)
+                                                        }
+                                                    }
+                                                    .graphicsLayer {
+                                                        scaleX = scale
+                                                        scaleY = scale
+                                                        translationX = offsetX
+                                                        translationY = offsetY
+                                                    }
+                                            ) {
+                                                Image(
+                                                    bitmap = bitmap,
+                                                    contentDescription = "Video Frame",
+                                                    modifier = Modifier
+                                                        .fillMaxSize()
+                                                        .pointerInput(uiState.status) {
+                                                            detectTapGestures { offset ->
+                                                                val normX = offset.x / size.width
+                                                                val normY = offset.y / size.height
+                                                                
+                                                                if (normX.isNaN() || normY.isNaN()) return@detectTapGestures
+
+                                                                val x = (normX * bitmap.width).toInt()
+                                                                val y = (normY * bitmap.height).toInt()
+                                                                
+                                                                if (isLeft) {
+                                                                    viewModel.setHoopLeft(x, y, normX, normY)
+                                                                } else if (isRight) {
+                                                                    viewModel.setHoopRight(x, y, normX, normY)
+                                                                }
+                                                            }
+                                                        },
+                                                    contentScale = ContentScale.Fit
+                                                )
+                                                SelectionMarker(uiState.hoopLeftNormalized, "L")
+                                                SelectionMarker(uiState.hoopRightNormalized, "R")
+                                            }
+                                        }
+                                    } ?: CircularProgressIndicator(color = Color(0xFFFB5607))
+                                }
+                                
+                                // Bottom Actions
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        IconButton(onClick = { navController.popBackStack() }) {
+                                            Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
+                                        }
+                                        
+                                        if (isReady) {
+                                            Button(
+                                                onClick = { videoFile?.let { viewModel.confirmAnalysis(it) } },
+                                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFB5607)),
+                                                modifier = Modifier.padding(start = 8.dp)
+                                            ) {
+                                                Text("Analyze Now")
+                                            }
+                                        }
+                                    }
+                                    
+                                    IconButton(onClick = { 
+                                        scale = 1f
+                                        offsetX = 0f
+                                        offsetY = 0f
+                                        viewModel.startSelection() 
+                                    }) {
+                                        Icon(Icons.Default.Refresh, contentDescription = "Reset Selection", tint = Color.White)
+                                    }
                                 }
                             }
                         }

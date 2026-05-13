@@ -59,8 +59,8 @@ class CVRepositoryImpl @Inject constructor(
                             averageAngle = result.averageAngle,
                             averageMakeAngle = result.averageMakeAngle,
                             averageMissAngle = result.averageMissAngle,
-                            shotAngles = result.shotAngles,
-                            shotsResults = result.shotsResults,
+                            shotAngles = result.shotAngles ?: emptyList(),
+                            shotsResults = result.shotsResults ?: emptyList(),
                             timestamp = System.currentTimeMillis()
                         )
                     )
