@@ -1,6 +1,7 @@
 package com.example.nothingbutnetmobile.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -16,6 +17,7 @@ import com.example.nothingbutnetmobile.ui.screens.home.HomeScreen
 import com.example.nothingbutnetmobile.ui.screens.analysis.AnalysisScreen
 import com.example.nothingbutnetmobile.ui.screens.history.HistoryScreen
 import com.example.nothingbutnetmobile.ui.screens.profile.ProfileScreen
+import com.example.nothingbutnetmobile.ui.screens.record.RecordScreen
 
 @Composable
 fun AppNavigation(tokenManager: TokenManager) {
@@ -38,10 +40,12 @@ fun AppNavigation(tokenManager: TokenManager) {
             val authState by authViewModel.authState.collectAsState()
 
             // Navigate to home upon successful login
-            if (authState is AuthState.Success) {
-                authViewModel.resetState()
-                navController.navigate("home") {
-                    popUpTo("login") { inclusive = true }
+            LaunchedEffect(authState) {
+                if (authState is AuthState.Success) {
+                    authViewModel.resetState()
+                    navController.navigate("home") {
+                        popUpTo("login") { inclusive = true }
+                    }
                 }
             }
 
@@ -61,6 +65,15 @@ fun AppNavigation(tokenManager: TokenManager) {
             val authViewModel: AuthViewModel = hiltViewModel()
             val authState by authViewModel.authState.collectAsState()
 
+            LaunchedEffect(authState) {
+                if (authState is AuthState.RegisterSuccess) {
+                    // Navigate to login after successful registration
+                    navController.navigate("login") {
+                        popUpTo("register") { inclusive = true }
+                    }
+                }
+            }
+
             RegisterScreen(
                 authState = authState,
                 onRegisterClick = { username, email, password ->
@@ -79,8 +92,22 @@ fun AppNavigation(tokenManager: TokenManager) {
             HomeScreen(navController = navController)
         }
 
-        composable("analysis") {
-            AnalysisScreen(navController = navController)
+        composable("record") {
+            RecordScreen(navController = navController)
+        }
+
+        composable(
+            route = "analysis?videoUri={videoUri}",
+            arguments = listOf(
+                androidx.navigation.navArgument("videoUri") {
+                    type = androidx.navigation.NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ) { backStackEntry ->
+            val videoUri = backStackEntry.arguments?.getString("videoUri")
+            AnalysisScreen(navController = navController, videoUri = videoUri)
         }
 
         composable("history") {

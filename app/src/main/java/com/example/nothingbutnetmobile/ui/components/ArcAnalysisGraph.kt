@@ -14,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.example.nothingbutnetmobile.R
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
@@ -33,14 +35,14 @@ fun ArcAnalysisGraph(
             verticalAlignment = Alignment.Bottom
         ) {
             Text(
-                text = "Arc Analysis",
+                text = stringResource(id = R.string.arc_analysis),
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.Bold
                 ),
                 color = Color.White
             )
             Text(
-                text = "REAL-TIME TREND",
+                text = stringResource(id = R.string.real_time_trend),
                 style = MaterialTheme.typography.labelSmall,
                 color = OrangePrimary,
                 fontWeight = FontWeight.Bold
@@ -61,7 +63,7 @@ fun ArcAnalysisGraph(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "55° OPTIMAL",
+                        text = stringResource(id = R.string.optimal_angle),
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.Gray
                     )

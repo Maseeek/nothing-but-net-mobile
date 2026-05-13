@@ -12,6 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.example.nothingbutnetmobile.R
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -39,7 +41,7 @@ fun AIInsightsCard(
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
-                text = "AI Training Insights",
+                text = stringResource(id = R.string.ai_insights),
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -71,7 +73,7 @@ fun AIInsightsCard(
                     text = buildAnnotatedString {
                         append("Based on your last 10 shots, your release point is ")
                         withStyle(style = SpanStyle(color = OrangePrimary, fontWeight = FontWeight.Bold)) {
-                            append("consistent")
+                            append(insight)
                         }
                         append(", but your entry angle is peaking too early.")
                     },

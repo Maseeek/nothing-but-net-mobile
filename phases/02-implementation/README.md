@@ -28,5 +28,34 @@
 - [x] Implement interactive bottom navigation with active state tracking.
 - [x] Wire all screens to the main navigation graph.
 - [x] Redesign Record button to a "premium basketball" rising icon matching the new brand spec.
-- [x] Update Loading Screen to show `nbn_light` icon and `nbn_logo_transparent` text side-by-side.
+- [x] Update Loading Screen to show only the `nbn_logo_transparent` centered (removed icon for cleaner look).
 - [x] Update Dashboard Header to use `nbn_light` asset.
+- [x] Created `deploy.bat` for CLI-based phone deployment.
+- [x] Create `NetworkConfig` for local/production environment switching.
+- [x] Refactor `NetworkModule` to support multiple Retrofit instances (Auth & CV) using Hilt qualifiers.
+- [x] Implement `CVApi` and `CVModels` for video analysis integration.
+- [x] Implement `CVRepository` and bind it in `RepositoryModule`.
+- [x] Removed dummy "maseeek" login logic to enable real API authentication.
+- [x] Refactored `AppNavigation.kt` to use `LaunchedEffect` for stable navigation transitions.
+- [x] Implemented a functional "Logout" button in the `ProfileScreen`.
+- [x] Added automatic redirect from Registration to Login upon success.
+- [x] Replaced text-based branding in Auth screens with official `nbn_light` and `nbn_logo_transparent` assets.
+- [x] Integrated CameraX for high-quality video capture.
+- [x] Implemented `RecordScreen` with real-time feedback and video lifecycle management.
+- [x] Configured necessary Camera and Audio permissions in the manifest.
+- [x] Implemented Room database (`AppDatabase`) for local state persistence.
+- [x] Created `StatsRepository` to manage basketball session data.
+- [x] Refactored `HomeScreen` and `HomeViewModel` to use dynamic data from the local database.
+- [x] Fully localized the app by moving hardcoded strings to `strings.xml`.
+- [x] Integrated database saving into the `CVRepository` analysis workflow.
+- [x] Implemented dual-source video selection (Camera vs Gallery) on the Record screen with a premium selection UI.
+- [x] Implemented end-to-end video analysis workflow: from recording/selection to CV server upload and database persistence.
+- [x] Created `FileUtils` utility to bridge Android content URIs with standard Java File processing.
+- [x] Built interactive `AnalysisScreen` with real-time status feedback (Loading, Success, Error).
+- [x] Resolved build failures related to missing ViewModel imports and Material Icons references.
+- [x] Implemented hoop coordinate selection system on video thumbnail before analysis upload.
+- [x] Added interactive visual markers (pins) on the video thumbnail for selected hoop coordinates.
+- [x] Fixed "Analysis" navigation icon active state in the bottom navigation bar to correctly highlight when on the analysis screen.
+- [x] Redesigned Login and Register screens to feature a large, centered visual logo (icon) at the top, removing text-based branding for a premium look.
+
+- [x] Configured password fields to disable autocorrect and use `KeyboardType.Password` for improved security and UX.

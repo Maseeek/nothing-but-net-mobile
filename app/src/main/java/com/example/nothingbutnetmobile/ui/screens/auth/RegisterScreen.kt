@@ -3,6 +3,7 @@ package com.example.nothingbutnetmobile.ui.screens.auth
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -16,7 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -41,26 +44,21 @@ fun RegisterScreen(
             .fillMaxSize()
             .background(DarkBackground)
             .padding(24.dp),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.TopCenter
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Join the Pro's",
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontWeight = FontWeight.ExtraBold,
-                    color = OrangePrimary
-                ),
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(
-                text = "Create your account",
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    color = TextGray
-                ),
-                modifier = Modifier.padding(bottom = 32.dp)
+            // Brand Logo (Visual Only)
+            androidx.compose.foundation.Image(
+                painter = androidx.compose.ui.res.painterResource(id = com.example.nothingbutnetmobile.R.drawable.nbn_light),
+                contentDescription = "NothingButNet Logo",
+                modifier = Modifier
+                    .size(240.dp)
+                    .padding(bottom = 0.dp)
             )
 
             Box(
@@ -106,7 +104,7 @@ fun RegisterScreen(
                     OutlinedTextField(
                         value = username,
                         onValueChange = { username = it },
-                        label = { Text("Username", color = TextGray) },
+                        label = { Text(stringResource(id = com.example.nothingbutnetmobile.R.string.username), color = TextGray) },
                         leadingIcon = { Icon(Icons.Default.Person, null, tint = TextGray) },
                         colors = OutlinedTextFieldDefaults.run {
                             colors(
@@ -126,7 +124,7 @@ fun RegisterScreen(
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
-                        label = { Text("Email", color = TextGray) },
+                        label = { Text(stringResource(id = com.example.nothingbutnetmobile.R.string.email), color = TextGray) },
                         leadingIcon = { Icon(Icons.Default.Email, null, tint = TextGray) },
                         colors = OutlinedTextFieldDefaults.run {
                             colors(
@@ -146,7 +144,7 @@ fun RegisterScreen(
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        label = { Text("Password", color = TextGray) },
+                        label = { Text(stringResource(id = com.example.nothingbutnetmobile.R.string.password), color = TextGray) },
                         leadingIcon = { Icon(Icons.Default.Lock, null, tint = TextGray) },
                         trailingIcon = {
                             val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
@@ -155,6 +153,10 @@ fun RegisterScreen(
                             }
                         },
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            autoCorrect = false
+                        ),
                         colors = OutlinedTextFieldDefaults.run {
                             colors(
                                                 focusedIndicatorColor = OrangePrimary,
@@ -180,7 +182,7 @@ fun RegisterScreen(
                         if (authState is AuthState.Loading) {
                             CircularProgressIndicator(Modifier.size(24.dp), color = Color.White, strokeWidth = 2.dp)
                         } else {
-                            Text("SIGN UP", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
+                            Text(stringResource(id = com.example.nothingbutnetmobile.R.string.sign_up).uppercase(), fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
                         }
                     }
                 }
@@ -189,9 +191,9 @@ fun RegisterScreen(
             Spacer(Modifier.height(24.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Already have an account?", color = TextGray)
+                Text(stringResource(id = com.example.nothingbutnetmobile.R.string.already_have_account).split("?")[0] + "?", color = TextGray)
                 TextButton(onClick = onLoginClick, enabled = authState !is AuthState.Loading) {
-                    Text("Log In", color = OrangePrimary, fontWeight = FontWeight.Bold)
+                    Text(stringResource(id = com.example.nothingbutnetmobile.R.string.login), color = OrangePrimary, fontWeight = FontWeight.Bold)
                 }
             }
         }

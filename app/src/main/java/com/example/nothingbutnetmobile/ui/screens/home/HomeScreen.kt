@@ -44,11 +44,19 @@ fun HomeScreen(
         ) {
             DashboardHeader(userName = uiState.userName)
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Ready to hoop, ${uiState.userName}?",
+                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Black),
+                color = Color.White
+            )
+
             Spacer(modifier = Modifier.height(24.dp))
 
             LiveSessionCard(
-                percentage = 70,
-                ratio = "7/10"
+                percentage = uiState.fgPercentage,
+                ratio = uiState.fgRatio
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -59,19 +67,19 @@ fun HomeScreen(
             ) {
                 StatCard(
                     label = "Total Shots",
-                    value = "10",
+                    value = uiState.totalShots,
                     icon = Icons.Default.SportsBasketball,
                     modifier = Modifier.weight(1f)
                 )
                 StatCard(
                     label = "Longest Streak",
-                    value = "4",
+                    value = uiState.longestStreak,
                     icon = Icons.Default.LocalFireDepartment,
                     modifier = Modifier.weight(1f)
                 )
                 StatCard(
                     label = "Avg Angle",
-                    value = "45.5°",
+                    value = uiState.avgAngle,
                     icon = Icons.Default.AvTimer,
                     modifier = Modifier.weight(1f)
                 )

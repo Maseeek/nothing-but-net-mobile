@@ -40,25 +40,12 @@ fun LoadingScreen(onTimeout: () -> Unit) {
             .background(DarkBackground),
         contentAlignment = Alignment.Center
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.scale(scale.value)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.nbn_light),
-                contentDescription = "NothingButNet Icon",
-                modifier = Modifier.size(76.dp)
-            )
-            // The text image has built-in padding, so we use a very small/negative offset or no spacer
-            // to ensure it sits closely next to the icon.
-            Image(
-                painter = painterResource(id = R.drawable.nbn_logo_transparent),
-                contentDescription = "NothingButNet Text",
-                modifier = Modifier
-                    .height(180.dp)
-                    .offset(x = (-12).dp)
-            )
-        }
+        Image(
+            painter = painterResource(id = R.drawable.nbn_logo_transparent),
+            contentDescription = "NothingButNet Logo",
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .scale(scale.value)
+        )
     }
 }

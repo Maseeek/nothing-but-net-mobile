@@ -16,13 +16,6 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
 
     override suspend fun login(username: String, password: String): Result<Unit> {
-        // Dummy login for development testing
-        if (username.lowercase() == "maseeek") {
-            tokenManager.saveToken("dummy-token-for-dev")
-            tokenManager.saveUsername(username)
-            return Result.success(Unit)
-        }
-
         return try {
             val response = api.login(LoginRequest(username, password))
             if (response.isSuccessful) {

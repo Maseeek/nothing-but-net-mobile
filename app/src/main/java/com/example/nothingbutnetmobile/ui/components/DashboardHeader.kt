@@ -14,9 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.nothingbutnetmobile.R
 import com.example.nothingbutnetmobile.ui.theme.OrangePrimary
 
 @Composable
@@ -35,13 +37,13 @@ fun DashboardHeader(
         Row(verticalAlignment = Alignment.CenterVertically) {
             // App Logo
             Image(
-                painter = painterResource(id = com.example.nothingbutnetmobile.R.drawable.nbn_light),
+                painter = painterResource(id = R.drawable.nbn_light),
                 contentDescription = "NothingButNet Logo",
                 modifier = Modifier.size(32.dp)
             )
             Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = "nothingbutnet",
+                    text = stringResource(id = R.string.app_name).lowercase().replace(" ", ""),
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Black,
                         letterSpacing = (-0.5).sp
@@ -50,15 +52,6 @@ fun DashboardHeader(
                 )
             }
             
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            Text(
-                text = "Welcome back, $userName...",
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                color = OrangePrimary
-            )
         }
 
         IconButton(

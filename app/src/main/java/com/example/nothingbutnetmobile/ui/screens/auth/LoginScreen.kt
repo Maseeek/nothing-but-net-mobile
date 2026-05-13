@@ -3,6 +3,7 @@ package com.example.nothingbutnetmobile.ui.screens.auth
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
@@ -15,7 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -39,27 +42,21 @@ fun LoginScreen(
             .fillMaxSize()
             .background(DarkBackground)
             .padding(24.dp),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.TopCenter
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Logo / Branding placeholder
-            Text(
-                text = "NothingButNet",
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontWeight = FontWeight.ExtraBold,
-                    color = OrangePrimary
-                ),
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(
-                text = "Elevate Your Game",
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    color = TextGray
-                ),
-                modifier = Modifier.padding(bottom = 32.dp)
+            // Brand Logo (Visual Only)
+            androidx.compose.foundation.Image(
+                painter = androidx.compose.ui.res.painterResource(id = com.example.nothingbutnetmobile.R.drawable.nbn_light),
+                contentDescription = "NothingButNet Logo",
+                modifier = Modifier
+                    .size(240.dp)
+                    .padding(bottom = 0.dp)
             )
 
             // Login Card with Gradient Border
@@ -83,7 +80,7 @@ fun LoginScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Welcome Back",
+                        text = stringResource(id = com.example.nothingbutnetmobile.R.string.login),
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
                             color = TextWhite
@@ -106,7 +103,7 @@ fun LoginScreen(
                     OutlinedTextField(
                         value = username,
                         onValueChange = { username = it },
-                        label = { Text("Username", color = TextGray) },
+                        label = { Text(stringResource(id = com.example.nothingbutnetmobile.R.string.username), color = TextGray) },
                         leadingIcon = {
                             Icon(Icons.Default.Person, contentDescription = null, tint = TextGray)
                         },
@@ -133,7 +130,7 @@ fun LoginScreen(
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        label = { Text("Password", color = TextGray) },
+                        label = { Text(stringResource(id = com.example.nothingbutnetmobile.R.string.password), color = TextGray) },
                         leadingIcon = {
                             Icon(Icons.Default.Lock, contentDescription = null, tint = TextGray)
                         },
@@ -147,6 +144,10 @@ fun LoginScreen(
                             }
                         },
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            autoCorrect = false
+                        ),
                         colors = OutlinedTextFieldDefaults.run {
                             colors(
                                                 focusedIndicatorColor = OrangePrimary,
@@ -184,7 +185,7 @@ fun LoginScreen(
                             )
                         } else {
                             Text(
-                                text = "LOGIN",
+                                text = stringResource(id = com.example.nothingbutnetmobile.R.string.login).uppercase(),
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp,
                                 color = Color.White
@@ -201,7 +202,7 @@ fun LoginScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Don't have an account?",
+                    text = stringResource(id = com.example.nothingbutnetmobile.R.string.no_account).split("?")[0] + "?",
                     color = TextGray,
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -210,7 +211,7 @@ fun LoginScreen(
                     enabled = authState !is AuthState.Loading
                 ) {
                     Text(
-                        text = "Sign Up",
+                        text = stringResource(id = com.example.nothingbutnetmobile.R.string.register),
                         color = OrangePrimary,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.bodyMedium

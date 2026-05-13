@@ -61,7 +61,7 @@ fun BottomNavigationBar(
             NavItem(Icons.Default.Home, "Home", currentRoute == "home") {
                 navigateTo("home")
             }
-            NavItem(Icons.Default.Analytics, "Analysis", currentRoute == "analysis") {
+            NavItem(Icons.Default.Analytics, "Analysis", currentRoute?.startsWith("analysis") == true) {
                 navigateTo("analysis")
             }
             
