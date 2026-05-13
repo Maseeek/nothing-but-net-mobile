@@ -70,7 +70,8 @@ class ProfileViewModel @Inject constructor(
                         totalMisses = totalMisses,
                         bestSessionFgPercentage = bestSession,
                         progressMessage = progressMessage,
-                        fgHistory = history
+                        fgHistory = history,
+                        recentSessions = analyses.sortedByDescending { it.timestamp }.take(3)
                     )
                 }
             }
@@ -90,5 +91,6 @@ data class ProfileUiState(
     val totalMisses: Int = 0,
     val bestSessionFgPercentage: Double = 0.0,
     val progressMessage: String = "Keep practicing to see your progress!",
-    val fgHistory: List<Float> = emptyList()
+    val fgHistory: List<Float> = emptyList(),
+    val recentSessions: List<ShotAnalysis> = emptyList()
 )

@@ -13,7 +13,7 @@ import java.io.File
 import javax.inject.Inject
 
 enum class AnalysisStatus {
-    IDLE, SELECTING_LEFT, SELECTING_RIGHT, LOADING, SUCCESS, ERROR
+    IDLE, SELECTING_LEFT, SELECTING_RIGHT, READY, LOADING, SUCCESS, ERROR
 }
 
 @HiltViewModel
@@ -40,12 +40,15 @@ class AnalysisViewModel @Inject constructor(
         )
     }
 
-    fun setHoopRight(x: Int, y: Int, normX: Float, normY: Float, videoFile: File) {
+    fun setHoopRight(x: Int, y: Int, normX: Float, normY: Float) {
         _uiState.value = _uiState.value.copy(
             hoopRight = listOf(x, y),
             hoopRightNormalized = Pair(normX, normY),
-            status = AnalysisStatus.LOADING
+            status = AnalysisStatus.READY
         )
+    }
+
+    fun confirmAnalysis(videoFile: File) {
         startAnalysis(videoFile)
     }
 
@@ -76,7 +79,9 @@ class AnalysisViewModel @Inject constructor(
             result.onSuccess { response ->
                 _uiState.value = _uiState.value.copy(
                     status = AnalysisStatus.SUCCESS,
-                    analysisResult = "Analysis Complete: ${response.data?.makes ?: 0}/${response.data?.totalShots ?: 0} Shots Made"
+                    analysisResult = "Analysis Complete: ${response.data?.makes ?: 0}/${response.data?.totalShots ?: 0} Shots Made",
+                    shotAngles = response.data?.shotAngles ?: emptyList(),
+                    shotsResults = response.data?.shotsResults ?: emptyList()
                 )
             }.onFailure { error ->
                 _uiState.value = _uiState.value.copy(
@@ -96,5 +101,7 @@ data class AnalysisUiState(
     val hoopLeft: List<Int>? = null,
     val hoopRight: List<Int>? = null,
     val hoopLeftNormalized: Pair<Float, Float>? = null,
-    val hoopRightNormalized: Pair<Float, Float>? = null
+    val hoopRightNormalized: Pair<Float, Float>? = null,
+    val shotAngles: List<Double> = emptyList(),
+    val shotsResults: List<Int> = emptyList()
 )

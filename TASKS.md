@@ -23,7 +23,8 @@
 - [x] Migrate and rename brand assets to standard Android structure <!-- id: 20 -->
 - [x] Integrate CV and Auth Server Infrastructure (Local & Prod) <!-- id: 21 -->
 - [x] Integrate Camera and Video Upload (CameraX Implementation and Gallery Selection Done) <!-- id: 8 -->
-- [ ] Add Shot Analysis Visualization <!-- id: 9 -->
+- [x] Add Shot Analysis Visualization <!-- id: 9 -->
+- [x] Implement Session History and Profile Integration <!-- id: 22 -->
 
 ## 🧪 Phase 3: Testing & Polish
 - [ ] Unit Testing for ViewModels <!-- id: 10 -->
@@ -35,7 +36,7 @@
 
 ## 🧠 AGENT MEMORY (Current State)
 
-**Last Updated**: 2026-05-12
+**Last Updated**: 2026-05-13
 **Current Phase**: Phase 2 (Implementation)
 
 ### Accomplishments
@@ -112,6 +113,18 @@
 - **Security & UX Refinement**:
   - Configured password fields in `LoginScreen` and `RegisterScreen` to disable autocorrect and use `KeyboardType.Password`, ensuring standard mobile security behavior and preventing keyboard suggestions.
   - Fixed "Analysis" navigation icon active state detection in `BottomNavigationBar` by using `startsWith` matching to account for route parameters.
+  - Updated branding in `strings.xml` and `DashboardHeader.kt`: changed "Nothing But Net Mobile" to "Nothing But Net" to ensure the header displays the cleaner "nothingbutnet" brand identity.
+  - **Coordinate Selection & Analysis Flow (2026-05-13)**:
+  - Improved the `AnalysisScreen` workflow by adding a "Confirmation" step; users now select both hoop edges and see markers before triggering the server upload.
+  - Implemented the **Shot Analysis Visualization** (id: 9): added a vertical list of shot results to the `AnalysisScreen` success state, displaying shot number, result (swish/miss), and arc angle for each attempt.
+  - Refactored `AnalysisViewModel` to support the new `READY` state and persist shot data for visualization.
+  - Polished the `ShotRow` UI with premium Material 3 icons and color-coded status badges.
+- **Session History & Profile Integration**:
+  - Implemented `HistoryViewModel` to fetch all past sessions from `StatsRepository`.
+  - Built a premium `HistoryScreen` with a scrollable list of session cards showing date, FG%, and streaks.
+  - Updated `ProfileScreen` to include a "RECENT SESSIONS" section displaying the last 3 sessions.
+  - Added navigation from Profile to History via a "View All" link.
 
 ### Pending
-- Implement History screen to view past sessions from the database.
+- Unit Testing for ViewModels.
+- UI Testing for core flows.

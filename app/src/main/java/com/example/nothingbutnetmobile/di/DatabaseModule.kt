@@ -22,7 +22,7 @@ object DatabaseModule {
             context,
             AppDatabase::class.java,
             "nbn_database"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides

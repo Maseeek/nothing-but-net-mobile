@@ -11,6 +11,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.navigation.NavController
 import com.example.nothingbutnetmobile.ui.components.BottomNavigationBar
 import com.example.nothingbutnetmobile.ui.components.DashboardHeader
@@ -19,6 +21,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Cancel
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
@@ -109,8 +112,10 @@ fun AnalysisScreen(
                             color = Color.Gray
                         )
                     }
-                    AnalysisStatus.SELECTING_LEFT, AnalysisStatus.SELECTING_RIGHT -> {
+                    AnalysisStatus.SELECTING_LEFT, AnalysisStatus.SELECTING_RIGHT, AnalysisStatus.READY -> {
                         val isLeft = uiState.status == AnalysisStatus.SELECTING_LEFT
+                        val isRight = uiState.status == AnalysisStatus.SELECTING_RIGHT
+                        val isReady = uiState.status == AnalysisStatus.READY
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -124,7 +129,11 @@ fun AnalysisScreen(
                                     .padding(horizontal = 12.dp, vertical = 6.dp)
                             ) {
                                 Text(
-                                    text = if (isLeft) "Step 1 of 2" else "Step 2 of 2",
+                                    text = when {
+                                        isLeft -> "Step 1 of 2"
+                                        isRight -> "Step 2 of 2"
+                                        else -> "Ready to Analyze"
+                                    },
                                     color = Color.White,
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Bold
@@ -133,7 +142,11 @@ fun AnalysisScreen(
                             Spacer(modifier = Modifier.height(16.dp))
                             
                             Text(
-                                text = if (isLeft) "Click the left edge of the basketball hoop" else "Click the right edge of the basketball hoop",
+                                text = when {
+                                    isLeft -> "Click the left edge of the basketball hoop"
+                                    isRight -> "Click the right edge of the basketball hoop"
+                                    else -> "Confirm hoop coordinates"
+                                },
                                 color = Color.White,
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
@@ -171,10 +184,8 @@ fun AnalysisScreen(
                                                         
                                                         if (isLeft) {
                                                             viewModel.setHoopLeft(x, y, normX, normY)
-                                                        } else {
-                                                            videoFile?.let { file ->
-                                                                viewModel.setHoopRight(x, y, normX, normY, file)
-                                                            }
+                                                        } else if (isRight) {
+                                                            viewModel.setHoopRight(x, y, normX, normY)
                                                         }
                                                     }
                                                 },
@@ -197,10 +208,23 @@ fun AnalysisScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                IconButton(onClick = { navController.popBackStack() }) {
-                                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    IconButton(onClick = { navController.popBackStack() }) {
+                                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
+                                    }
+                                    
+                                    if (isReady) {
+                                        Button(
+                                            onClick = { 
+                                                videoFile?.let { viewModel.confirmAnalysis(it) }
+                                            },
+                                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFB5607)),
+                                            modifier = Modifier.padding(start = 8.dp)
+                                        ) {
+                                            Text("Analyze Now")
+                                        }
+                                    }
                                 }
-
                                 
                                 IconButton(onClick = { viewModel.startSelection() }) {
                                     Icon(Icons.Default.Refresh, contentDescription = "Reset Selection", tint = Color.White)
@@ -221,26 +245,55 @@ fun AnalysisScreen(
                     }
                     AnalysisStatus.SUCCESS -> {
                         Column(
-                            modifier = Modifier.padding(24.dp),
+                            modifier = Modifier.fillMaxSize().padding(16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.CheckCircle,
                                 contentDescription = null,
                                 tint = Color.Green,
-                                modifier = Modifier.size(64.dp)
+                                modifier = Modifier.size(48.dp)
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(12.dp))
                             Text(
                                 text = uiState.analysisResult ?: "Analysis Complete",
                                 style = MaterialTheme.typography.titleLarge,
                                 color = Color.White,
                                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
                             )
-                            Spacer(modifier = Modifier.height(24.dp))
+                            
+                            Spacer(modifier = Modifier.height(20.dp))
+                            
+                            // Visualization Section
+                            Text(
+                                text = "SHOT DETAILS",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = Color.Gray,
+                                modifier = Modifier.align(Alignment.Start)
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                                    .verticalScroll(rememberScrollState())
+                            ) {
+                                uiState.shotsResults.forEachIndexed { index, result ->
+                                    val angle = uiState.shotAngles.getOrNull(index) ?: 0.0
+                                    ShotRow(index + 1, result == 1, angle)
+                                    if (index < uiState.shotsResults.size - 1) {
+                                        HorizontalDivider(color = Color.White.copy(alpha = 0.05f))
+                                    }
+                                }
+                            }
+                            
+                            Spacer(modifier = Modifier.height(16.dp))
+                            
                             Button(
                                 onClick = { navController.navigate("home") },
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFB5607))
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFB5607)),
+                                modifier = Modifier.fillMaxWidth()
                             ) {
                                 Text("Back to Dashboard")
                             }
@@ -302,6 +355,64 @@ fun BoxScope.SelectionMarker(normalizedPos: Pair<Float, Float>?, label: String) 
                     fontWeight = FontWeight.ExtraBold
                 )
             }
+        }
+    }
+}
+@Composable
+fun ShotRow(index: Int, isMake: Boolean, angle: Double) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .background(
+                        if (isMake) Color(0xFF4CAF50).copy(alpha = 0.1f) else Color(0xFFF44336).copy(alpha = 0.1f),
+                        androidx.compose.foundation.shape.CircleShape
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = if (isMake) Icons.Default.CheckCircle else Icons.Default.Cancel,
+                    contentDescription = null,
+                    tint = if (isMake) Color(0xFF4CAF50) else Color(0xFFF44336),
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            
+            Spacer(modifier = Modifier.width(12.dp))
+            
+            Column {
+                Text(
+                    text = "Shot #$index",
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = if (isMake) "Swish" else "Missed",
+                    color = Color.Gray,
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
+        }
+        
+        Box(
+            modifier = Modifier
+                .background(Color.White.copy(alpha = 0.05f), RoundedCornerShape(8.dp))
+                .padding(horizontal = 8.dp, vertical = 4.dp)
+        ) {
+            Text(
+                text = String.format("%.1f°", angle),
+                color = Color(0xFFFB5607),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }

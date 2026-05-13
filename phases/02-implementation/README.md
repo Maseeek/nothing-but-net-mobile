@@ -3,10 +3,12 @@
 **Status**: ACTIVE
 
 ## Objectives
+
 - Implement the core logic and UI in Kotlin inside the `src/` directory.
 - Use the `state-update` skill to log progress continuously.
 
 ### Progress
+
 - [x] Scaffold Android Project with Jetpack Compose.
 - [x] Establish Clean Architecture folder structure (`data/`, `domain/`, `ui/`).
 - [x] Create initial `HomeScreen` and `HomeViewModel` with Hilt setup.
@@ -59,3 +61,9 @@
 - [x] Redesigned Login and Register screens to feature a large, centered visual logo (icon) at the top, removing text-based branding for a premium look.
 
 - [x] Configured password fields to disable autocorrect and use `KeyboardType.Password` for improved security and UX.
+- [x] Updated global branding from "Nothing But Net Mobile" to "Nothing But Net" to simplify the header visual identity to "nothingbutnet".
+- [x] Fixed StatCard misalignment on HomeScreen by forcing "Longest Streak" label to a single line and reducing horizontal spacing.
+
+- [x] Improved coordinate selection UX by adding a "READY" state and manual "Analyze Now" confirmation button.
+- [x] Implemented Shot Analysis Visualization: added a scrollable list of shot results with arc angles and status icons to the success screen.
+- [ ] Show accurate information on the profile page, showing all sessions form session history, Show accurate session history and use data from the database.

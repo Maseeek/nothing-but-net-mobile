@@ -21,6 +21,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Date
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -190,7 +194,7 @@ fun ProfileScreen(
             }
             
             Spacer(modifier = Modifier.height(24.dp))
-            
+
             Text(
                 text = "CAREER SHOT DISTRIBUTION",
                 style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
@@ -198,7 +202,7 @@ fun ProfileScreen(
                 letterSpacing = 1.sp
             )
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -212,8 +216,89 @@ fun ProfileScreen(
                     percentage = uiState.careerFgPercentage
                 )
             }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "RECENT SESSIONS",
+                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                    color = Color.LightGray,
+                    letterSpacing = 1.sp
+                )
+                TextButton(onClick = { navController.navigate("history") }) {
+                    Text(text = "View All", color = OrangePrimary)
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            if (uiState.recentSessions.isEmpty()) {
+                Text(
+                    text = "No sessions yet.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray,
+                    modifier = Modifier.padding(vertical = 16.dp)
+                )
+            } else {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    uiState.recentSessions.forEach { session ->
+                        RecentSessionItem(session = session)
+                    }
+                }
+            }
             
             Spacer(modifier = Modifier.height(40.dp))
+        }
+    }
+}
+
+@Composable
+fun RecentSessionItem(session: ShotAnalysis) {
+    val sdf = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+    val dateString = sdf.format(Date(session.timestamp))
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF161616)),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text(
+                    text = dateString,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = Color.Gray
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "${session.makes}/${session.totalShots} Shots Made",
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = Color.White
+                )
+            }
+            
+            Surface(
+                color = if (session.fgPercentage >= 50) Color(0xFF26A69A).copy(alpha = 0.2f) else Color(0xFFE53935).copy(alpha = 0.2f),
+                shape = RoundedCornerShape(4.dp)
+            ) {
+                Text(
+                    text = "${String.format("%.0f", session.fgPercentage)}%",
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Black),
+                    color = if (session.fgPercentage >= 50) Color(0xFF26A69A) else Color(0xFFE53935)
+                )
+            }
         }
     }
 }

@@ -8,6 +8,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AvTimer
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.SportsBasketball
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -63,7 +65,7 @@ fun HomeScreen(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 StatCard(
                     label = "Total Shots",
@@ -88,13 +90,37 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             AIInsightsCard(
-                insight = "consistent",
-                tip = "Try holding your follow-through 0.2s longer."
+                insight = uiState.aiInsight,
+                tip = uiState.aiTip
             )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Angle Comparison
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                StatCard(
+                    label = "Make Angle",
+                    value = String.format("%.1f°", uiState.averageMakeAngle),
+                    icon = Icons.Default.CheckCircle,
+                    modifier = Modifier.weight(1f)
+                )
+                StatCard(
+                    label = "Miss Angle",
+                    value = String.format("%.1f°", uiState.averageMissAngle),
+                    icon = Icons.Default.Cancel,
+                    modifier = Modifier.weight(1f)
+                )
+            }
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            ArcAnalysisGraph()
+            ArcAnalysisGraph(
+                shotAngles = uiState.shotAngles,
+                shotsResults = uiState.shotsResults
+            )
 
             Spacer(modifier = Modifier.height(40.dp))
         }

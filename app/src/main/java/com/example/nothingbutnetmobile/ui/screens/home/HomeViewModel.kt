@@ -39,12 +39,34 @@ class HomeViewModel @Inject constructor(
         statsRepository.getLatestShotAnalysis()
             .onEach { analysis ->
                 analysis?.let {
+                    val makeAngle = it.averageMakeAngle
+                    val missAngle = it.averageMissAngle
+                    
+                    var insight = "consistent"
+                    var tip = "Keep up the good work!"
+                    
+                    if (makeAngle > 0 && missAngle > 0) {
+                        if (missAngle < makeAngle - 2) {
+                            insight = "needs arc"
+                            tip = "Your misses are flat (${String.format("%.1f", missAngle)}°). Try getting more arc like your makes (${String.format("%.1f", makeAngle)}°)."
+                        } else if (missAngle > makeAngle + 2) {
+                            insight = "too high"
+                            tip = "Your misses have too much arc (${String.format("%.1f", missAngle)}°). Try lowering your release slightly."
+                        }
+                    }
+
                     _uiState.value = _uiState.value.copy(
                         totalShots = it.totalShots.toString(),
                         longestStreak = it.longestStreak.toString(),
                         avgAngle = "${it.averageAngle}°",
                         fgPercentage = it.fgPercentage.toInt(),
-                        fgRatio = "${it.makes}/${it.totalShots}"
+                        fgRatio = "${it.makes}/${it.totalShots}",
+                        aiInsight = insight,
+                        aiTip = tip,
+                        shotAngles = it.shotAngles,
+                        shotsResults = it.shotsResults,
+                        averageMakeAngle = it.averageMakeAngle,
+                        averageMissAngle = it.averageMissAngle
                     )
                 }
             }
@@ -64,5 +86,11 @@ data class HomeUiState(
     val longestStreak: String = "0",
     val avgAngle: String = "0.0°",
     val fgPercentage: Int = 0,
-    val fgRatio: String = "0/0"
+    val fgRatio: String = "0/0",
+    val aiInsight: String = "consistent",
+    val aiTip: String = "Keep shooting to get insights!",
+    val shotAngles: List<Double> = emptyList(),
+    val shotsResults: List<Int> = emptyList(),
+    val averageMakeAngle: Double = 0.0,
+    val averageMissAngle: Double = 0.0
 )

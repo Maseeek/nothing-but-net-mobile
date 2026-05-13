@@ -51,7 +51,9 @@ fun StatCard(
             text = label.uppercase(),
             style = MaterialTheme.typography.labelSmall,
             color = TextGray,
-            letterSpacing = 1.sp
+            letterSpacing = 0.5.sp,
+            maxLines = 1,
+            softWrap = false
         )
         
         Spacer(modifier = Modifier.height(4.dp))

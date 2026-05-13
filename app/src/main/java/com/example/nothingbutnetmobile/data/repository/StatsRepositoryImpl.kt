@@ -24,6 +24,10 @@ class StatsRepositoryImpl @Inject constructor(
                     fgPercentage = it.fgPercentage,
                     longestStreak = it.longestStreak,
                     averageAngle = it.averageAngle,
+                    averageMakeAngle = it.averageMakeAngle,
+                    averageMissAngle = it.averageMissAngle,
+                    shotAngles = it.shotAngles,
+                    shotsResults = it.shotsResults,
                     timestamp = it.timestamp
                 )
             }
@@ -40,6 +44,10 @@ class StatsRepositoryImpl @Inject constructor(
                     fgPercentage = it.fgPercentage,
                     longestStreak = it.longestStreak,
                     averageAngle = it.averageAngle,
+                    averageMakeAngle = it.averageMakeAngle,
+                    averageMissAngle = it.averageMissAngle,
+                    shotAngles = it.shotAngles,
+                    shotsResults = it.shotsResults,
                     timestamp = it.timestamp
                 )
             }
@@ -55,6 +63,10 @@ class StatsRepositoryImpl @Inject constructor(
                 fgPercentage = analysis.fgPercentage,
                 longestStreak = analysis.longestStreak,
                 averageAngle = analysis.averageAngle,
+                averageMakeAngle = analysis.averageMakeAngle,
+                averageMissAngle = analysis.averageMissAngle,
+                shotAngles = analysis.shotAngles,
+                shotsResults = analysis.shotsResults,
                 timestamp = analysis.timestamp
             )
         )
@@ -70,6 +82,10 @@ class StatsRepositoryImpl @Inject constructor(
                 fgPercentage = 72.0,
                 longestStreak = 6,
                 averageAngle = 52.4,
+                averageMakeAngle = 55.0,
+                averageMissAngle = 45.2,
+                shotAngles = listOf(45.2, 55.0, 52.4),
+                shotsResults = listOf(0, 1, 1),
                 timestamp = System.currentTimeMillis()
             )
         )

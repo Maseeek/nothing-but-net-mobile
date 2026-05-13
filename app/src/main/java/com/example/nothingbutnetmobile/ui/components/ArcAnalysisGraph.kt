@@ -26,6 +26,8 @@ import com.example.nothingbutnetmobile.ui.theme.OrangePrimary
 
 @Composable
 fun ArcAnalysisGraph(
+    shotAngles: List<Double>,
+    shotsResults: List<Int>,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -93,26 +95,70 @@ fun ArcAnalysisGraph(
                             )
                         }
 
-                        // Draw Path (Placeholder Wave)
-                        val path = Path().apply {
-                            moveTo(0f, height * 0.8f)
-                            cubicTo(
-                                width * 0.2f, height * 0.1f,
-                                width * 0.4f, height * 1.2f,
-                                width * 0.6f, height * 0.2f
+                        // Plot actual points
+                        if (shotAngles.isNotEmpty()) {
+                            val maxAngle = (shotAngles.maxOrNull() ?: 60.0).coerceAtLeast(60.0) + 10
+                            val minAngle = (shotAngles.minOrNull() ?: 30.0).coerceAtMost(30.0) - 10
+                            val angleRange = maxAngle - minAngle
+                            
+                            val pointSpacing = width / (shotAngles.size.coerceAtLeast(2) - 1)
+                            
+                            val path = Path()
+                            val points = mutableListOf<Offset>()
+                            
+                            shotAngles.forEachIndexed { index, angle ->
+                                val x = index * pointSpacing
+                                // Invert Y (higher angle = higher up visually)
+                                val normalizedY = 1f - ((angle - minAngle) / angleRange).toFloat()
+                                val y = height * normalizedY
+                                
+                                val point = Offset(x, y)
+                                points.add(point)
+                                
+                                if (index == 0) {
+                                    path.moveTo(x, y)
+                                } else {
+                                    path.lineTo(x, y)
+                                }
+                            }
+                            
+                            drawPath(
+                                path = path,
+                                color = Color.Gray.copy(alpha = 0.5f),
+                                style = Stroke(width = 2.dp.toPx())
                             )
-                            cubicTo(
-                                width * 0.8f, height * 0.3f,
-                                width * 0.9f, height * 0.7f,
-                                width, height * 0.8f
+                            
+                            // Draw nodes colored by make/miss
+                            points.forEachIndexed { index, point ->
+                                val isMake = shotsResults.getOrNull(index) == 1
+                                val nodeColor = if (isMake) Color(0xFF4CAF50) else Color(0xFFF44336)
+                                drawCircle(
+                                    color = nodeColor,
+                                    radius = 4.dp.toPx(),
+                                    center = point
+                                )
+                            }
+                        } else {
+                            // Placeholder if no data
+                            val path = Path().apply {
+                                moveTo(0f, height * 0.8f)
+                                cubicTo(
+                                    width * 0.2f, height * 0.1f,
+                                    width * 0.4f, height * 1.2f,
+                                    width * 0.6f, height * 0.2f
+                                )
+                                cubicTo(
+                                    width * 0.8f, height * 0.3f,
+                                    width * 0.9f, height * 0.7f,
+                                    width, height * 0.8f
+                                )
+                            }
+                            drawPath(
+                                path = path,
+                                color = OrangePrimary.copy(alpha = 0.3f),
+                                style = Stroke(width = 3.dp.toPx())
                             )
                         }
-
-                        drawPath(
-                            path = path,
-                            color = OrangePrimary,
-                            style = Stroke(width = 3.dp.toPx())
-                        )
                     }
                 }
 
@@ -124,15 +170,15 @@ fun ArcAnalysisGraph(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Indicator(color = OrangePrimary, label = "CURRENT")
+                        Indicator(color = Color(0xFF4CAF50), label = "MAKE")
                         Spacer(modifier = Modifier.width(16.dp))
-                        Indicator(color = Color.Gray, label = "TARGET")
+                        Indicator(color = Color(0xFFF44336), label = "MISS")
                     }
                     
                     Text(
-                        text = "CONSISTENCY +14%",
+                        text = if (shotAngles.isNotEmpty()) "LATEST SESSION" else "NO DATA YET",
                         style = MaterialTheme.typography.labelSmall,
-                        color = OrangePrimary,
+                        color = Color.Gray,
                         fontWeight = FontWeight.Bold
                     )
                 }

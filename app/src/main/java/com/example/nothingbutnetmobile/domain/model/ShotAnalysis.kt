@@ -7,5 +7,9 @@ data class ShotAnalysis(
     val fgPercentage: Double,
     val longestStreak: Int,
     val averageAngle: Double,
+    val averageMakeAngle: Double,
+    val averageMissAngle: Double,
+    val shotAngles: List<Double>,
+    val shotsResults: List<Int>,
     val timestamp: Long
 )

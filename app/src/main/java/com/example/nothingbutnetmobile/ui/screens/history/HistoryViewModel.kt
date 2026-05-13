@@ -1,16 +1,22 @@
 package com.example.nothingbutnetmobile.ui.screens.history
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
 import com.example.nothingbutnetmobile.domain.repository.AuthRepository
+import com.example.nothingbutnetmobile.domain.repository.StatsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val statsRepository: StatsRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HistoryUiState())
@@ -21,9 +27,22 @@ class HistoryViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             userName = user?.username ?: "User"
         )
+        
+        observeHistory()
+    }
+
+    private fun observeHistory() {
+        statsRepository.getAllShotAnalyses()
+            .onEach { analyses ->
+                _uiState.value = _uiState.value.copy(
+                    sessions = analyses.sortedByDescending { it.timestamp }
+                )
+            }
+            .launchIn(viewModelScope)
     }
 }
 
 data class HistoryUiState(
-    val userName: String = "User"
+    val userName: String = "User",
+    val sessions: List<ShotAnalysis> = emptyList()
 )
