@@ -70,3 +70,17 @@
 - [x] Show accurate information on the profile page, showing all sessions from session history, and use real data from the database.
 - [x] Resolved "crash on upload" by moving video file processing to Dispatchers.IO (fixing Main Thread ANRs) and adding defensive NaN checks for coordinate selection.
 - [x] Hardened `CVRepositoryImpl` with null-safety defaults for backend response data.
+- [x] Fully integrated real-time analytics by wiring `StatsRepository` to the Node.js server, implementing background sync in `HomeViewModel`, and handling connection states in `AnalysisScreen`.
+- [x] Resolved major build failure in `AnalysisScreen.kt` caused by a missing closing brace and a missing `CloudOff` icon import.
+- [x] Verified build stability with a successful `assembleDebug` run.
+
+### Workflow & Infrastructure Updates
+- [x] Updated project rules (`AGENTS.md`, `icm-principles.md`) to enforce mandatory validation and testing.
+- [x] Created `ARCHITECTURE.md` as a global system map for better contextual awareness.
+- [x] Initialized `issues.md` for persistent bug tracking across sessions.
+- [x] Transitioned to `TASKS.md` as the primary source of truth for granular task management.
+- [x] Refactored Dashboard: replaced "Live Session" with a "Recent Session" card and added deep-linking to the latest session analysis.
+- [x] Resolved Dagger Hilt circular dependency by removing unused `StatsRepository` from `AuthRepositoryImpl`.
+- [x] Fixed missing coroutine `launch` import in `ProfileViewModel.kt`.
+- [x] Verified full build success using local Android Studio JDK environment.
+

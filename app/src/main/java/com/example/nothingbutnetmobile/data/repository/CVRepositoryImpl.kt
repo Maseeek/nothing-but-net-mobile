@@ -49,21 +49,23 @@ class CVRepositoryImpl @Inject constructor(
             if (response.isSuccessful && body != null) {
                 // Save to database if data is present
                 body.data?.let { result ->
-                    statsRepository.saveShotAnalysis(
-                        ShotAnalysis(
-                            totalShots = result.totalShots,
-                            makes = result.makes,
-                            misses = result.misses,
-                            fgPercentage = result.fgPercentage,
-                            longestStreak = result.longestStreak,
-                            averageAngle = result.averageAngle,
-                            averageMakeAngle = result.averageMakeAngle,
-                            averageMissAngle = result.averageMissAngle,
-                            shotAngles = result.shotAngles ?: emptyList(),
-                            shotsResults = result.shotsResults ?: emptyList(),
-                            timestamp = System.currentTimeMillis()
-                        )
+                    val analysis = ShotAnalysis(
+                        totalShots = result.totalShots,
+                        makes = result.makes,
+                        misses = result.misses,
+                        fgPercentage = result.fgPercentage,
+                        longestStreak = result.longestStreak,
+                        averageAngle = result.averageAngle,
+                        averageMakeAngle = result.averageMakeAngle,
+                        averageMissAngle = result.averageMissAngle,
+                        shotAngles = result.shotAngles ?: emptyList(),
+                        shotsResults = result.shotsResults ?: emptyList(),
+                        timestamp = System.currentTimeMillis()
                     )
+                    statsRepository.saveShotAnalysis(analysis)
+                    
+                    // Push to Node.js server
+                    statsRepository.pushSessionToServer(analysis)
                 }
                 Result.success(body)
             } else {

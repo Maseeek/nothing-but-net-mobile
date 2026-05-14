@@ -49,8 +49,20 @@ import com.example.nothingbutnetmobile.ui.utils.VideoUtils
 import androidx.compose.ui.platform.LocalConfiguration
 import android.content.res.Configuration
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
+import androidx.compose.foundation.Canvas
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.TrendingUp
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.foundation.clickable
+
+import androidx.compose.material.icons.filled.CloudOff
 
 @Composable
 fun AnalysisScreen(
@@ -67,8 +79,8 @@ fun AnalysisScreen(
     var offsetY by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(videoUri) {
-        videoUri?.let { uriString ->
-            val uri = Uri.parse(uriString)
+        if (videoUri != null) {
+            val uri = Uri.parse(videoUri)
             viewModel.startSelection()
             
             withContext(Dispatchers.IO) {
@@ -78,6 +90,8 @@ fun AnalysisScreen(
                     videoThumbnail = bitmap.asImageBitmap()
                 }
             }
+        } else {
+            viewModel.loadLatestAnalysis()
         }
     }
 
@@ -440,85 +454,111 @@ fun AnalysisScreen(
                         }
                     }
                     AnalysisStatus.SUCCESS -> {
+                        val analysis = uiState.selectedAnalysis
                         Column(
-                            modifier = Modifier.fillMaxSize().padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                                .padding(bottom = 24.dp)
                         ) {
-                            Icon(
-                                imageVector = Icons.Filled.CheckCircle,
-                                contentDescription = null,
-                                tint = Color.Green,
-                                modifier = Modifier.size(48.dp)
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Text(
-                                text = uiState.analysisResult ?: "Analysis Complete",
-                                style = MaterialTheme.typography.titleLarge,
-                                color = Color.White,
-                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                            )
-                            
-                            Spacer(modifier = Modifier.height(20.dp))
-                            
-                            // Visualization Section
-                            Text(
-                                text = "SHOT DETAILS",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = Color.Gray,
-                                modifier = Modifier.align(Alignment.Start)
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            
-                            Column(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxWidth()
-                                    .verticalScroll(rememberScrollState())
-                            ) {
-                                uiState.shotsResults.forEachIndexed { index, result ->
-                                    val angle = uiState.shotAngles.getOrNull(index) ?: 0.0
-                                    ShotRow(index + 1, result == 1, angle)
-                                    if (index < uiState.shotsResults.size - 1) {
-                                        HorizontalDivider(color = Color.White.copy(alpha = 0.05f))
-                                    }
+                            if (analysis != null) {
+                                // Main Analytics Grid
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                                ) {
+                                    EfficiencyCard(
+                                        percentage = analysis.fgPercentage,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    
+                                    ArcAnalysisCard(
+                                        modifier = Modifier.weight(1f)
+                                    )
                                 }
-                            }
-                            
-                            Spacer(modifier = Modifier.height(16.dp))
-                            
-                            Button(
-                                onClick = { navController.navigate("home") },
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFB5607)),
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text("Back to Dashboard")
+                                
+                                Spacer(modifier = Modifier.height(16.dp))
+                                
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                                ) {
+                                    StatCard(
+                                        label = "TOTAL MAKES",
+                                        value = analysis.makes.toString(),
+                                        icon = Icons.Default.CheckCircle,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    StatCard(
+                                        label = "MAX STREAK",
+                                        value = analysis.longestStreak.toString(),
+                                        icon = Icons.Default.Refresh, // Changed to dynamic below
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                                
+                                Spacer(modifier = Modifier.height(16.dp))
+                                
+                                ShotSequenceCard(results = analysis.shotsResults)
+                                
+                                Spacer(modifier = Modifier.height(16.dp))
+                                
+                                LastSessionsCard(
+                                    sessions = uiState.recentAnalyses,
+                                    onSelect = { viewModel.selectAnalysis(it) },
+                                    onViewAll = { navController.navigate("history") }
+                                )
+                                
+                                Spacer(modifier = Modifier.height(24.dp))
+                                
+                                Button(
+                                    onClick = { viewModel.resetStatus() },
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFB5607)),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) {
+                                    Text("Analyze New Video", fontWeight = FontWeight.Bold)
+                                }
+                            } else {
+                                Text("No analysis data available", color = Color.White)
                             }
                         }
                     }
                     AnalysisStatus.ERROR -> {
                         Column(
                             modifier = Modifier.padding(24.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Filled.Error,
-                                contentDescription = null,
+                                imageVector = Icons.Default.CloudOff,
+                                contentDescription = "Error",
                                 tint = Color.Red,
                                 modifier = Modifier.size(64.dp)
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                text = uiState.errorMessage ?: "Analysis Failed",
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = Color.Red,
-                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                                text = "Connection Issue",
+                                style = MaterialTheme.typography.headlineSmall,
+                                color = Color.White
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = uiState.errorMessage ?: "Unknown error occurred",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Gray,
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                                modifier = Modifier.padding(horizontal = 32.dp)
                             )
                             Spacer(modifier = Modifier.height(24.dp))
                             Button(
-                                onClick = { navController.navigate("record") },
-                                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
+                                onClick = { viewModel.loadLatestAnalysis() },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFB5607))
                             ) {
-                                Text("Try Again")
+                                Text("Retry Sync")
+                            }
+                            TextButton(onClick = { viewModel.resetStatus() }) {
+                                Text("Go Back", color = Color.Gray)
                             }
                         }
                     }
@@ -555,60 +595,216 @@ fun BoxScope.SelectionMarker(normalizedPos: Pair<Float, Float>?, label: String) 
     }
 }
 @Composable
-fun ShotRow(index: Int, isMake: Boolean, angle: Double) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+fun EfficiencyCard(percentage: Double, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier.aspectRatio(1f),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1A1A)),
+        shape = RoundedCornerShape(24.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .background(
-                        if (isMake) Color(0xFF4CAF50).copy(alpha = 0.1f) else Color(0xFFF44336).copy(alpha = 0.1f),
-                        androidx.compose.foundation.shape.CircleShape
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = if (isMake) Icons.Default.CheckCircle else Icons.Default.Cancel,
-                    contentDescription = null,
-                    tint = if (isMake) Color(0xFF4CAF50) else Color(0xFFF44336),
-                    modifier = Modifier.size(20.dp)
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Canvas(modifier = Modifier.size(120.dp)) {
+                drawArc(
+                    color = Color.White.copy(alpha = 0.1f),
+                    startAngle = 135f,
+                    sweepAngle = 270f,
+                    useCenter = false,
+                    style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round)
+                )
+                drawArc(
+                    brush = Brush.horizontalGradient(listOf(Color(0xFFFB5607), Color(0xFFFFBE0B))),
+                    startAngle = 135f,
+                    sweepAngle = (270f * (percentage / 100f)).toFloat(),
+                    useCenter = false,
+                    style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round)
                 )
             }
-            
-            Spacer(modifier = Modifier.width(12.dp))
-            
-            Column {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = "Shot #$index",
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
+                    text = String.format("%.2f%%", percentage),
+                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Black),
+                    color = Color.White
                 )
                 Text(
-                    text = if (isMake) "Swish" else "Missed",
-                    color = Color.Gray,
-                    style = MaterialTheme.typography.labelSmall
+                    text = "Field Goal %",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.Gray
                 )
             }
         }
-        
-        Box(
-            modifier = Modifier
-                .background(Color.White.copy(alpha = 0.05f), RoundedCornerShape(8.dp))
-                .padding(horizontal = 8.dp, vertical = 4.dp)
+    }
+}
+
+@Composable
+fun ArcAnalysisCard(modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier.aspectRatio(1f),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1A1A)),
+        shape = RoundedCornerShape(24.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = String.format("%.1f°", angle),
-                color = Color(0xFFFB5607),
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold
+            Icon(
+                imageVector = Icons.Default.TrendingUp,
+                contentDescription = null,
+                tint = Color(0xFFFB5607),
+                modifier = Modifier.size(32.dp)
             )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = "Arc Analysis",
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                color = Color.White,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            )
+            Text(
+                text = "Optimal: 55°",
+                style = MaterialTheme.typography.labelSmall,
+                color = Color.Gray
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Surface(
+                color = Color(0xFFFB5607).copy(alpha = 0.2f),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(
+                    text = "STABLE",
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Black),
+                    color = Color(0xFFFB5607)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun StatCard(label: String, value: String, icon: androidx.compose.ui.graphics.vector.ImageVector, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier,
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1A1A)),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(imageVector = icon, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = label, style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+            Text(text = value, style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Black), color = Color.White)
+        }
+    }
+}
+
+@Composable
+fun ShotSequenceCard(results: List<Int>) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1A1A)),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = "SHOT SEQUENCE",
+                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                color = Color.Gray
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                results.forEachIndexed { index, result ->
+                    val isMake = result == 1
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .background(
+                                color = if (isMake) Color(0xFF4CAF50).copy(alpha = 0.2f) else Color(0xFFF44336).copy(alpha = 0.2f),
+                                shape = androidx.compose.foundation.shape.CircleShape
+                            )
+                            .border(
+                                1.dp,
+                                if (isMake) Color(0xFF4CAF50) else Color(0xFFF44336),
+                                androidx.compose.foundation.shape.CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = (index + 1).toString(),
+                            color = if (isMake) Color(0xFF4CAF50) else Color(0xFFF44336),
+                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun LastSessionsCard(
+    sessions: List<com.example.nothingbutnetmobile.domain.model.ShotAnalysis>,
+    onSelect: (com.example.nothingbutnetmobile.domain.model.ShotAnalysis) -> Unit,
+    onViewAll: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1A1A)),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.History, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(16.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "LAST SESSIONS",
+                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                        color = Color.Gray
+                    )
+                }
+                Text(
+                    text = "VIEW PAST ANALYSES",
+                    modifier = Modifier.clickable { onViewAll() },
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Black),
+                    color = Color(0xFFFB5607)
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            sessions.forEach { session ->
+                val sdf = SimpleDateFormat("d MMM", Locale.US)
+                val dateStr = sdf.format(Date(session.timestamp))
+                
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onSelect(session) }
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = dateStr, color = Color.White, style = MaterialTheme.typography.bodyMedium)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = String.format("%.1f%% FG", session.fgPercentage),
+                            color = Color.White,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(14.dp))
+                    }
+                }
+                HorizontalDivider(color = Color.White.copy(alpha = 0.05f))
+            }
         }
     }
 }

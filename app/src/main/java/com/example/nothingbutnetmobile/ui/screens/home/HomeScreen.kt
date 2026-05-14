@@ -56,9 +56,10 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            LiveSessionCard(
+            RecentSessionCard(
                 percentage = uiState.fgPercentage,
-                ratio = uiState.fgRatio
+                ratio = uiState.fgRatio,
+                onViewDetailsClick = { navController.navigate("analysis") }
             )
 
             Spacer(modifier = Modifier.height(24.dp))

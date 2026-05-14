@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -96,22 +97,37 @@ fun ProfileScreen(
                     }
                 }
                 
-                IconButton(
-                    onClick = {
-                        viewModel.logout()
-                        navController.navigate("login") {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    },
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(Color.DarkGray.copy(alpha = 0.5f), CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Logout,
-                        contentDescription = stringResource(id = R.string.logout),
-                        tint = Color.White
-                    )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(
+                        onClick = { navController.navigate("settings") },
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(Color.DarkGray.copy(alpha = 0.5f), CircleShape)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings",
+                            tint = Color.White
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    IconButton(
+                        onClick = {
+                            viewModel.logout()
+                            navController.navigate("login") {
+                                popUpTo(0) { inclusive = true }
+                            }
+                        },
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(Color.DarkGray.copy(alpha = 0.5f), CircleShape)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Logout,
+                            contentDescription = stringResource(id = R.string.logout),
+                            tint = Color.White
+                        )
+                    }
                 }
             }
 

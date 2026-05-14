@@ -31,7 +31,7 @@ class HomeViewModel @Inject constructor(
         observeStats()
         
         viewModelScope.launch {
-            statsRepository.seedDatabase()
+            statsRepository.syncWithServer()
         }
     }
 

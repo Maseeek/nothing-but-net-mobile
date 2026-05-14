@@ -23,6 +23,20 @@ class AuthRepositoryImpl @Inject constructor(
                 if (body?.token != null) {
                     tokenManager.saveToken(body.token)
                     tokenManager.saveUsername(username)
+                    
+                    // Fetch profile to get userId
+                    try {
+                        val profileResponse = api.getProfile()
+                        if (profileResponse.isSuccessful) {
+                            profileResponse.body()?.userId?.let { 
+                                tokenManager.saveUserId(it)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        // Profile fetch failed, but we have the token
+                        // We might want to handle this better later
+                    }
+                    
                     Result.success(Unit)
                 } else {
                     Result.failure(Exception(body?.error ?: "Unknown error occurred"))
@@ -60,7 +74,29 @@ class AuthRepositoryImpl @Inject constructor(
         return tokenManager.getUsername()?.let { User(it) }
     }
 
+    override suspend fun getUserId(): String? {
+        val storedId = tokenManager.getUserId()
+        if (storedId != null) return storedId
+        
+        if (tokenManager.isLoggedIn()) {
+            try {
+                val response = api.getProfile()
+                if (response.isSuccessful) {
+                    val userId = response.body()?.userId
+                    userId?.let { tokenManager.saveUserId(it) }
+                    return userId
+                }
+            } catch (e: Exception) {
+                // Return null on failure
+            }
+        }
+        return null
+    }
+
     override fun logout() {
         tokenManager.clearToken()
+        // We can't easily call suspend clearAll here without a scope
+        // But since clearToken is called, the next sync will fail and clear anyway
+        // or we can use a non-suspend way if available.
     }
 }

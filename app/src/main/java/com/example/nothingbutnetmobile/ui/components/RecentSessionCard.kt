@@ -18,9 +18,10 @@ import com.example.nothingbutnetmobile.ui.theme.CardBackground
 import com.example.nothingbutnetmobile.ui.theme.OrangePrimary
 
 @Composable
-fun LiveSessionCard(
+fun RecentSessionCard(
     percentage: Int,
     ratio: String,
+    onViewDetailsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -42,7 +43,7 @@ fun LiveSessionCard(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "LIVE SESSION",
+                    text = "RECENT SESSION",
                     style = MaterialTheme.typography.labelMedium,
                     color = OrangePrimary,
                     letterSpacing = 1.sp,
@@ -86,7 +87,7 @@ fun LiveSessionCard(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Button(
-                    onClick = { /* TODO */ },
+                    onClick = onViewDetailsClick,
                     modifier = Modifier
                         .weight(1f)
                         .height(56.dp),
@@ -94,7 +95,7 @@ fun LiveSessionCard(
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(
-                        text = "PAUSE TRACKING",
+                        text = "VIEW DETAILS",
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 1.sp
                     )

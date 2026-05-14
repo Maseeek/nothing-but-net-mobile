@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,6 +30,12 @@ class ProfileViewModel @Inject constructor(
         )
         
         observeStats()
+        
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            statsRepository.syncWithServer()
+            _uiState.value = _uiState.value.copy(isLoading = false)
+        }
     }
 
     private fun observeStats() {
@@ -84,6 +91,7 @@ class ProfileViewModel @Inject constructor(
 }
 
 data class ProfileUiState(
+    val isLoading: Boolean = false,
     val userName: String = "User",
     val careerFgPercentage: Double = 0.0,
     val totalShots: Int = 0,

@@ -28,10 +28,15 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
-        val logging = HttpLoggingInterceptor().apply {
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor {
+        return HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
+    }
+
+    @Provides
+    @Singleton
+    fun provideBaseOkHttpClient(logging: HttpLoggingInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(logging)
             .build()
@@ -40,7 +45,20 @@ object NetworkModule {
     @Provides
     @Singleton
     @AuthRetrofit
-    fun provideAuthRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    fun provideAuthOkHttpClient(
+        logging: HttpLoggingInterceptor,
+        authInterceptor: com.example.nothingbutnetmobile.data.remote.AuthInterceptor
+    ): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .addInterceptor(authInterceptor)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @AuthRetrofit
+    fun provideAuthRetrofit(@AuthRetrofit okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(NetworkConfig.AUTH_BASE_URL)
             .client(okHttpClient)

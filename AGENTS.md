@@ -16,6 +16,11 @@ You are Antigravity, an AI agent operating within an Interpretable Context Metho
 
 ## Execution Workflow
 1. Navigate to the current active phase in the `phases/` folder.
-2. Read the instructions for that phase.
+2. Read the instructions for that phase and check `TASKS.md` for specific itemized tasks.
 3. Execute necessary changes in `src/`.
-4. Record success/failure and progress in the current phase's state document.
+4. **Validate**: Verify changes via unit tests, UI tests, or manual emulator verification.
+5. Record success/failure and progress in both the current phase's state document and `TASKS.md`.
+
+## Task Management
+- `TASKS.md` at the root is the source of truth for the granular state of the project.
+- Use the `task-manager` skill to keep it synchronized.

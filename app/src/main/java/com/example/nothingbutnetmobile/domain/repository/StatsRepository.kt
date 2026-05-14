@@ -8,4 +8,9 @@ interface StatsRepository {
     fun getAllShotAnalyses(): Flow<List<ShotAnalysis>>
     suspend fun saveShotAnalysis(analysis: ShotAnalysis)
     suspend fun seedDatabase()
+    suspend fun clearAll()
+    
+    // Server Sync
+    suspend fun syncWithServer(): Result<Unit>
+    suspend fun pushSessionToServer(analysis: ShotAnalysis): Result<Unit>
 }
