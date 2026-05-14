@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface StatsRepository {
     fun getLatestShotAnalysis(): Flow<ShotAnalysis?>
     fun getAllShotAnalyses(): Flow<List<ShotAnalysis>>
+    suspend fun getShotAnalysisById(id: Long): ShotAnalysis?
     suspend fun saveShotAnalysis(analysis: ShotAnalysis)
     suspend fun seedDatabase()
     suspend fun clearAll()

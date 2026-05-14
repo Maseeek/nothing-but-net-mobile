@@ -42,10 +42,10 @@
 
 ### User History & Stats
 - [x] Implement Session History and Profile Integration <!-- id: 22 -->
-- [/] Create Leaderboard (sort by shots, FG%, Optimal Arc) <!-- id: 40 -->
+- [x] Create Leaderboard (sort by shots, FG%, Optimal Arc) <!-- id: 40 -->
 
 ### Quality & Audit
-- [ ] Audit for AI use and compare to coding practices <!-- id: 39 -->
+- [x] Audit for AI use and compare to coding practices <!-- id: 39 -->
 - [ ] Final UI consolidation and Best Practices audit <!-- id: 43 -->
 - [ ] Final end-to-end testing with server <!-- id: 41 -->
 
@@ -63,12 +63,18 @@
 **Current Phase**: Phase 2 (Implementation)
 
 ### Recent Accomplishments
+- **Codebase Audit & Refactoring**:
+    - Implemented `toDomain()` and `toEntity()` extension mappers for `ShotAnalysis` to reduce repository boilerplate.
+    - Refactored `StatsRepositoryImpl` for cleaner, more idiomatic synchronization logic and reduced verbose logging.
+    - Cleaned up imports and full package paths in `AnalysisScreen.kt` for better readability.
+- **Leaderboard Implementation**: Created a premium Leaderboard screen with multi-criteria sorting (Shots, FG%, and 55° Optimal Arc) and synchronized it with the Node.js authentication server data.
 - **Improved Shot Analysis Section**: 
     - Redesigned the `AnalysisScreen` with a premium dashboard aesthetic featuring an Efficiency Gauge (FG%), Arc Analysis card, and Shot Sequence visualization.
     - Updated `AnalysisViewModel` to prioritize today's sessions, defaulting to the most recent session if none are found for the current day.
     - Integrated "Last Sessions" quick-access card within the analysis view, allowing users to toggle between recent practices.
     - Added a "VIEW PAST ANALYSES" shortcut that redirects users to the full Session History screen.
     - Implemented high-fidelity UI components (Canvas-based arcs, styled status cards) to match the web dashboard's premium look.
+    - Added ability to view past analyses in detail by clicking on history items; selection persists until navigating off the Analysis tab.
 - **Workflow & Rule Updates**: Updated `AGENTS.md` and `icm-principles.md` to include mandatory validation steps.
 - **Contextual Awareness**: Created `ARCHITECTURE.md` and `issues.md` for better global context and persistent bug tracking.
 - **Task Management**: Refined `TASKS.md` with feature-based grouping.
@@ -79,6 +85,7 @@
 - **Analytics Implementation**: Fully integrated real-time analytics by wiring `StatsRepository` to the Node.js server.
 - **Critical Build Fixes**: Resolved major build failures related to Kotlin syntax, missing icons, and circular dependencies.
 - **Environment Stability**: Identified and bypassed a `JAVA_HOME` configuration issue in the local environment by using the Android Studio JDK (`jbr`) directly.
+- **Build Stabilization**: Resolved unresolved reference errors (`CircleShape`, `clickable`) in `HistoryScreen.kt` introduced during UI refactoring.
 
 ### Open Issues & Roadblocks
 - **Connection Reliability**: Need to ensure robust error handling if the Node.js server is unreachable.

@@ -1,13 +1,16 @@
 package com.example.nothingbutnetmobile.ui.screens.history
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -52,11 +55,31 @@ fun HistoryScreen(
             
             Spacer(modifier = Modifier.height(24.dp))
             
-            Text(
-                text = "Session History",
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Black),
-                color = Color.White
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Session History",
+                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Black),
+                    color = Color.White
+                )
+                
+                IconButton(
+                    onClick = { navController.navigate("leaderboard") },
+                    modifier = Modifier
+                        .background(OrangePrimary.copy(alpha = 0.1f), CircleShape)
+                        .size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.EmojiEvents,
+                        contentDescription = "Leaderboard",
+                        tint = OrangePrimary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
             
             Spacer(modifier = Modifier.height(16.dp))
             
@@ -80,7 +103,12 @@ fun HistoryScreen(
                     contentPadding = PaddingValues(bottom = 24.dp)
                 ) {
                     items(uiState.sessions) { session ->
-                        SessionHistoryCard(session = session)
+                        SessionHistoryCard(
+                            session = session,
+                            onClick = { 
+                                navController.navigate("analysis?analysisId=${session.id}")
+                            }
+                        )
                     }
                 }
             }
@@ -89,12 +117,14 @@ fun HistoryScreen(
 }
 
 @Composable
-fun SessionHistoryCard(session: ShotAnalysis) {
+fun SessionHistoryCard(session: ShotAnalysis, onClick: () -> Unit) {
     val sdf = SimpleDateFormat("MMM dd, yyyy · HH:mm", Locale.getDefault())
     val dateString = sdf.format(Date(session.timestamp))
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = Color(0xFF161616)),
         shape = RoundedCornerShape(16.dp)
     ) {

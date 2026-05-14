@@ -63,11 +63,13 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.foundation.clickable
 
 import androidx.compose.material.icons.filled.CloudOff
+import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
 
 @Composable
 fun AnalysisScreen(
     navController: NavController,
     videoUri: String? = null,
+    analysisId: String? = null,
     viewModel: AnalysisViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -77,8 +79,8 @@ fun AnalysisScreen(
     var scale by remember { mutableFloatStateOf(1f) }
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
-
-    LaunchedEffect(videoUri) {
+ 
+    LaunchedEffect(videoUri, analysisId) {
         if (videoUri != null) {
             val uri = Uri.parse(videoUri)
             viewModel.startSelection()
@@ -90,6 +92,8 @@ fun AnalysisScreen(
                     videoThumbnail = bitmap.asImageBitmap()
                 }
             }
+        } else if (analysisId != null) {
+            viewModel.loadSpecificAnalysis(analysisId.toLong())
         } else {
             viewModel.loadLatestAnalysis()
         }
@@ -747,8 +751,8 @@ fun ShotSequenceCard(results: List<Int>) {
 
 @Composable
 fun LastSessionsCard(
-    sessions: List<com.example.nothingbutnetmobile.domain.model.ShotAnalysis>,
-    onSelect: (com.example.nothingbutnetmobile.domain.model.ShotAnalysis) -> Unit,
+    sessions: List<ShotAnalysis>,
+    onSelect: (ShotAnalysis) -> Unit,
     onViewAll: () -> Unit
 ) {
     Card(

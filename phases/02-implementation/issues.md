@@ -25,3 +25,17 @@ Persistent tracking of complex bugs, crashes, and technical roadblocks.
 
 - **Emulator Testing**: CameraX functionality is limited on standard emulators; requires physical device for full validation of `RecordScreen`.
 - **Large Video Files**: Backend currently has a timeout/size limit (approx 50MB) which needs to be handled gracefully in the UI.
+
+---
+
+## [RESOLVED] Build Failure (Unresolved References)
+
+**Symptoms**:
+- Gradle build fails with `Unresolved reference 'CircleShape'` and `Unresolved reference 'clickable'` in `HistoryScreen.kt`.
+
+**Root Cause**:
+- Missing imports for `androidx.compose.foundation.shape.CircleShape` and `androidx.compose.foundation.clickable` after refactoring.
+
+**Solution**:
+- Added missing imports to `HistoryScreen.kt`.
+- Verified build stability with `assembleDebug`.

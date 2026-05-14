@@ -18,6 +18,7 @@ import com.example.nothingbutnetmobile.ui.screens.analysis.AnalysisScreen
 import com.example.nothingbutnetmobile.ui.screens.history.HistoryScreen
 import com.example.nothingbutnetmobile.ui.screens.profile.ProfileScreen
 import com.example.nothingbutnetmobile.ui.screens.record.RecordScreen
+import com.example.nothingbutnetmobile.ui.screens.leaderboard.LeaderboardScreen
 import com.example.nothingbutnetmobile.ui.screens.settings.SettingsScreen
 
 @Composable
@@ -98,9 +99,14 @@ fun AppNavigation(tokenManager: TokenManager) {
         }
 
         composable(
-            route = "analysis?videoUri={videoUri}",
+            route = "analysis?videoUri={videoUri}&analysisId={analysisId}",
             arguments = listOf(
                 androidx.navigation.navArgument("videoUri") {
+                    type = androidx.navigation.NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
+                androidx.navigation.navArgument("analysisId") {
                     type = androidx.navigation.NavType.StringType
                     nullable = true
                     defaultValue = null
@@ -108,7 +114,8 @@ fun AppNavigation(tokenManager: TokenManager) {
             )
         ) { backStackEntry ->
             val videoUri = backStackEntry.arguments?.getString("videoUri")
-            AnalysisScreen(navController = navController, videoUri = videoUri)
+            val analysisId = backStackEntry.arguments?.getString("analysisId")
+            AnalysisScreen(navController = navController, videoUri = videoUri, analysisId = analysisId)
         }
 
         composable("history") {
@@ -117,6 +124,10 @@ fun AppNavigation(tokenManager: TokenManager) {
 
         composable("profile") {
             ProfileScreen(navController = navController)
+        }
+
+        composable("leaderboard") {
+            LeaderboardScreen(navController = navController)
         }
 
         composable("settings") {

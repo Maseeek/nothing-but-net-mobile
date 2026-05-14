@@ -137,6 +137,33 @@ class AnalysisViewModel @Inject constructor(
         }
     }
 
+    fun loadSpecificAnalysis(id: Long) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(status = AnalysisStatus.LOADING)
+            
+            val selected = statsRepository.getShotAnalysisById(id)
+            
+            if (selected != null) {
+                // Also get all analyses for the recent list
+                statsRepository.getAllShotAnalyses().collect { allAnalyses ->
+                    _uiState.value = _uiState.value.copy(
+                        status = AnalysisStatus.SUCCESS,
+                        selectedAnalysis = selected,
+                        recentAnalyses = allAnalyses.take(5),
+                        analysisResult = "Viewing Analysis: ${selected.makes}/${selected.totalShots} Shots Made",
+                        shotAngles = selected.shotAngles,
+                        shotsResults = selected.shotsResults
+                    )
+                }
+            } else {
+                _uiState.value = _uiState.value.copy(
+                    status = AnalysisStatus.ERROR,
+                    errorMessage = "Analysis session not found."
+                )
+            }
+        }
+    }
+
     private fun isSameDay(t1: Long, t2: Long): Boolean {
         val cal1 = java.util.Calendar.getInstance().apply { timeInMillis = t1 }
         val cal2 = java.util.Calendar.getInstance().apply { timeInMillis = t2 }

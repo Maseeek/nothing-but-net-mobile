@@ -18,6 +18,9 @@ interface ShotAnalysisDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAnalysis(analysis: ShotAnalysisEntity)
 
+    @Query("SELECT * FROM shot_analysis WHERE id = :id")
+    suspend fun getAnalysisById(id: Long): ShotAnalysisEntity?
+
     @Query("DELETE FROM shot_analysis")
     suspend fun deleteAll()
 }
