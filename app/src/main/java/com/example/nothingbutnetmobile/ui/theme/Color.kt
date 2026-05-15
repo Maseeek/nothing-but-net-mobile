@@ -11,10 +11,17 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 // Nothing But Net Brand Colors
-val OrangePrimary = Color(0xFFFB5607)
-val OrangeSecondary = Color(0xFFFF8E3C)
-val DarkBackground = Color(0xFF0F0D0C)
-val DarkSurface = Color(0xFF1C1917)
+val OrangePrimary = Color(0xFFD64B17)
+val OrangeSecondary = Color(0xFFFF4800)
+val DarkBackground = Color(0xFF121212)
+val DarkSurface = Color(0xFF1E1E2F)
 val TextWhite = Color(0xFFFFFFFF)
-val TextGray = Color(0xFFA8A29E)
-val CardBackground = Color(0xFF161412)
+val TextGray = Color(0xFFB0B0B0)
+val CardBackground = Color(0xFF1C1C1E)
+
+// Semantic Brand Variants
+val GlassAlpha = Color(0xFFFFFFFF).copy(alpha = 0.05f)
+val EmberGradient = listOf(OrangePrimary, OrangeSecondary)
+val SuccessGreen = Color(0xFF4CAF50)
+val ErrorRed = Color(0xFFF44336)
+

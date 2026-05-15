@@ -27,7 +27,7 @@ fun RecentSessionCard(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = CardBackground)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(
             modifier = Modifier.padding(24.dp),
@@ -39,13 +39,13 @@ fun RecentSessionCard(
                 Box(
                     modifier = Modifier
                         .size(12.dp)
-                        .background(OrangePrimary, CircleShape)
+                        .background(MaterialTheme.colorScheme.primary, CircleShape)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "RECENT SESSION",
                     style = MaterialTheme.typography.labelMedium,
-                    color = OrangePrimary,
+                    color = MaterialTheme.colorScheme.primary,
                     letterSpacing = 1.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -56,7 +56,7 @@ fun RecentSessionCard(
             Text(
                 text = "FIELD GOAL PERCENTAGE",
                 style = MaterialTheme.typography.labelSmall,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 letterSpacing = 0.5.sp
             )
 
@@ -69,13 +69,13 @@ fun RecentSessionCard(
                         fontWeight = FontWeight.Black,
                         fontSize = 72.sp
                     ),
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = ratio,
                     style = MaterialTheme.typography.headlineMedium,
-                    color = OrangePrimary,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
             }
@@ -91,7 +91,7 @@ fun RecentSessionCard(
                     modifier = Modifier
                         .weight(1f)
                         .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(
@@ -106,13 +106,13 @@ fun RecentSessionCard(
                     modifier = Modifier.size(56.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = Color(0xFF1F1D1B)
+                        containerColor = MaterialTheme.colorScheme.background
                     )
                 ) {
                     Icon(
                         imageVector = Icons.Default.Settings,
                         contentDescription = "Settings",
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }

@@ -24,7 +24,8 @@ class CVRepositoryImpl @Inject constructor(
         videoFile: File,
         hoopLeft: List<Int>,
         hoopRight: List<Int>,
-        showAngle: Boolean
+        showAngle: Boolean,
+        targetAngle: Float
     ): Result<AnalysisResponse> {
         return try {
             val videoPart = MultipartBody.Part.createFormData(
@@ -37,12 +38,14 @@ class CVRepositoryImpl @Inject constructor(
             val hoopLeftBody = gson.toJson(hoopLeft).toRequestBody("text/plain".toMediaTypeOrNull())
             val hoopRightBody = gson.toJson(hoopRight).toRequestBody("text/plain".toMediaTypeOrNull())
             val showAngleBody = showAngle.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+            val targetAngleBody = targetAngle.toString().toRequestBody("text/plain".toMediaTypeOrNull())
 
             val response = cvApi.uploadAndAnalyze(
                 videoPart,
                 hoopLeftBody,
                 hoopRightBody,
-                showAngleBody
+                showAngleBody,
+                targetAngleBody
             )
 
             val body = response.body()

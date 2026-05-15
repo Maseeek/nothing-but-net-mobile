@@ -40,7 +40,7 @@ fun LoginScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBackground)
+            .background(MaterialTheme.colorScheme.background)
             .padding(24.dp),
         contentAlignment = Alignment.TopCenter
     ) {
@@ -63,11 +63,11 @@ fun LoginScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(CardBackground, RoundedCornerShape(24.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(24.dp))
                     .padding(2.dp) // Border thickness
                     .background(
                         Brush.verticalGradient(
-                            colors = listOf(OrangePrimary.copy(alpha = 0.5f), Color.Transparent)
+                            colors = listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f), Color.Transparent)
                         ),
                         RoundedCornerShape(24.dp)
                     )
@@ -75,7 +75,7 @@ fun LoginScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(CardBackground, RoundedCornerShape(22.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(22.dp))
                         .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -83,7 +83,7 @@ fun LoginScreen(
                         text = stringResource(id = com.example.nothingbutnetmobile.R.string.login),
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
-                            color = TextWhite
+                            color = MaterialTheme.colorScheme.onBackground
                         ),
                         modifier = Modifier.padding(bottom = 24.dp)
                     )
@@ -92,7 +92,7 @@ fun LoginScreen(
                     if (authState is AuthState.Error) {
                         Text(
                             text = authState.message,
-                            color = Color.Red,
+                            color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(bottom = 16.dp),
                             textAlign = TextAlign.Center
@@ -103,19 +103,19 @@ fun LoginScreen(
                     OutlinedTextField(
                         value = username,
                         onValueChange = { username = it },
-                        label = { Text(stringResource(id = com.example.nothingbutnetmobile.R.string.username), color = TextGray) },
+                        label = { Text(stringResource(id = com.example.nothingbutnetmobile.R.string.username), color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)) },
                         leadingIcon = {
-                            Icon(Icons.Default.Person, contentDescription = null, tint = TextGray)
+                            Icon(Icons.Default.Person, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
                         },
                         colors = OutlinedTextFieldDefaults.run {
                             colors(
-                                                focusedIndicatorColor = OrangePrimary,
-                                                unfocusedIndicatorColor = DarkSurface,
-                                                focusedTextColor = TextWhite,
-                                                unfocusedTextColor = TextWhite,
-                                                cursorColor = OrangePrimary,
-                                                focusedContainerColor = DarkSurface,
-                                                unfocusedContainerColor = DarkSurface
+                                                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                                                unfocusedIndicatorColor = MaterialTheme.colorScheme.surface,
+                                                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                                                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                                                cursorColor = MaterialTheme.colorScheme.primary,
+                                                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                                                unfocusedContainerColor = MaterialTheme.colorScheme.surface
                                             )
                         },
                         shape = RoundedCornerShape(12.dp),
@@ -130,9 +130,9 @@ fun LoginScreen(
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        label = { Text(stringResource(id = com.example.nothingbutnetmobile.R.string.password), color = TextGray) },
+                        label = { Text(stringResource(id = com.example.nothingbutnetmobile.R.string.password), color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)) },
                         leadingIcon = {
-                            Icon(Icons.Default.Lock, contentDescription = null, tint = TextGray)
+                            Icon(Icons.Default.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
                         },
                         trailingIcon = {
                             val image = if (passwordVisible)
@@ -140,7 +140,7 @@ fun LoginScreen(
                             else Icons.Filled.VisibilityOff
 
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Icon(imageVector = image, contentDescription = if (passwordVisible) "Hide password" else "Show password", tint = TextGray)
+                                Icon(imageVector = image, contentDescription = if (passwordVisible) "Hide password" else "Show password", tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
                             }
                         },
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -150,13 +150,13 @@ fun LoginScreen(
                         ),
                         colors = OutlinedTextFieldDefaults.run {
                             colors(
-                                                focusedIndicatorColor = OrangePrimary,
-                                                unfocusedIndicatorColor = DarkSurface,
-                                                focusedTextColor = TextWhite,
-                                                unfocusedTextColor = TextWhite,
-                                                cursorColor = OrangePrimary,
-                                                focusedContainerColor = DarkSurface,
-                                                unfocusedContainerColor = DarkSurface
+                                                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                                                unfocusedIndicatorColor = MaterialTheme.colorScheme.surface,
+                                                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                                                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                                                cursorColor = MaterialTheme.colorScheme.primary,
+                                                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                                                unfocusedContainerColor = MaterialTheme.colorScheme.surface
                                             )
                         },
                         shape = RoundedCornerShape(12.dp),
@@ -170,7 +170,7 @@ fun LoginScreen(
                     // Login Button
                     Button(
                         onClick = { onLoginClick(username, password) },
-                        colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -180,7 +180,7 @@ fun LoginScreen(
                         if (authState is AuthState.Loading) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(24.dp),
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onPrimary,
                                 strokeWidth = 2.dp
                             )
                         } else {
@@ -188,7 +188,7 @@ fun LoginScreen(
                                 text = stringResource(id = com.example.nothingbutnetmobile.R.string.login).uppercase(),
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp,
-                                color = Color.White
+                                color = MaterialTheme.colorScheme.onPrimary
                             )
                         }
                     }
@@ -203,7 +203,7 @@ fun LoginScreen(
             ) {
                 Text(
                     text = stringResource(id = com.example.nothingbutnetmobile.R.string.no_account).split("?")[0] + "?",
-                    color = TextGray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                     style = MaterialTheme.typography.bodyMedium
                 )
                 TextButton(
@@ -212,7 +212,7 @@ fun LoginScreen(
                 ) {
                     Text(
                         text = stringResource(id = com.example.nothingbutnetmobile.R.string.register),
-                        color = OrangePrimary,
+                        color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.bodyMedium
                     )

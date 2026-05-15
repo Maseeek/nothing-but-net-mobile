@@ -41,10 +41,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.foundation.shape.RoundedCornerShape
-import com.example.nothingbutnetmobile.ui.theme.OrangePrimary
-import com.example.nothingbutnetmobile.ui.theme.DarkBackground
-import com.example.nothingbutnetmobile.ui.theme.CardBackground
-import com.example.nothingbutnetmobile.ui.theme.TextGray
+import com.example.nothingbutnetmobile.ui.theme.*
 
 enum class SelectionMode {
     NONE,
@@ -120,8 +117,8 @@ fun RecordScreen(navController: NavController) {
             }
         }
         SelectionMode.GALLERY -> {
-            Box(modifier = Modifier.fillMaxSize().background(DarkBackground), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = OrangePrimary)
+            Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             }
         }
     }
@@ -135,7 +132,7 @@ fun RecordChoice(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBackground)
+            .background(MaterialTheme.colorScheme.background)
             .padding(24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -143,13 +140,13 @@ fun RecordChoice(
         Text(
             text = "New Session",
             style = MaterialTheme.typography.headlineLarge,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold
         )
         Text(
             text = "Choose your video source to start analysis",
             style = MaterialTheme.typography.bodyMedium,
-            color = TextGray,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
             modifier = Modifier.padding(top = 8.dp, bottom = 48.dp)
         )
 
@@ -184,8 +181,8 @@ fun ChoiceCard(
         onClick = onClick,
         modifier = modifier.height(160.dp),
         shape = RoundedCornerShape(24.dp),
-        color = CardBackground,
-        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.05f))
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground.copy(alpha = 0.05f))
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -196,13 +193,13 @@ fun ChoiceCard(
                 imageVector = icon,
                 contentDescription = null,
                 modifier = Modifier.size(42.dp),
-                tint = OrangePrimary
+                tint = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.SemiBold
             )
         }
@@ -271,12 +268,12 @@ fun CameraPreview(
                 onClick = onBack,
                 modifier = Modifier
                     .align(Alignment.TopStart)
-                    .background(Color.Black.copy(alpha = 0.5f), CircleShape)
+                    .background(MaterialTheme.colorScheme.background.copy(alpha = 0.5f), CircleShape)
             ) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
 
@@ -289,7 +286,7 @@ fun CameraPreview(
                 if (isRecording) {
                     Text(
                         text = "RECORDING",
-                        color = Color.Red,
+                        color = ErrorRed,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
@@ -336,7 +333,7 @@ fun CameraPreview(
                 modifier = Modifier
                     .size(80.dp)
                     .background(
-                        if (isRecording) Color.Red.copy(alpha = 0.8f) else Color.White.copy(alpha = 0.8f),
+                        if (isRecording) ErrorRed.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                         CircleShape
                     )
             ) {
@@ -344,7 +341,7 @@ fun CameraPreview(
                     imageVector = if (isRecording) Icons.Default.Stop else Icons.Default.FiberManualRecord,
                     contentDescription = if (isRecording) "Stop Recording" else "Start Recording",
                     modifier = Modifier.size(48.dp),
-                    tint = if (isRecording) Color.White else Color.Red
+                    tint = if (isRecording) MaterialTheme.colorScheme.onBackground else ErrorRed
                 )
             }
             }

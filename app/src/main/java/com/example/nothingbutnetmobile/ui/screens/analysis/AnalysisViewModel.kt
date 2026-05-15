@@ -6,6 +6,7 @@ import com.example.nothingbutnetmobile.domain.repository.AuthRepository
 import com.example.nothingbutnetmobile.domain.repository.CVRepository
 import com.example.nothingbutnetmobile.domain.repository.StatsRepository
 import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
+import com.example.nothingbutnetmobile.data.local.PreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +24,8 @@ enum class AnalysisStatus {
 class AnalysisViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val cvRepository: CVRepository,
-    private val statsRepository: StatsRepository
+    private val statsRepository: StatsRepository,
+    private val preferenceManager: PreferenceManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AnalysisUiState())
@@ -32,7 +34,8 @@ class AnalysisViewModel @Inject constructor(
     init {
         val user = authRepository.getUser()
         _uiState.value = _uiState.value.copy(
-            userName = user?.username ?: "User"
+            userName = user?.username ?: "User",
+            targetAngle = preferenceManager.getTargetAngle()
         )
     }
 
@@ -77,7 +80,8 @@ class AnalysisViewModel @Inject constructor(
                 videoFile = videoFile,
                 hoopLeft = currentLeft,
                 hoopRight = currentRight,
-                showAngle = true
+                showAngle = preferenceManager.getShowShotAngles(),
+                targetAngle = preferenceManager.getTargetAngle()
             )
 
             result.onSuccess { response ->
@@ -195,6 +199,7 @@ data class AnalysisUiState(
     val hoopRightNormalized: Pair<Float, Float>? = null,
     val shotAngles: List<Double> = emptyList(),
     val shotsResults: List<Int> = emptyList(),
+    val targetAngle: Float = 55f,
     val selectedAnalysis: ShotAnalysis? = null,
     val recentAnalyses: List<ShotAnalysis> = emptyList()
 )

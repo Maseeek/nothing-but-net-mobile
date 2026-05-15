@@ -27,7 +27,7 @@ import androidx.navigation.NavController
 import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
 import com.example.nothingbutnetmobile.ui.components.BottomNavigationBar
 import com.example.nothingbutnetmobile.ui.components.DashboardHeader
-import com.example.nothingbutnetmobile.ui.theme.OrangePrimary
+import com.example.nothingbutnetmobile.ui.theme.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -42,13 +42,13 @@ fun HistoryScreen(
         bottomBar = {
             BottomNavigationBar(navController = navController)
         },
-        containerColor = Color.Black
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color.Black)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(horizontal = 20.dp)
         ) {
             DashboardHeader(userName = uiState.userName)
@@ -63,19 +63,19 @@ fun HistoryScreen(
                 Text(
                     text = "Session History",
                     style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Black),
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 
                 IconButton(
                     onClick = { navController.navigate("leaderboard") },
                     modifier = Modifier
-                        .background(OrangePrimary.copy(alpha = 0.1f), CircleShape)
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), CircleShape)
                         .size(40.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.EmojiEvents,
                         contentDescription = "Leaderboard",
-                        tint = OrangePrimary,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -93,7 +93,7 @@ fun HistoryScreen(
                     Text(
                         text = "No sessions found. Start practicing!",
                         style = MaterialTheme.typography.bodyLarge,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                     )
                 }
             } else {
@@ -125,7 +125,7 @@ fun SessionHistoryCard(session: ShotAnalysis, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF161616)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = RoundedCornerShape(16.dp)
     ) {
         Row(
@@ -140,14 +140,14 @@ fun SessionHistoryCard(session: ShotAnalysis, onClick: () -> Unit) {
                     Icon(
                         imageVector = Icons.Default.CalendarToday,
                         contentDescription = null,
-                        tint = OrangePrimary,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(14.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = dateString,
                         style = MaterialTheme.typography.labelMedium,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                     )
                 }
                 
@@ -157,18 +157,18 @@ fun SessionHistoryCard(session: ShotAnalysis, onClick: () -> Unit) {
                     Text(
                         text = "${session.makes}/${session.totalShots}",
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Surface(
-                        color = if (session.fgPercentage >= 50) Color(0xFF26A69A).copy(alpha = 0.2f) else Color(0xFFE53935).copy(alpha = 0.2f),
+                        color = if (session.fgPercentage >= 50) SuccessGreen.copy(alpha = 0.2f) else ErrorRed.copy(alpha = 0.2f),
                         shape = RoundedCornerShape(4.dp)
                     ) {
                         Text(
                             text = "${String.format("%.0f", session.fgPercentage)}% FG",
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                            color = if (session.fgPercentage >= 50) Color(0xFF26A69A) else Color(0xFFE53935)
+                            color = if (session.fgPercentage >= 50) SuccessGreen else ErrorRed
                         )
                     }
                 }
@@ -179,28 +179,30 @@ fun SessionHistoryCard(session: ShotAnalysis, onClick: () -> Unit) {
                     Icon(
                         imageVector = Icons.Default.LocalFireDepartment,
                         contentDescription = null,
-                        tint = Color(0xFFFF9800),
+                        tint = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.size(12.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "Streak: ${session.longestStreak}",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.LightGray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = "Avg Angle: ${String.format("%.1f", session.averageAngle)}°",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.LightGray
-                    )
+                    if (session.averageAngle > 0) {
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            text = "Avg Angle: ${String.format("%.1f", session.averageAngle)}°",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
+                        )
+                    }
                 }
             }
             
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = null,
-                tint = Color.DarkGray,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
                 modifier = Modifier.size(20.dp)
             )
         }

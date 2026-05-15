@@ -48,7 +48,7 @@ fun BottomNavigationBar(
         modifier = modifier
             .fillMaxWidth()
             .height(100.dp)
-            .background(Color.Black.copy(alpha = 0.8f))
+            .background(MaterialTheme.colorScheme.background.copy(alpha = 0.8f))
     ) {
         Row(
             modifier = Modifier
@@ -74,7 +74,7 @@ fun BottomNavigationBar(
                 Text(
                     text = "Record",
                     style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                 )
             }
             
@@ -90,9 +90,9 @@ fun BottomNavigationBar(
         Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .offset(y = 17.dp) // Aligns dome bottom with standard icon baseline (62dp)
-                .width(80.dp)
-                .height(45.dp)
+                .offset(y = 12.dp) // Aligns dome bottom with standard icon baseline (62dp)
+                .width(90.dp)
+                .height(50.dp)
                 .clickable { navigateTo("record") },
             contentAlignment = Alignment.Center
         ) {
@@ -122,14 +122,14 @@ private fun NavItem(
         Icon(
             imageVector = icon,
             contentDescription = label,
-            tint = if (isSelected) OrangePrimary else Color.Gray,
+            tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
             modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
-            color = if (isSelected) OrangePrimary else Color.Gray
+            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
         )
     }
 }

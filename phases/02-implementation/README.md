@@ -73,6 +73,11 @@
 - [x] Fully integrated real-time analytics by wiring `StatsRepository` to the Node.js server, implementing background sync in `HomeViewModel`, and handling connection states in `AnalysisScreen`.
 - [x] Resolved major build failure in `AnalysisScreen.kt` caused by a missing closing brace and a missing `CloudOff` icon import.
 - [x] Verified build stability with a successful `assembleDebug` run.
+- [x] Fully implemented functional Shot Angle settings:
+    - Created `PreferenceManager` for persistent setting storage.
+    - Added "Target Shot Angle" slider to Settings screen.
+    - Connected "Show Shot Angles" and "Target Angle" settings to the CV analysis workflow and Leaderboard sorting.
+    - Updated backend `CVApi` and `CVRepository` to send/receive `targetAngle`.
 
 ### Workflow & Infrastructure Updates
 - [x] Updated project rules (`AGENTS.md`, `icm-principles.md`) to enforce mandatory validation and testing.
@@ -85,4 +90,6 @@
 - [x] Verified full build success using local Android Studio JDK environment.
 - [x] Performed codebase audit for AI patterns: implemented idiomatic mappers for `ShotAnalysis` entities and refactored `StatsRepositoryImpl` to remove boilerplate and verbose logging.
 - [x] Cleaned up full package path references in `AnalysisScreen.kt` and standardized imports.
+- [x] Adjusted "Record" basketball dome size and vertical offset in `BottomNavigationBar` for improved visual prominence and premium feel.
+
 

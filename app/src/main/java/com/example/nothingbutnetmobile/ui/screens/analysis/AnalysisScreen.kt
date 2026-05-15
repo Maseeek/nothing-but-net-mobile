@@ -63,6 +63,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.foundation.clickable
 
 import androidx.compose.material.icons.filled.CloudOff
+import com.example.nothingbutnetmobile.ui.theme.*
 import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
 
 @Composable
@@ -103,13 +104,13 @@ fun AnalysisScreen(
         bottomBar = {
             BottomNavigationBar(navController = navController)
         },
-        containerColor = Color.Black
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color.Black)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(horizontal = 20.dp)
         ) {
             DashboardHeader(userName = uiState.userName)
@@ -119,7 +120,7 @@ fun AnalysisScreen(
             Text(
                 text = "Shot Analysis",
                 style = MaterialTheme.typography.headlineMedium,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onBackground
             )
             
             Spacer(modifier = Modifier.height(16.dp))
@@ -128,7 +129,7 @@ fun AnalysisScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .background(Color.DarkGray.copy(alpha = 0.1f), MaterialTheme.shapes.medium),
+                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f), MaterialTheme.shapes.medium),
                 contentAlignment = Alignment.Center
             ) {
                 when (uiState.status) {
@@ -137,7 +138,7 @@ fun AnalysisScreen(
                             Text(
                                 text = if (videoUri == null) "Select a video to begin analysis" else "Preparing video...",
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = Color.Gray
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                             )
                         }
                     }
@@ -161,9 +162,9 @@ fun AnalysisScreen(
                                     modifier = Modifier
                                         .weight(1.2f)
                                         .fillMaxHeight()
-                                        .border(2.dp, Color(0xFFFB5607), RoundedCornerShape(12.dp))
+                                        .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(12.dp))
                                         .clip(RoundedCornerShape(12.dp))
-                                        .background(Color.Black),
+                                        .background(MaterialTheme.colorScheme.background),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     videoThumbnail?.let { bitmap ->
@@ -230,7 +231,7 @@ fun AnalysisScreen(
                                                 SelectionMarker(uiState.hoopRightNormalized, "R")
                                             }
                                         }
-                                    } ?: CircularProgressIndicator(color = Color(0xFFFB5607))
+                                    } ?: CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                                 }
 
                                 // Right side: Controls and instructions
@@ -243,7 +244,7 @@ fun AnalysisScreen(
                                 ) {
                                     Box(
                                         modifier = Modifier
-                                            .background(Color(0xFFD84A1A), RoundedCornerShape(16.dp))
+                                            .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(16.dp))
                                             .padding(horizontal = 12.dp, vertical = 6.dp)
                                     ) {
                                         Text(
@@ -252,7 +253,7 @@ fun AnalysisScreen(
                                                 isRight -> "Step 2 of 2"
                                                 else -> "Ready"
                                             },
-                                            color = Color.White,
+                                            color = MaterialTheme.colorScheme.onPrimary,
                                             style = MaterialTheme.typography.labelMedium,
                                             fontWeight = FontWeight.Bold
                                         )
@@ -264,7 +265,7 @@ fun AnalysisScreen(
                                             isRight -> "Select right edge of hoop"
                                             else -> "Coordinates confirmed"
                                         },
-                                        color = Color.White,
+                                        color = MaterialTheme.colorScheme.onPrimary,
                                         style = MaterialTheme.typography.titleSmall,
                                         fontWeight = FontWeight.Bold,
                                         textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -281,13 +282,13 @@ fun AnalysisScreen(
                                             offsetY = 0f
                                             viewModel.startSelection() 
                                         }) {
-                                            Icon(Icons.Default.Refresh, contentDescription = "Reset", tint = Color.White)
+                                            Icon(Icons.Default.Refresh, contentDescription = "Reset", tint = MaterialTheme.colorScheme.onBackground)
                                         }
                                         
                                         if (isReady) {
                                             Button(
                                                 onClick = { videoFile?.let { viewModel.confirmAnalysis(it) } },
-                                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFB5607))
+                                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                                             ) {
                                                 Text("Analyze")
                                             }
@@ -306,7 +307,7 @@ fun AnalysisScreen(
                                 // Step indicator
                                 Box(
                                     modifier = Modifier
-                                        .background(Color(0xFFD84A1A), RoundedCornerShape(16.dp))
+                                        .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(16.dp))
                                         .padding(horizontal = 12.dp, vertical = 6.dp)
                                 ) {
                                     Text(
@@ -315,7 +316,7 @@ fun AnalysisScreen(
                                             isRight -> "Step 2 of 2"
                                             else -> "Ready to Analyze"
                                         },
-                                        color = Color.White,
+                                        color = MaterialTheme.colorScheme.onPrimary,
                                         style = MaterialTheme.typography.labelMedium,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -328,7 +329,7 @@ fun AnalysisScreen(
                                         isRight -> "Click the right edge of the basketball hoop"
                                         else -> "Confirm hoop coordinates"
                                     },
-                                    color = Color.White,
+                                    color = MaterialTheme.colorScheme.onBackground,
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold,
                                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -339,9 +340,9 @@ fun AnalysisScreen(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .weight(1f)
-                                        .border(2.dp, Color(0xFFFB5607), RoundedCornerShape(12.dp))
+                                        .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(12.dp))
                                         .clip(RoundedCornerShape(12.dp))
-                                        .background(Color.Black),
+                                        .background(MaterialTheme.colorScheme.background),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     videoThumbnail?.let { bitmap ->
@@ -408,7 +409,7 @@ fun AnalysisScreen(
                                                 SelectionMarker(uiState.hoopRightNormalized, "R")
                                             }
                                         }
-                                    } ?: CircularProgressIndicator(color = Color(0xFFFB5607))
+                                    } ?: CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                                 }
                                 
                                 // Bottom Actions
@@ -420,13 +421,13 @@ fun AnalysisScreen(
                                 ) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         IconButton(onClick = { navController.popBackStack() }) {
-                                            Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
+                                            Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground)
                                         }
                                         
                                         if (isReady) {
                                             Button(
                                                 onClick = { videoFile?.let { viewModel.confirmAnalysis(it) } },
-                                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFB5607)),
+                                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                                                 modifier = Modifier.padding(start = 8.dp)
                                             ) {
                                                 Text("Analyze Now")
@@ -440,7 +441,7 @@ fun AnalysisScreen(
                                         offsetY = 0f
                                         viewModel.startSelection() 
                                     }) {
-                                        Icon(Icons.Default.Refresh, contentDescription = "Reset Selection", tint = Color.White)
+                                        Icon(Icons.Default.Refresh, contentDescription = "Reset Selection", tint = MaterialTheme.colorScheme.onBackground)
                                     }
                                 }
                             }
@@ -448,12 +449,12 @@ fun AnalysisScreen(
                     }
                     AnalysisStatus.LOADING -> {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            CircularProgressIndicator(color = Color(0xFFFB5607))
+                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
                                 text = "Analyzing your shots...",
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = Color.White
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                         }
                     }
@@ -477,6 +478,7 @@ fun AnalysisScreen(
                                     )
                                     
                                     ArcAnalysisCard(
+                                        targetAngle = uiState.targetAngle,
                                         modifier = Modifier.weight(1f)
                                     )
                                 }
@@ -517,14 +519,14 @@ fun AnalysisScreen(
                                 
                                 Button(
                                     onClick = { viewModel.resetStatus() },
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFB5607)),
+                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                                     modifier = Modifier.fillMaxWidth(),
                                     shape = RoundedCornerShape(12.dp)
                                 ) {
                                     Text("Analyze New Video", fontWeight = FontWeight.Bold)
                                 }
                             } else {
-                                Text("No analysis data available", color = Color.White)
+                                Text("No analysis data available", color = MaterialTheme.colorScheme.onBackground)
                             }
                         }
                     }
@@ -537,32 +539,32 @@ fun AnalysisScreen(
                             Icon(
                                 imageVector = Icons.Default.CloudOff,
                                 contentDescription = "Error",
-                                tint = Color.Red,
+                                tint = MaterialTheme.colorScheme.error,
                                 modifier = Modifier.size(64.dp)
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
                                 text = "Connection Issue",
                                 style = MaterialTheme.typography.headlineSmall,
-                                color = Color.White
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = uiState.errorMessage ?: "Unknown error occurred",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = Color.Gray,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                                 textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                                 modifier = Modifier.padding(horizontal = 32.dp)
                             )
                             Spacer(modifier = Modifier.height(24.dp))
                             Button(
                                 onClick = { viewModel.loadLatestAnalysis() },
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFB5607))
+                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                             ) {
                                 Text("Retry Sync")
                             }
                             TextButton(onClick = { viewModel.resetStatus() }) {
-                                Text("Go Back", color = Color.Gray)
+                                Text("Go Back", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
                             }
                         }
                     }
@@ -584,13 +586,13 @@ fun BoxScope.SelectionMarker(normalizedPos: Pair<Float, Float>?, label: String) 
                 modifier = Modifier
                     .offset(x = x - 12.dp, y = y - 12.dp)
                     .size(24.dp)
-                    .background(Color(0xFFFB5607), androidx.compose.foundation.shape.CircleShape)
-                    .border(2.dp, Color.White, androidx.compose.foundation.shape.CircleShape),
+                    .background(MaterialTheme.colorScheme.primary, androidx.compose.foundation.shape.CircleShape)
+                    .border(2.dp, MaterialTheme.colorScheme.onPrimary, androidx.compose.foundation.shape.CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = label,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.ExtraBold
                 )
@@ -600,22 +602,23 @@ fun BoxScope.SelectionMarker(normalizedPos: Pair<Float, Float>?, label: String) 
 }
 @Composable
 fun EfficiencyCard(percentage: Double, modifier: Modifier = Modifier) {
+    val trackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f)
     Card(
         modifier = modifier.aspectRatio(1f),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1A1A)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = RoundedCornerShape(24.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Canvas(modifier = Modifier.size(120.dp)) {
                 drawArc(
-                    color = Color.White.copy(alpha = 0.1f),
+                    color = trackColor,
                     startAngle = 135f,
                     sweepAngle = 270f,
                     useCenter = false,
                     style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round)
                 )
                 drawArc(
-                    brush = Brush.horizontalGradient(listOf(Color(0xFFFB5607), Color(0xFFFFBE0B))),
+                    brush = Brush.horizontalGradient(EmberGradient),
                     startAngle = 135f,
                     sweepAngle = (270f * (percentage / 100f)).toFloat(),
                     useCenter = false,
@@ -626,12 +629,12 @@ fun EfficiencyCard(percentage: Double, modifier: Modifier = Modifier) {
                 Text(
                     text = String.format("%.2f%%", percentage),
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Black),
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
                     text = "Field Goal %",
                     style = MaterialTheme.typography.labelSmall,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                 )
             }
         }
@@ -639,10 +642,10 @@ fun EfficiencyCard(percentage: Double, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ArcAnalysisCard(modifier: Modifier = Modifier) {
+fun ArcAnalysisCard(targetAngle: Float, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier.aspectRatio(1f),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1A1A)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = RoundedCornerShape(24.dp)
     ) {
         Column(
@@ -653,31 +656,31 @@ fun ArcAnalysisCard(modifier: Modifier = Modifier) {
             Icon(
                 imageVector = Icons.Default.TrendingUp,
                 contentDescription = null,
-                tint = Color(0xFFFB5607),
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(32.dp)
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = "Arc Analysis",
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onBackground,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
             )
             Text(
-                text = "Optimal: 55°",
+                text = "Optimal: ${targetAngle.toInt()}°",
                 style = MaterialTheme.typography.labelSmall,
-                color = Color.Gray
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Surface(
-                color = Color(0xFFFB5607).copy(alpha = 0.2f),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
                     text = "STABLE",
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                     style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Black),
-                    color = Color(0xFFFB5607)
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }
@@ -688,17 +691,17 @@ fun ArcAnalysisCard(modifier: Modifier = Modifier) {
 fun StatCard(label: String, value: String, icon: androidx.compose.ui.graphics.vector.ImageVector, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier,
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1A1A)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(imageVector = icon, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(16.dp))
+            Icon(imageVector = icon, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f), modifier = Modifier.size(16.dp))
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = label, style = MaterialTheme.typography.labelSmall, color = Color.Gray)
-            Text(text = value, style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Black), color = Color.White)
+            Text(text = label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
+            Text(text = value, style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Black), color = MaterialTheme.colorScheme.onBackground)
         }
     }
 }
@@ -707,14 +710,14 @@ fun StatCard(label: String, value: String, icon: androidx.compose.ui.graphics.ve
 fun ShotSequenceCard(results: List<Int>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1A1A)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = "SHOT SEQUENCE",
                 style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                color = Color.Gray
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
             )
             Spacer(modifier = Modifier.height(12.dp))
             Row(
@@ -727,19 +730,19 @@ fun ShotSequenceCard(results: List<Int>) {
                         modifier = Modifier
                             .size(32.dp)
                             .background(
-                                color = if (isMake) Color(0xFF4CAF50).copy(alpha = 0.2f) else Color(0xFFF44336).copy(alpha = 0.2f),
+                                color = if (isMake) SuccessGreen.copy(alpha = 0.2f) else ErrorRed.copy(alpha = 0.2f),
                                 shape = androidx.compose.foundation.shape.CircleShape
                             )
                             .border(
                                 1.dp,
-                                if (isMake) Color(0xFF4CAF50) else Color(0xFFF44336),
+                                if (isMake) SuccessGreen else ErrorRed,
                                 androidx.compose.foundation.shape.CircleShape
                             ),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = (index + 1).toString(),
-                            color = if (isMake) Color(0xFF4CAF50) else Color(0xFFF44336),
+                            color = if (isMake) SuccessGreen else ErrorRed,
                             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
                         )
                     }
@@ -757,7 +760,7 @@ fun LastSessionsCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1A1A)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -767,19 +770,19 @@ fun LastSessionsCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.History, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.History, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f), modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "LAST SESSIONS",
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                     )
                 }
                 Text(
                     text = "VIEW PAST ANALYSES",
                     modifier = Modifier.clickable { onViewAll() },
                     style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Black),
-                    color = Color(0xFFFB5607)
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
             Spacer(modifier = Modifier.height(12.dp))
@@ -795,19 +798,19 @@ fun LastSessionsCard(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = dateStr, color = Color.White, style = MaterialTheme.typography.bodyMedium)
+                    Text(text = dateStr, color = MaterialTheme.colorScheme.onBackground, style = MaterialTheme.typography.bodyMedium)
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = String.format("%.1f%% FG", session.fgPercentage),
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onBackground,
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(14.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f), modifier = Modifier.size(14.dp))
                     }
                 }
-                HorizontalDivider(color = Color.White.copy(alpha = 0.05f))
+                HorizontalDivider(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.05f))
             }
         }
     }

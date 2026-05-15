@@ -23,6 +23,7 @@ interface CVApi {
         @Part video: MultipartBody.Part,
         @Part("hoopLeft") hoopLeft: RequestBody,
         @Part("hoopRight") hoopRight: RequestBody,
-        @Part("showAngle") showAngle: RequestBody
+        @Part("showAngle") showAngle: RequestBody,
+        @Part("targetAngle") targetAngle: RequestBody
     ): Response<AnalysisResponse>
 }

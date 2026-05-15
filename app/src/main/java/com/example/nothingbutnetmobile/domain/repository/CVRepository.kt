@@ -16,6 +16,7 @@ interface CVRepository {
         videoFile: File,
         hoopLeft: List<Int>,
         hoopRight: List<Int>,
-        showAngle: Boolean = false
+        showAngle: Boolean = false,
+        targetAngle: Float = 55f
     ): Result<AnalysisResponse>
 }

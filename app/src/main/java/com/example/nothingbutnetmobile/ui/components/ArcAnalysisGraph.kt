@@ -21,8 +21,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.nothingbutnetmobile.ui.theme.CardBackground
-import com.example.nothingbutnetmobile.ui.theme.OrangePrimary
+import com.example.nothingbutnetmobile.ui.theme.*
 
 @Composable
 fun ArcAnalysisGraph(
@@ -41,12 +40,12 @@ fun ArcAnalysisGraph(
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.Bold
                 ),
-                color = Color.White
+                color = MaterialTheme.colorScheme.onBackground
             )
             Text(
                 text = stringResource(id = R.string.real_time_trend),
                 style = MaterialTheme.typography.labelSmall,
-                color = OrangePrimary,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -56,7 +55,7 @@ fun ArcAnalysisGraph(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(CardBackground, RoundedCornerShape(24.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(24.dp))
                 .padding(24.dp)
         ) {
             Column {
@@ -67,7 +66,7 @@ fun ArcAnalysisGraph(
                     Text(
                         text = stringResource(id = R.string.optimal_angle),
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                     )
                 }
 
@@ -79,6 +78,10 @@ fun ArcAnalysisGraph(
                         .fillMaxWidth()
                         .height(120.dp)
                 ) {
+                    val gridColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+                    val pathColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                    val primaryColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                    
                     Canvas(modifier = Modifier.fillMaxSize()) {
                         val width = size.width
                         val height = size.height
@@ -88,7 +91,7 @@ fun ArcAnalysisGraph(
                         for (i in 0 until lineCount) {
                             val y = height * (i + 1) / (lineCount + 1)
                             drawLine(
-                                color = Color.Gray.copy(alpha = 0.2f),
+                                color = gridColor,
                                 start = Offset(0f, y),
                                 end = Offset(width, y),
                                 strokeWidth = 1.dp.toPx()
@@ -124,14 +127,14 @@ fun ArcAnalysisGraph(
                             
                             drawPath(
                                 path = path,
-                                color = Color.Gray.copy(alpha = 0.5f),
+                                color = pathColor,
                                 style = Stroke(width = 2.dp.toPx())
                             )
                             
                             // Draw nodes colored by make/miss
                             points.forEachIndexed { index, point ->
                                 val isMake = shotsResults.getOrNull(index) == 1
-                                val nodeColor = if (isMake) Color(0xFF4CAF50) else Color(0xFFF44336)
+                                val nodeColor = if (isMake) SuccessGreen else ErrorRed
                                 drawCircle(
                                     color = nodeColor,
                                     radius = 4.dp.toPx(),
@@ -155,7 +158,7 @@ fun ArcAnalysisGraph(
                             }
                             drawPath(
                                 path = path,
-                                color = OrangePrimary.copy(alpha = 0.3f),
+                                color = primaryColor,
                                 style = Stroke(width = 3.dp.toPx())
                             )
                         }
@@ -170,15 +173,15 @@ fun ArcAnalysisGraph(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Indicator(color = Color(0xFF4CAF50), label = "MAKE")
+                        Indicator(color = SuccessGreen, label = "MAKE")
                         Spacer(modifier = Modifier.width(16.dp))
-                        Indicator(color = Color(0xFFF44336), label = "MISS")
+                        Indicator(color = ErrorRed, label = "MISS")
                     }
                     
                     Text(
                         text = if (shotAngles.isNotEmpty()) "LATEST SESSION" else "NO DATA YET",
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -191,7 +194,7 @@ fun ArcAnalysisGraph(
                 Icon(
                     imageVector = Icons.Default.Fullscreen,
                     contentDescription = "Expand",
-                    tint = Color.Gray
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                 )
             }
         }
@@ -210,7 +213,7 @@ private fun Indicator(color: Color, label: String) {
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
-            color = Color.White
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }

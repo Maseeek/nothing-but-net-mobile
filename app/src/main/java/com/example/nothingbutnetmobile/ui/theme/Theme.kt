@@ -18,11 +18,15 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = TextGray,
     background = DarkBackground,
     surface = DarkSurface,
+    error = ErrorRed,
     onPrimary = TextWhite,
     onSecondary = TextWhite,
     onTertiary = TextWhite,
     onBackground = TextWhite,
-    onSurface = TextWhite
+    onSurface = TextWhite,
+    surfaceVariant = CardBackground,
+    onSurfaceVariant = TextWhite,
+    onError = TextWhite
 )
 
 private val LightColorScheme = lightColorScheme(

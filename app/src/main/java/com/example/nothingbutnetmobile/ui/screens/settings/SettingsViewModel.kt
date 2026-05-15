@@ -3,6 +3,7 @@ package com.example.nothingbutnetmobile.ui.screens.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.nothingbutnetmobile.data.local.TokenManager
+import com.example.nothingbutnetmobile.data.local.PreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,13 +16,15 @@ data class SettingsUiState(
     val darkTheme: Boolean = true,
     val notificationsEnabled: Boolean = true,
     val showShotAngles: Boolean = true,
+    val targetAngle: Float = 55f,
     val userName: String = "",
     val appVersion: String = "1.0.0"
 )
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
+    private val preferenceManager: PreferenceManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -33,22 +36,36 @@ class SettingsViewModel @Inject constructor(
 
     private fun loadSettings() {
         viewModelScope.launch {
-            // In a real app, these would come from DataStore or SharedPreferences
-            // For now, we use default values and the username from TokenManager
-            _uiState.update { it.copy(userName = tokenManager.getUsername() ?: "User") }
+            _uiState.update { 
+                it.copy(
+                    userName = tokenManager.getUsername() ?: "User",
+                    darkTheme = preferenceManager.getDarkTheme(),
+                    notificationsEnabled = preferenceManager.getNotificationsEnabled(),
+                    showShotAngles = preferenceManager.getShowShotAngles(),
+                    targetAngle = preferenceManager.getTargetAngle()
+                )
+            }
         }
     }
 
     fun toggleDarkTheme(enabled: Boolean) {
+        preferenceManager.setDarkTheme(enabled)
         _uiState.update { it.copy(darkTheme = enabled) }
     }
 
     fun toggleNotifications(enabled: Boolean) {
+        preferenceManager.setNotificationsEnabled(enabled)
         _uiState.update { it.copy(notificationsEnabled = enabled) }
     }
 
     fun toggleShotAngles(enabled: Boolean) {
+        preferenceManager.setShowShotAngles(enabled)
         _uiState.update { it.copy(showShotAngles = enabled) }
+    }
+
+    fun setTargetAngle(angle: Float) {
+        preferenceManager.setTargetAngle(angle)
+        _uiState.update { it.copy(targetAngle = angle) }
     }
 
     fun logout() {

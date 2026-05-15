@@ -29,7 +29,7 @@ import androidx.navigation.NavController
 import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
 import com.example.nothingbutnetmobile.ui.components.BottomNavigationBar
 import com.example.nothingbutnetmobile.ui.components.DashboardHeader
-import com.example.nothingbutnetmobile.ui.theme.OrangePrimary
+import com.example.nothingbutnetmobile.ui.theme.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -44,13 +44,13 @@ fun LeaderboardScreen(
         bottomBar = {
             BottomNavigationBar(navController = navController)
         },
-        containerColor = Color.Black
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color.Black)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(horizontal = 20.dp)
         ) {
             Row(
@@ -58,12 +58,12 @@ fun LeaderboardScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground)
                 }
                 Text(
                     text = "Leaderboard",
                     style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Black),
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
 
@@ -73,7 +73,7 @@ fun LeaderboardScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFF161616), RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(12.dp))
                     .padding(4.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
@@ -104,7 +104,7 @@ fun LeaderboardScreen(
                     Text(
                         text = "No sessions to rank yet.",
                         style = MaterialTheme.typography.bodyLarge,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                     )
                 }
             } else {
@@ -137,7 +137,7 @@ fun SortChip(
             .clip(RoundedCornerShape(8.dp))
             .clickable(onClick = onClick)
             .height(40.dp),
-        color = if (isSelected) OrangePrimary else Color.Transparent,
+        color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
         shape = RoundedCornerShape(8.dp)
     ) {
         Box(
@@ -147,7 +147,7 @@ fun SortChip(
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
-                color = if (isSelected) Color.Black else Color.Gray
+                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
             )
         }
     }
@@ -163,7 +163,7 @@ fun LeaderboardItem(
         1 -> Color(0xFFFFD700) // Gold
         2 -> Color(0xFFC0C0C0) // Silver
         3 -> Color(0xFFCD7F32) // Bronze
-        else -> Color.Transparent
+        else -> MaterialTheme.colorScheme.surfaceVariant
     }
 
     val sdf = SimpleDateFormat("MMM dd", Locale.getDefault())
@@ -171,7 +171,7 @@ fun LeaderboardItem(
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF161616)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = RoundedCornerShape(16.dp)
     ) {
         Row(
@@ -185,7 +185,7 @@ fun LeaderboardItem(
                 modifier = Modifier
                     .size(40.dp)
                     .background(
-                        if (rank <= 3) rankColor else Color(0xFF262626),
+                        if (rank <= 3) rankColor else MaterialTheme.colorScheme.surfaceVariant,
                         CircleShape
                     ),
                 contentAlignment = Alignment.Center
@@ -194,14 +194,14 @@ fun LeaderboardItem(
                     Icon(
                         imageVector = Icons.Default.EmojiEvents,
                         contentDescription = null,
-                        tint = Color.Black,
+                        tint = if (rank == 1) Color.Black else MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.size(20.dp)
                     )
                 } else {
                     Text(
                         text = rank.toString(),
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }
@@ -212,12 +212,12 @@ fun LeaderboardItem(
                 Text(
                     text = "Session $dateString",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
                     text = "${session.makes}/${session.totalShots} makes",
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                 )
             }
 
@@ -239,13 +239,13 @@ fun LeaderboardItem(
                     text = primaryValue,
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Black,
-                        color = OrangePrimary
+                        color = MaterialTheme.colorScheme.primary
                     )
                 )
                 Text(
                     text = label,
                     style = MaterialTheme.typography.labelSmall,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                 )
             }
         }

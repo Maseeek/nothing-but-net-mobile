@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
 import com.example.nothingbutnetmobile.domain.repository.AuthRepository
 import com.example.nothingbutnetmobile.domain.repository.StatsRepository
+import com.example.nothingbutnetmobile.data.local.PreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +23,8 @@ enum class LeaderboardSort {
 @HiltViewModel
 class LeaderboardViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val statsRepository: StatsRepository
+    private val statsRepository: StatsRepository,
+    private val preferenceManager: PreferenceManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LeaderboardUiState())
@@ -64,7 +66,10 @@ class LeaderboardViewModel @Inject constructor(
         val sorted = when (_uiState.value.sortType) {
             LeaderboardSort.SHOTS -> sessions.sortedByDescending { it.totalShots }
             LeaderboardSort.FG_PERCENTAGE -> sessions.sortedByDescending { it.fgPercentage }
-            LeaderboardSort.OPTIMAL_ARC -> sessions.sortedBy { abs(it.averageAngle - 55.0) }
+            LeaderboardSort.OPTIMAL_ARC -> {
+                val target = preferenceManager.getTargetAngle().toDouble()
+                sessions.sortedBy { abs(it.averageAngle - target) }
+            }
         }
         _uiState.value = _uiState.value.copy(rankedSessions = sorted)
     }

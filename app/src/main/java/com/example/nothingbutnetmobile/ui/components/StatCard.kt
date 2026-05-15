@@ -26,7 +26,7 @@ fun StatCard(
 ) {
     Column(
         modifier = modifier
-            .background(CardBackground, RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(16.dp))
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -34,7 +34,7 @@ fun StatCard(
         Box(
             modifier = Modifier
                 .size(40.dp)
-                .background(Color(0xFF1F1D1B), RoundedCornerShape(12.dp)),
+                .background(MaterialTheme.colorScheme.background, RoundedCornerShape(12.dp)),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -50,7 +50,7 @@ fun StatCard(
         Text(
             text = label.uppercase(),
             style = MaterialTheme.typography.labelSmall,
-            color = TextGray,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
             letterSpacing = 0.5.sp,
             maxLines = 1,
             softWrap = false
@@ -64,7 +64,7 @@ fun StatCard(
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp
             ),
-            color = Color.White
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }

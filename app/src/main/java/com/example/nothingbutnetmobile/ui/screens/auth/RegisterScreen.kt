@@ -42,7 +42,7 @@ fun RegisterScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBackground)
+            .background(MaterialTheme.colorScheme.background)
             .padding(24.dp),
         contentAlignment = Alignment.TopCenter
     ) {
@@ -64,11 +64,11 @@ fun RegisterScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(CardBackground, RoundedCornerShape(24.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(24.dp))
                     .padding(2.dp)
                     .background(
                         Brush.verticalGradient(
-                            colors = listOf(OrangePrimary.copy(alpha = 0.5f), Color.Transparent)
+                            colors = listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f), Color.Transparent)
                         ),
                         RoundedCornerShape(24.dp)
                     )
@@ -76,7 +76,7 @@ fun RegisterScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(CardBackground, RoundedCornerShape(22.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(22.dp))
                         .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -85,7 +85,7 @@ fun RegisterScreen(
                         is AuthState.Error -> {
                             Text(
                                 text = authState.message,
-                                color = Color.Red,
+                                color = MaterialTheme.colorScheme.error,
                                 modifier = Modifier.padding(bottom = 16.dp),
                                 textAlign = TextAlign.Center
                             )
@@ -93,7 +93,7 @@ fun RegisterScreen(
                         is AuthState.RegisterSuccess -> {
                             Text(
                                 text = authState.message,
-                                color = Color.Green,
+                                color = SuccessGreen,
                                 modifier = Modifier.padding(bottom = 16.dp),
                                 textAlign = TextAlign.Center
                             )
@@ -104,16 +104,16 @@ fun RegisterScreen(
                     OutlinedTextField(
                         value = username,
                         onValueChange = { username = it },
-                        label = { Text(stringResource(id = com.example.nothingbutnetmobile.R.string.username), color = TextGray) },
-                        leadingIcon = { Icon(Icons.Default.Person, null, tint = TextGray) },
+                        label = { Text(stringResource(id = com.example.nothingbutnetmobile.R.string.username), color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)) },
+                        leadingIcon = { Icon(Icons.Default.Person, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)) },
                         colors = OutlinedTextFieldDefaults.run {
                             colors(
-                                                focusedIndicatorColor = OrangePrimary,
-                                                unfocusedIndicatorColor = DarkSurface,
-                                                focusedTextColor = TextWhite,
-                                                unfocusedTextColor = TextWhite,
-                                                focusedContainerColor = DarkSurface,
-                                                unfocusedContainerColor = DarkSurface
+                                                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                                                unfocusedIndicatorColor = MaterialTheme.colorScheme.surface,
+                                                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                                                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                                                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                                                unfocusedContainerColor = MaterialTheme.colorScheme.surface
                                             )
                         },
                         shape = RoundedCornerShape(12.dp),
@@ -124,16 +124,16 @@ fun RegisterScreen(
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
-                        label = { Text(stringResource(id = com.example.nothingbutnetmobile.R.string.email), color = TextGray) },
-                        leadingIcon = { Icon(Icons.Default.Email, null, tint = TextGray) },
+                        label = { Text(stringResource(id = com.example.nothingbutnetmobile.R.string.email), color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)) },
+                        leadingIcon = { Icon(Icons.Default.Email, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)) },
                         colors = OutlinedTextFieldDefaults.run {
                             colors(
-                                                focusedIndicatorColor = OrangePrimary,
-                                                unfocusedIndicatorColor = DarkSurface,
-                                                focusedTextColor = TextWhite,
-                                                unfocusedTextColor = TextWhite,
-                                                focusedContainerColor = DarkSurface,
-                                                unfocusedContainerColor = DarkSurface
+                                                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                                                unfocusedIndicatorColor = MaterialTheme.colorScheme.surface,
+                                                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                                                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                                                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                                                unfocusedContainerColor = MaterialTheme.colorScheme.surface
                                             )
                         },
                         shape = RoundedCornerShape(12.dp),
@@ -144,12 +144,12 @@ fun RegisterScreen(
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        label = { Text(stringResource(id = com.example.nothingbutnetmobile.R.string.password), color = TextGray) },
-                        leadingIcon = { Icon(Icons.Default.Lock, null, tint = TextGray) },
+                        label = { Text(stringResource(id = com.example.nothingbutnetmobile.R.string.password), color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)) },
+                        leadingIcon = { Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)) },
                         trailingIcon = {
                             val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Icon(image, null, tint = TextGray)
+                                Icon(image, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
                             }
                         },
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -159,12 +159,12 @@ fun RegisterScreen(
                         ),
                         colors = OutlinedTextFieldDefaults.run {
                             colors(
-                                                focusedIndicatorColor = OrangePrimary,
-                                                unfocusedIndicatorColor = DarkSurface,
-                                                focusedTextColor = TextWhite,
-                                                unfocusedTextColor = TextWhite,
-                                                focusedContainerColor = DarkSurface,
-                                                unfocusedContainerColor = DarkSurface
+                                                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                                                unfocusedIndicatorColor = MaterialTheme.colorScheme.surface,
+                                                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                                                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                                                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                                                unfocusedContainerColor = MaterialTheme.colorScheme.surface
                                             )
                         },
                         shape = RoundedCornerShape(12.dp),
@@ -174,15 +174,15 @@ fun RegisterScreen(
 
                     Button(
                         onClick = { onRegisterClick(username, email, password) },
-                        colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier.fillMaxWidth().height(50.dp),
                         enabled = authState !is AuthState.Loading
                     ) {
                         if (authState is AuthState.Loading) {
-                            CircularProgressIndicator(Modifier.size(24.dp), color = Color.White, strokeWidth = 2.dp)
+                            CircularProgressIndicator(Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary, strokeWidth = 2.dp)
                         } else {
-                            Text(stringResource(id = com.example.nothingbutnetmobile.R.string.sign_up).uppercase(), fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
+                            Text(stringResource(id = com.example.nothingbutnetmobile.R.string.sign_up).uppercase(), fontWeight = FontWeight.Bold, fontSize = 16.sp, color = MaterialTheme.colorScheme.onPrimary)
                         }
                     }
                 }
@@ -191,9 +191,9 @@ fun RegisterScreen(
             Spacer(Modifier.height(24.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(id = com.example.nothingbutnetmobile.R.string.already_have_account).split("?")[0] + "?", color = TextGray)
+                Text(stringResource(id = com.example.nothingbutnetmobile.R.string.already_have_account).split("?")[0] + "?", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
                 TextButton(onClick = onLoginClick, enabled = authState !is AuthState.Loading) {
-                    Text(stringResource(id = com.example.nothingbutnetmobile.R.string.login), color = OrangePrimary, fontWeight = FontWeight.Bold)
+                    Text(stringResource(id = com.example.nothingbutnetmobile.R.string.login), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
                 }
             }
         }

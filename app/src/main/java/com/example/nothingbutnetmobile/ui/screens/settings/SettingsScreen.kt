@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.nothingbutnetmobile.ui.theme.OrangePrimary
+import com.example.nothingbutnetmobile.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,24 +39,24 @@ fun SettingsScreen(
                     Text(
                         "Settings", 
                         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onBackground
                     ) 
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         },
-        containerColor = Color.Black
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color.Black)
+                .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(scrollState)
                 .padding(horizontal = 20.dp)
         ) {
@@ -91,6 +91,15 @@ fun SettingsScreen(
                 onCheckedChange = { viewModel.toggleShotAngles(it) }
             )
 
+            SettingsSliderItem(
+                title = "Target Shot Angle",
+                subtitle = "Optimal arc for your shots",
+                icon = Icons.Default.GolfCourse, // Using GolfCourse as it looks like a trajectory
+                value = uiState.targetAngle,
+                onValueChange = { viewModel.setTargetAngle(it) },
+                valueRange = 30f..70f
+            )
+
             Spacer(modifier = Modifier.height(24.dp))
 
             // Account Section
@@ -105,7 +114,7 @@ fun SettingsScreen(
                 title = "Logout",
                 subtitle = "Sign out of your account",
                 icon = Icons.Default.Logout,
-                color = Color(0xFFE53935),
+                color = ErrorRed,
                 onClick = {
                     viewModel.logout()
                     navController.navigate("login") {
@@ -135,7 +144,7 @@ fun SettingsScreen(
                         fontWeight = FontWeight.Black,
                         letterSpacing = 2.sp
                     ),
-                    color = Color.DarkGray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
@@ -148,7 +157,7 @@ fun SettingsSectionHeader(title: String) {
     Text(
         text = title,
         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-        color = OrangePrimary,
+        color = MaterialTheme.colorScheme.primary,
         modifier = Modifier.padding(bottom = 12.dp)
     )
 }
@@ -165,7 +174,7 @@ fun SettingsToggleItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        color = Color(0xFF161616),
+        color = MaterialTheme.colorScheme.surfaceVariant,
         shape = RoundedCornerShape(12.dp)
     ) {
         Row(
@@ -176,19 +185,19 @@ fun SettingsToggleItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-                Icon(icon, contentDescription = null, tint = Color.LightGray)
+                Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f))
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
-                    Text(title, color = Color.White, style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold))
-                    Text(subtitle, color = Color.Gray, style = MaterialTheme.typography.bodySmall)
+                    Text(title, color = MaterialTheme.colorScheme.onBackground, style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold))
+                    Text(subtitle, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f), style = MaterialTheme.typography.bodySmall)
                 }
             }
             Switch(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
                 colors = SwitchDefaults.colors(
-                    checkedThumbColor = OrangePrimary,
-                    checkedTrackColor = OrangePrimary.copy(alpha = 0.5f)
+                    checkedThumbColor = MaterialTheme.colorScheme.primary,
+                    checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
                 )
             )
         }
@@ -200,7 +209,7 @@ fun SettingsClickItem(
     title: String,
     subtitle: String,
     icon: ImageVector,
-    color: Color = Color.White,
+    color: Color = Color.Unspecified, // Use Unspecified to detect and apply theme color
     onClick: () -> Unit
 ) {
     Surface(
@@ -208,7 +217,7 @@ fun SettingsClickItem(
             .fillMaxWidth()
             .padding(vertical = 4.dp)
             .clickable { onClick() },
-        color = Color(0xFF161616),
+        color = MaterialTheme.colorScheme.surfaceVariant,
         shape = RoundedCornerShape(12.dp)
     ) {
         Row(
@@ -219,14 +228,64 @@ fun SettingsClickItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(icon, contentDescription = null, tint = if (color == Color.White) Color.LightGray else color)
+                Icon(icon, contentDescription = null, tint = if (color == Color.Unspecified) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f) else color)
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
-                    Text(title, color = color, style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold))
-                    Text(subtitle, color = Color.Gray, style = MaterialTheme.typography.bodySmall)
+                    Text(title, color = if (color == Color.Unspecified) MaterialTheme.colorScheme.onBackground else color, style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold))
+                    Text(subtitle, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f), style = MaterialTheme.typography.bodySmall)
                 }
             }
-            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color.DarkGray)
+            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
+        }
+    }
+}
+
+@Composable
+fun SettingsSliderItem(
+    title: String,
+    subtitle: String,
+    icon: ImageVector,
+    value: Float,
+    onValueChange: (Float) -> Unit,
+    valueRange: ClosedFloatingPointRange<Float>
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f))
+                Spacer(modifier = Modifier.width(16.dp))
+                Column {
+                    Text(title, color = MaterialTheme.colorScheme.onBackground, style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold))
+                    Text(subtitle, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f), style = MaterialTheme.typography.bodySmall)
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = "${value.toInt()}°",
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Black)
+                )
+            }
+            
+            Slider(
+                value = value,
+                onValueChange = onValueChange,
+                valueRange = valueRange,
+                colors = SliderDefaults.colors(
+                    thumbColor = MaterialTheme.colorScheme.primary,
+                    activeTrackColor = MaterialTheme.colorScheme.primary,
+                    inactiveTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                ),
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
     }
 }

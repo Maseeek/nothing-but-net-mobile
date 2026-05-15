@@ -48,7 +48,7 @@ fun DashboardHeader(
                         fontWeight = FontWeight.Black,
                         letterSpacing = (-0.5).sp
                     ),
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
             
@@ -58,12 +58,12 @@ fun DashboardHeader(
             onClick = { /* TODO */ },
             modifier = Modifier
                 .size(48.dp)
-                .background(Color(0xFF1F1D1B), CircleShape)
+                .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
         ) {
             Icon(
                 imageVector = Icons.Default.Notifications,
                 contentDescription = "Notifications",
-                tint = OrangePrimary
+                tint = MaterialTheme.colorScheme.primary
             )
         }
     }

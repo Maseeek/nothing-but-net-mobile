@@ -36,7 +36,7 @@ fun AIInsightsCard(
             Icon(
                 imageVector = Icons.Default.AutoAwesome,
                 contentDescription = null,
-                tint = OrangePrimary,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(12.dp))
@@ -45,7 +45,7 @@ fun AIInsightsCard(
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.Bold
                 ),
-                color = Color.White
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
 
@@ -54,11 +54,11 @@ fun AIInsightsCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(CardBackground, RoundedCornerShape(24.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(24.dp))
                 .padding(2.dp) // Border thickness
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(OrangePrimary.copy(alpha = 0.3f), Color.Transparent)
+                        colors = listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.3f), Color.Transparent)
                     ),
                     RoundedCornerShape(24.dp)
                 )
@@ -66,19 +66,19 @@ fun AIInsightsCard(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(CardBackground, RoundedCornerShape(22.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(22.dp))
                     .padding(24.dp)
             ) {
                 Text(
                     text = buildAnnotatedString {
                         append("Based on your last 10 shots, your release point is ")
-                        withStyle(style = SpanStyle(color = OrangePrimary, fontWeight = FontWeight.Bold)) {
+                        withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)) {
                             append(insight)
                         }
                         append(", but your entry angle is peaking too early.")
                     },
                     style = MaterialTheme.typography.bodyLarge,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onBackground,
                     lineHeight = 24.sp
                 )
 
@@ -90,14 +90,14 @@ fun AIInsightsCard(
                     Icon(
                         imageVector = Icons.Default.Lightbulb,
                         contentDescription = null,
-                        tint = Color.Gray,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
                         text = tip,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                         lineHeight = 20.sp
                     )
                 }

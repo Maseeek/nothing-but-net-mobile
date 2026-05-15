@@ -172,9 +172,12 @@ def upload_and_analyze():
     except Exception as e:
         return jsonify({'success': False, 'error': 'Invalid hoop coordinates'}), 400
 
-    # Get showAngle status from request
+    # Get settings from request
     show_angle = request.form.get('showAngle', 'false').lower() == 'true'
+    target_angle = float(request.form.get('targetAngle', '55.0'))
     accuracy = 0.5 if show_angle else 0.15
+
+    print(f"Analysis started: show_angle={show_angle}, target_angle={target_angle}")
 
     # Save the video file
     filename = secure_filename(video_file.filename)

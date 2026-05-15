@@ -35,7 +35,7 @@ import androidx.navigation.NavController
 import com.example.nothingbutnetmobile.R
 import com.example.nothingbutnetmobile.ui.components.BottomNavigationBar
 import com.example.nothingbutnetmobile.ui.components.DashboardHeader
-import com.example.nothingbutnetmobile.ui.theme.OrangePrimary
+import com.example.nothingbutnetmobile.ui.theme.*
 
 @Composable
 fun ProfileScreen(
@@ -49,13 +49,13 @@ fun ProfileScreen(
         bottomBar = {
             BottomNavigationBar(navController = navController)
         },
-        containerColor = Color.Black
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color.Black)
+                .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(scrollState)
                 .padding(horizontal = 20.dp)
         ) {
@@ -73,13 +73,13 @@ fun ProfileScreen(
                     Box(
                         modifier = Modifier
                             .size(50.dp)
-                            .background(OrangePrimary, CircleShape),
+                            .background(MaterialTheme.colorScheme.primary, CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = uiState.userName.take(1).uppercase(),
                             style = MaterialTheme.typography.titleLarge,
-                            color = Color.White
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                     Spacer(modifier = Modifier.width(16.dp))
@@ -87,12 +87,12 @@ fun ProfileScreen(
                         Text(
                             text = uiState.userName,
                             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                            color = Color.White
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                         Text(
                             text = stringResource(id = R.string.pro_member),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = OrangePrimary
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
@@ -102,12 +102,12 @@ fun ProfileScreen(
                         onClick = { navController.navigate("settings") },
                         modifier = Modifier
                             .size(40.dp)
-                            .background(Color.DarkGray.copy(alpha = 0.5f), CircleShape)
+                            .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = "Settings",
-                            tint = Color.White
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
@@ -120,12 +120,12 @@ fun ProfileScreen(
                         },
                         modifier = Modifier
                             .size(40.dp)
-                            .background(Color.DarkGray.copy(alpha = 0.5f), CircleShape)
+                            .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Logout,
                             contentDescription = stringResource(id = R.string.logout),
-                            tint = Color.White
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 }
@@ -136,7 +136,7 @@ fun ProfileScreen(
             Text(
                 text = "Performance Dashboard",
                 style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Black),
-                color = Color.White
+                color = MaterialTheme.colorScheme.onBackground
             )
             
             Spacer(modifier = Modifier.height(16.dp))
@@ -171,7 +171,7 @@ fun ProfileScreen(
             // Progress Banner
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Row(
@@ -183,7 +183,7 @@ fun ProfileScreen(
                     Text(
                         text = uiState.progressMessage,
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }
@@ -194,7 +194,7 @@ fun ProfileScreen(
             Text(
                 text = "FG% PERFORMANCE OVER TIME",
                 style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                color = Color.LightGray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
                 letterSpacing = 1.sp
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -203,7 +203,7 @@ fun ProfileScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF161616)),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 shape = RoundedCornerShape(16.dp)
             ) {
                 LineChart(data = uiState.fgHistory)
@@ -214,7 +214,7 @@ fun ProfileScreen(
             Text(
                 text = "CAREER SHOT DISTRIBUTION",
                 style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                color = Color.LightGray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
                 letterSpacing = 1.sp
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -223,7 +223,7 @@ fun ProfileScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(260.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF161616)),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 shape = RoundedCornerShape(16.dp)
             ) {
                 DonutChart(
@@ -243,11 +243,11 @@ fun ProfileScreen(
                 Text(
                     text = "RECENT SESSIONS",
                     style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                    color = Color.LightGray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
                     letterSpacing = 1.sp
                 )
                 TextButton(onClick = { navController.navigate("history") }) {
-                    Text(text = "View All", color = OrangePrimary)
+                    Text(text = "View All", color = MaterialTheme.colorScheme.primary)
                 }
             }
             
@@ -257,7 +257,7 @@ fun ProfileScreen(
                 Text(
                     text = "No sessions yet.",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                     modifier = Modifier.padding(vertical = 16.dp)
                 )
             } else {
@@ -280,7 +280,7 @@ fun RecentSessionItem(session: ShotAnalysis) {
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF161616)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = RoundedCornerShape(12.dp)
     ) {
         Row(
@@ -294,13 +294,13 @@ fun RecentSessionItem(session: ShotAnalysis) {
                 Text(
                     text = dateString,
                     style = MaterialTheme.typography.labelMedium,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "${session.makes}/${session.totalShots} Shots Made",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
             
@@ -312,7 +312,7 @@ fun RecentSessionItem(session: ShotAnalysis) {
                     text = "${String.format("%.0f", session.fgPercentage)}%",
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Black),
-                    color = if (session.fgPercentage >= 50) Color(0xFF26A69A) else Color(0xFFE53935)
+                    color = if (session.fgPercentage >= 50) SuccessGreen else ErrorRed
                 )
             }
         }
@@ -328,7 +328,7 @@ fun DashboardStatCard(
 ) {
     Card(
         modifier = modifier.aspectRatio(1f),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1C1A)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -341,7 +341,7 @@ fun DashboardStatCard(
             Text(
                 text = title,
                 style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 maxLines = 1
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -349,13 +349,13 @@ fun DashboardStatCard(
                 Text(
                     text = value,
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Black),
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 if (suffix.isNotEmpty()) {
                     Text(
                         text = suffix,
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                        color = OrangePrimary,
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
                 }
@@ -368,6 +368,9 @@ fun DashboardStatCard(
 fun LineChart(data: List<Float>) {
     val defaultData = if (data.isEmpty()) listOf(20f, 40f, 30f, 50f, 45f) else data
     val maxVal = 100f
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val backgroundColor = MaterialTheme.colorScheme.background
+    val gridColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
     
     Canvas(
         modifier = Modifier
@@ -391,12 +394,12 @@ fun LineChart(data: List<Float>) {
             }
             
             drawCircle(
-                color = OrangePrimary,
+                color = primaryColor,
                 radius = 6.dp.toPx(),
                 center = Offset(x, y)
             )
             drawCircle(
-                color = Color.Black,
+                color = backgroundColor,
                 radius = 4.dp.toPx(),
                 center = Offset(x, y)
             )
@@ -404,7 +407,7 @@ fun LineChart(data: List<Float>) {
         
         drawPath(
             path = path,
-            color = OrangePrimary,
+            color = primaryColor,
             style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round)
         )
         
@@ -413,7 +416,7 @@ fun LineChart(data: List<Float>) {
         val stepY = height / lines
         for (i in 0..lines) {
             drawLine(
-                color = Color.DarkGray.copy(alpha = 0.3f),
+                color = gridColor,
                 start = Offset(0f, i * stepY),
                 end = Offset(width, i * stepY),
                 strokeWidth = 1.dp.toPx()
@@ -440,7 +443,7 @@ fun DonutChart(makes: Int, misses: Int, percentage: Double) {
             
             // Misses background arc (Red)
             drawArc(
-                color = Color(0xFFE53935),
+                color = ErrorRed,
                 startAngle = 0f,
                 sweepAngle = 360f,
                 useCenter = false,
@@ -450,7 +453,7 @@ fun DonutChart(makes: Int, misses: Int, percentage: Double) {
             
             // Makes foreground arc (Green/Teal)
             drawArc(
-                color = Color(0xFF26A69A),
+                color = SuccessGreen,
                 startAngle = -90f,
                 sweepAngle = makesAngle,
                 useCenter = false,
@@ -463,12 +466,12 @@ fun DonutChart(makes: Int, misses: Int, percentage: Double) {
             Text(
                 text = "${makes.takeIf { total > 0 }?.let { String.format("%.0f", percentage) } ?: "0"}%",
                 style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Black),
-                color = Color.White
+                color = MaterialTheme.colorScheme.onBackground
             )
             Text(
                 text = "FG PERCENT",
                 style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                color = Color(0xFF26A69A)
+                color = SuccessGreen
             )
         }
         
@@ -479,8 +482,8 @@ fun DonutChart(makes: Int, misses: Int, percentage: Double) {
                 .padding(bottom = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            LegendItem(color = Color(0xFF26A69A), label = "Made", count = makes)
-            LegendItem(color = Color(0xFFE53935), label = "Missed", count = misses)
+            LegendItem(color = SuccessGreen, label = "Made", count = makes)
+            LegendItem(color = ErrorRed, label = "Missed", count = misses)
         }
     }
 }
@@ -498,12 +501,12 @@ fun LegendItem(color: Color, label: String, count: Int) {
             Text(
                 text = label,
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.LightGray
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
             )
             Text(
                 text = "($count)",
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
             )
         }
     }

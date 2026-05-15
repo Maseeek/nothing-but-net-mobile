@@ -34,13 +34,13 @@ fun HomeScreen(
         bottomBar = {
             BottomNavigationBar(navController = navController)
         },
-        containerColor = Color.Black
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color.Black)
+                .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(scrollState)
                 .padding(horizontal = 20.dp)
         ) {
@@ -51,7 +51,7 @@ fun HomeScreen(
             Text(
                 text = "Ready to hoop, ${uiState.userName}?",
                 style = MaterialTheme.typography.headlineMedium.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Black),
-                color = Color.White
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -75,7 +75,7 @@ fun HomeScreen(
                     modifier = Modifier.weight(1f)
                 )
                 StatCard(
-                    label = "Longest Streak",
+                    label = "Streak",
                     value = uiState.longestStreak,
                     icon = Icons.Default.LocalFireDepartment,
                     modifier = Modifier.weight(1f)
