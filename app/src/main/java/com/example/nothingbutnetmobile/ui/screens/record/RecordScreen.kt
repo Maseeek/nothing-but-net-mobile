@@ -231,7 +231,7 @@ fun CameraPreview(
             }
 
             val recorder = Recorder.Builder()
-                .setQualitySelector(QualitySelector.from(Quality.HIGHEST))
+                .setQualitySelector(QualitySelector.from(Quality.SD, FallbackStrategy.lowerQualityOrHigherThan(Quality.SD)))
                 .build()
             videoCapture = VideoCapture.withOutput(recorder)
 

@@ -11,8 +11,8 @@ data class AnalysisResult(
     @SerializedName("average_angle") val averageAngle: Double,
     @SerializedName("average_make_angle") val averageMakeAngle: Double,
     @SerializedName("average_miss_angle") val averageMissAngle: Double,
-    @SerializedName("shot_angles") val shotAngles: List<Double>,
-    @SerializedName("shots_results") val shotsResults: List<Int>
+    @SerializedName("shot_angles") val shotAngles: List<Double>?,
+    @SerializedName("shots_results") val shotsResults: List<Int>?
 )
 
 data class AnalysisResponse(

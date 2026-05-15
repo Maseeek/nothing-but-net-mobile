@@ -128,6 +128,12 @@ fun SettingsScreen(
             // Support Section
             SettingsSectionHeader("SUPPORT")
             SettingsClickItem(
+                title = "Clear Cache",
+                subtitle = "Free up ${uiState.cacheSize}",
+                icon = Icons.Default.DeleteSweep,
+                onClick = { viewModel.clearCache() }
+            )
+            SettingsClickItem(
                 title = "About",
                 subtitle = "Version ${uiState.appVersion}",
                 icon = Icons.Default.Info,

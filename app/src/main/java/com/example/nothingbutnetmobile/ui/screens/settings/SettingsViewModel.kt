@@ -1,10 +1,13 @@
 package com.example.nothingbutnetmobile.ui.screens.settings
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.nothingbutnetmobile.data.local.TokenManager
 import com.example.nothingbutnetmobile.data.local.PreferenceManager
+import com.example.nothingbutnetmobile.ui.utils.FileUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,13 +21,15 @@ data class SettingsUiState(
     val showShotAngles: Boolean = true,
     val targetAngle: Float = 55f,
     val userName: String = "",
-    val appVersion: String = "1.0.0"
+    val appVersion: String = "1.0.0",
+    val cacheSize: String = "0 Bytes"
 )
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val tokenManager: TokenManager,
-    private val preferenceManager: PreferenceManager
+    private val preferenceManager: PreferenceManager,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -42,10 +47,20 @@ class SettingsViewModel @Inject constructor(
                     darkTheme = preferenceManager.getDarkTheme(),
                     notificationsEnabled = preferenceManager.getNotificationsEnabled(),
                     showShotAngles = preferenceManager.getShowShotAngles(),
-                    targetAngle = preferenceManager.getTargetAngle()
+                    targetAngle = preferenceManager.getTargetAngle(),
+                    cacheSize = FileUtils.getCacheSize(context)
                 )
             }
         }
+    }
+
+    fun refreshCacheSize() {
+        _uiState.update { it.copy(cacheSize = FileUtils.getCacheSize(context)) }
+    }
+
+    fun clearCache() {
+        FileUtils.clearCache(context)
+        refreshCacheSize()
     }
 
     fun toggleDarkTheme(enabled: Boolean) {

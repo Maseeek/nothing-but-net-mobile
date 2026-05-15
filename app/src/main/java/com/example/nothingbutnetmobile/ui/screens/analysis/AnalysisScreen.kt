@@ -24,8 +24,10 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Cancel
 
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
 import android.net.Uri
+import android.util.Log
 import com.example.nothingbutnetmobile.ui.utils.FileUtils
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -59,8 +61,10 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.TrendingUp
+import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 
 import androidx.compose.material.icons.filled.CloudOff
 import com.example.nothingbutnetmobile.ui.theme.*
@@ -82,21 +86,45 @@ fun AnalysisScreen(
     var offsetY by remember { mutableFloatStateOf(0f) }
  
     LaunchedEffect(videoUri, analysisId) {
+        Log.d("AnalysisScreen", "LaunchedEffect: videoUri=$videoUri, analysisId=$analysisId")
         if (videoUri != null) {
             val uri = Uri.parse(videoUri)
             viewModel.startSelection()
             
             withContext(Dispatchers.IO) {
+                Log.d("AnalysisScreen", "Loading video file from URI: $uri")
                 videoFile = FileUtils.getFileFromUri(context, uri)
+                if (videoFile == null) {
+                    Log.e("AnalysisScreen", "Failed to get file from URI")
+                } else {
+                    Log.d("AnalysisScreen", "File loaded successfully: ${videoFile?.absolutePath}")
+                }
+                
                 val bitmap = VideoUtils.getVideoThumbnail(context, uri)
                 if (bitmap != null) {
                     videoThumbnail = bitmap.asImageBitmap()
+                    Log.d("AnalysisScreen", "Thumbnail loaded successfully")
+                } else {
+                    Log.e("AnalysisScreen", "Failed to load thumbnail")
                 }
             }
         } else if (analysisId != null) {
+            Log.d("AnalysisScreen", "Loading analysis by ID: $analysisId")
             viewModel.loadSpecificAnalysis(analysisId.toLong())
         } else {
+            Log.d("AnalysisScreen", "Loading latest analysis")
             viewModel.loadLatestAnalysis()
+        }
+    }
+
+    // Cleanup on dispose if the video hasn't been analyzed yet
+    DisposableEffect(videoUri) {
+        onDispose {
+            videoFile?.let {
+                if (it.exists()) {
+                    it.delete()
+                }
+            }
         }
     }
 
@@ -227,8 +255,8 @@ fun AnalysisScreen(
                                                         },
                                                     contentScale = ContentScale.Fit
                                                 )
-                                                SelectionMarker(uiState.hoopLeftNormalized, "L")
-                                                SelectionMarker(uiState.hoopRightNormalized, "R")
+                                                SelectionMarker(uiState.hoopLeftNormalized, "L", scale)
+                                                SelectionMarker(uiState.hoopRightNormalized, "R", scale)
                                             }
                                         }
                                     } ?: CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
@@ -405,8 +433,8 @@ fun AnalysisScreen(
                                                         },
                                                     contentScale = ContentScale.Fit
                                                 )
-                                                SelectionMarker(uiState.hoopLeftNormalized, "L")
-                                                SelectionMarker(uiState.hoopRightNormalized, "R")
+                                                SelectionMarker(uiState.hoopLeftNormalized, "L", scale)
+                                                SelectionMarker(uiState.hoopRightNormalized, "R", scale)
                                             }
                                         }
                                     } ?: CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
@@ -498,7 +526,7 @@ fun AnalysisScreen(
                                     StatCard(
                                         label = "MAX STREAK",
                                         value = analysis.longestStreak.toString(),
-                                        icon = Icons.Default.Refresh, // Changed to dynamic below
+                                        icon = Icons.Default.LocalFireDepartment,
                                         modifier = Modifier.weight(1f)
                                     )
                                 }
@@ -576,7 +604,7 @@ fun AnalysisScreen(
     }
 }
 @Composable
-fun BoxScope.SelectionMarker(normalizedPos: Pair<Float, Float>?, label: String) {
+fun BoxScope.SelectionMarker(normalizedPos: Pair<Float, Float>?, label: String, currentScale: Float) {
     normalizedPos?.let { (nx, ny) ->
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val x = maxWidth * nx.coerceIn(0f, 1f)
@@ -585,6 +613,10 @@ fun BoxScope.SelectionMarker(normalizedPos: Pair<Float, Float>?, label: String) 
             Box(
                 modifier = Modifier
                     .offset(x = x - 12.dp, y = y - 12.dp)
+                    .graphicsLayer {
+                        scaleX = 1f / currentScale
+                        scaleY = 1f / currentScale
+                    }
                     .size(24.dp)
                     .background(MaterialTheme.colorScheme.primary, androidx.compose.foundation.shape.CircleShape)
                     .border(2.dp, MaterialTheme.colorScheme.onPrimary, androidx.compose.foundation.shape.CircleShape),
@@ -721,29 +753,31 @@ fun ShotSequenceCard(results: List<Int>) {
             )
             Spacer(modifier = Modifier.height(12.dp))
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 results.forEachIndexed { index, result ->
                     val isMake = result == 1
                     Box(
                         modifier = Modifier
-                            .size(32.dp)
+                            .size(36.dp)
                             .background(
-                                color = if (isMake) SuccessGreen.copy(alpha = 0.2f) else ErrorRed.copy(alpha = 0.2f),
-                                shape = androidx.compose.foundation.shape.CircleShape
+                                color = if (isMake) SuccessGreen.copy(alpha = 0.15f) else ErrorRed.copy(alpha = 0.15f),
+                                shape = RoundedCornerShape(10.dp)
                             )
                             .border(
                                 1.dp,
-                                if (isMake) SuccessGreen else ErrorRed,
-                                androidx.compose.foundation.shape.CircleShape
+                                if (isMake) SuccessGreen.copy(alpha = 0.5f) else ErrorRed.copy(alpha = 0.5f),
+                                RoundedCornerShape(10.dp)
                             ),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = (index + 1).toString(),
                             color = if (isMake) SuccessGreen else ErrorRed,
-                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold)
+                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold)
                         )
                     }
                 }

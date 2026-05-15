@@ -73,6 +73,16 @@ class AnalysisViewModel @Inject constructor(
         val currentLeft = _uiState.value.hoopLeft ?: listOf(100, 100)
         val currentRight = _uiState.value.hoopRight ?: listOf(200, 200)
 
+        // Check file size (50MB limit for Render Free Tier)
+        val fileSizeMb = videoFile.length() / (1024 * 1024)
+        if (fileSizeMb > 50) {
+            _uiState.value = _uiState.value.copy(
+                status = AnalysisStatus.ERROR,
+                errorMessage = "Video is too large ($fileSizeMb MB). Please record a shorter video (under 50MB) for analysis."
+            )
+            return
+        }
+
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(status = AnalysisStatus.LOADING)
             
@@ -85,17 +95,58 @@ class AnalysisViewModel @Inject constructor(
             )
 
             result.onSuccess { response ->
-                _uiState.value = _uiState.value.copy(
-                    status = AnalysisStatus.SUCCESS,
-                    analysisResult = "Analysis Complete: ${response.data?.makes ?: 0}/${response.data?.totalShots ?: 0} Shots Made",
-                    shotAngles = response.data?.shotAngles ?: emptyList(),
-                    shotsResults = response.data?.shotsResults ?: emptyList()
-                )
+                val data = response.data
+                if (data != null) {
+                    val results = data.shotsResults ?: emptyList()
+                    val angles = data.shotAngles ?: emptyList()
+                    
+                    val newAnalysis = ShotAnalysis(
+                        totalShots = data.totalShots,
+                        makes = data.makes,
+                        misses = data.misses,
+                        fgPercentage = data.fgPercentage,
+                        longestStreak = if (data.longestStreak > 0) data.longestStreak else calculateLongestStreak(results),
+                        averageAngle = data.averageAngle,
+                        averageMakeAngle = data.averageMakeAngle,
+                        averageMissAngle = data.averageMissAngle,
+                        shotAngles = angles,
+                        shotsResults = results,
+                        timestamp = System.currentTimeMillis()
+                    )
+                    
+                    _uiState.value = _uiState.value.copy(
+                        status = AnalysisStatus.SUCCESS,
+                        selectedAnalysis = newAnalysis,
+                        analysisResult = "Analysis Complete: ${data.makes}/${data.totalShots} Shots Made",
+                        shotAngles = angles,
+                        shotsResults = results
+                    )
+                } else {
+                    _uiState.value = _uiState.value.copy(
+                        status = AnalysisStatus.ERROR,
+                        errorMessage = "Server returned empty analysis data."
+                    )
+                }
             }.onFailure { error ->
+                val errorMsg = error.message ?: "Unknown error occurred"
+                val displayMsg = if (errorMsg.contains("502")) {
+                    "Server is overloaded or video is too complex. Please try a shorter video."
+                } else {
+                    errorMsg
+                }
                 _uiState.value = _uiState.value.copy(
                     status = AnalysisStatus.ERROR,
-                    errorMessage = error.message ?: "Unknown error occurred"
+                    errorMessage = displayMsg
                 )
+            }
+            
+            // Clean up the temporary video file regardless of success/failure
+            try {
+                if (videoFile.exists()) {
+                    videoFile.delete()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
@@ -123,13 +174,19 @@ class AnalysisViewModel @Inject constructor(
                 val selected = todayAnalyses.firstOrNull() ?: allAnalyses.firstOrNull()
                 
                 if (selected != null) {
+                    val processedSelected = if (selected.longestStreak == 0 && selected.shotsResults.isNotEmpty()) {
+                        selected.copy(longestStreak = calculateLongestStreak(selected.shotsResults))
+                    } else {
+                        selected
+                    }
+                    
                     _uiState.value = _uiState.value.copy(
                         status = AnalysisStatus.SUCCESS,
-                        selectedAnalysis = selected,
+                        selectedAnalysis = processedSelected,
                         recentAnalyses = allAnalyses.take(5),
-                        analysisResult = "Latest Session: ${selected.makes}/${selected.totalShots} Shots Made",
-                        shotAngles = selected.shotAngles,
-                        shotsResults = selected.shotsResults
+                        analysisResult = "Latest Session: ${processedSelected.makes}/${processedSelected.totalShots} Shots Made",
+                        shotAngles = processedSelected.shotAngles,
+                        shotsResults = processedSelected.shotsResults
                     )
                 } else {
                     _uiState.value = _uiState.value.copy(
@@ -148,15 +205,21 @@ class AnalysisViewModel @Inject constructor(
             val selected = statsRepository.getShotAnalysisById(id)
             
             if (selected != null) {
+                val processedSelected = if (selected.longestStreak == 0 && selected.shotsResults.isNotEmpty()) {
+                    selected.copy(longestStreak = calculateLongestStreak(selected.shotsResults))
+                } else {
+                    selected
+                }
+                
                 // Also get all analyses for the recent list
                 statsRepository.getAllShotAnalyses().collect { allAnalyses ->
                     _uiState.value = _uiState.value.copy(
                         status = AnalysisStatus.SUCCESS,
-                        selectedAnalysis = selected,
+                        selectedAnalysis = processedSelected,
                         recentAnalyses = allAnalyses.take(5),
-                        analysisResult = "Viewing Analysis: ${selected.makes}/${selected.totalShots} Shots Made",
-                        shotAngles = selected.shotAngles,
-                        shotsResults = selected.shotsResults
+                        analysisResult = "Viewing Analysis: ${processedSelected.makes}/${processedSelected.totalShots} Shots Made",
+                        shotAngles = processedSelected.shotAngles,
+                        shotsResults = processedSelected.shotsResults
                     )
                 }
             } else {
@@ -176,11 +239,31 @@ class AnalysisViewModel @Inject constructor(
     }
 
     fun selectAnalysis(analysis: ShotAnalysis) {
+        val processedAnalysis = if (analysis.longestStreak == 0 && analysis.shotsResults.isNotEmpty()) {
+            analysis.copy(longestStreak = calculateLongestStreak(analysis.shotsResults))
+        } else {
+            analysis
+        }
+        
         _uiState.value = _uiState.value.copy(
-            selectedAnalysis = analysis,
-            shotAngles = analysis.shotAngles,
-            shotsResults = analysis.shotsResults
+            selectedAnalysis = processedAnalysis,
+            shotAngles = processedAnalysis.shotAngles,
+            shotsResults = processedAnalysis.shotsResults
         )
+    }
+
+    private fun calculateLongestStreak(results: List<Int>): Int {
+        var maxStreak = 0
+        var currentStreak = 0
+        for (res in results) {
+            if (res == 1) {
+                currentStreak++
+                if (currentStreak > maxStreak) maxStreak = currentStreak
+            } else {
+                currentStreak = 0
+            }
+        }
+        return maxStreak
     }
 
     fun resetStatus() {

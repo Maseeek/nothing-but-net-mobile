@@ -91,5 +91,7 @@
 - [x] Performed codebase audit for AI patterns: implemented idiomatic mappers for `ShotAnalysis` entities and refactored `StatsRepositoryImpl` to remove boilerplate and verbose logging.
 - [x] Cleaned up full package path references in `AnalysisScreen.kt` and standardized imports.
 - [x] Adjusted "Record" basketball dome size and vertical offset in `BottomNavigationBar` for improved visual prominence and premium feel.
+- [x] Fixed SelectionMarker scaling in AnalysisScreen: added inverse scale logic to ensure "L" and "R" labels remain a consistent 24dp size during zoom gestures.
+
 
 

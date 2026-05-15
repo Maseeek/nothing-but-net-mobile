@@ -29,7 +29,12 @@ data class SessionData(
     val misses: Int,
     @SerializedName("longest_streak") val longestStreak: Int,
     @SerializedName("fg_percentage") val fgPercentage: Double,
-    @SerializedName("total_shots") val totalShots: Int
+    @SerializedName("total_shots") val totalShots: Int,
+    @SerializedName("average_angle") val averageAngle: Double? = 0.0,
+    @SerializedName("average_make_angle") val averageMakeAngle: Double? = 0.0,
+    @SerializedName("average_miss_angle") val averageMissAngle: Double? = 0.0,
+    @SerializedName("shot_angles") val shotAngles: List<Double>? = emptyList(),
+    @SerializedName("shots_results") val shotsResults: List<Int>? = emptyList()
 )
 
 data class FgPercentageResponse(

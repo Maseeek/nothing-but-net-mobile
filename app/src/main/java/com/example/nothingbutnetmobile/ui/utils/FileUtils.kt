@@ -26,4 +26,34 @@ object FileUtils {
             null
         }
     }
+
+    fun getCacheSize(context: Context): String {
+        var size = 0L
+        context.cacheDir.listFiles()?.forEach {
+            size += it.length()
+        }
+        
+        val kb = size / 1024.0
+        val mb = kb / 1024.0
+        val gb = mb / 1024.0
+        
+        return when {
+            gb >= 1 -> String.format("%.2f GB", gb)
+            mb >= 1 -> String.format("%.2f MB", mb)
+            kb >= 1 -> String.format("%.2f KB", kb)
+            else -> "$size Bytes"
+        }
+    }
+
+    fun clearCache(context: Context): Boolean {
+        return try {
+            context.cacheDir.listFiles()?.forEach {
+                it.delete()
+            }
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
 }

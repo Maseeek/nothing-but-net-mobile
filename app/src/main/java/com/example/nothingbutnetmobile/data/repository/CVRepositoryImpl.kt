@@ -10,9 +10,12 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
+import android.util.Log
 
 @Singleton
 class CVRepositoryImpl @Inject constructor(
@@ -26,8 +29,8 @@ class CVRepositoryImpl @Inject constructor(
         hoopRight: List<Int>,
         showAngle: Boolean,
         targetAngle: Float
-    ): Result<AnalysisResponse> {
-        return try {
+    ): Result<AnalysisResponse> = withContext(Dispatchers.IO) {
+        try {
             val videoPart = MultipartBody.Part.createFormData(
                 "video",
                 videoFile.name,
@@ -40,6 +43,7 @@ class CVRepositoryImpl @Inject constructor(
             val showAngleBody = showAngle.toString().toRequestBody("text/plain".toMediaTypeOrNull())
             val targetAngleBody = targetAngle.toString().toRequestBody("text/plain".toMediaTypeOrNull())
 
+            Log.d("CVRepository", "Starting video upload: ${videoFile.name}, size: ${videoFile.length()}")
             val response = cvApi.uploadAndAnalyze(
                 videoPart,
                 hoopLeftBody,
@@ -47,9 +51,11 @@ class CVRepositoryImpl @Inject constructor(
                 showAngleBody,
                 targetAngleBody
             )
+            Log.d("CVRepository", "Server response received: ${response.code()}")
 
             val body = response.body()
             if (response.isSuccessful && body != null) {
+                Log.d("CVRepository", "Analysis successful, processing results")
                 // Save to database if data is present
                 body.data?.let { result ->
                     val analysis = ShotAnalysis(
@@ -73,9 +79,11 @@ class CVRepositoryImpl @Inject constructor(
                 Result.success(body)
             } else {
                 val errorMsg = response.errorBody()?.string() ?: response.message()
+                Log.e("CVRepository", "Analysis failed: $errorMsg")
                 Result.failure(Exception("Analysis failed: $errorMsg"))
             }
         } catch (e: Exception) {
+            Log.e("CVRepository", "Exception during analysis", e)
             Result.failure(e)
         }
     }

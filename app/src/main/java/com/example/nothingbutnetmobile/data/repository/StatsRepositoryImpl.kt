@@ -68,11 +68,11 @@ class StatsRepositoryImpl @Inject constructor(
                             misses = session.misses,
                             fgPercentage = session.fgPercentage,
                             longestStreak = session.longestStreak,
-                            averageAngle = 0.0,
-                            averageMakeAngle = 0.0,
-                            averageMissAngle = 0.0,
-                            shotAngles = emptyList(),
-                            shotsResults = emptyList(),
+                            averageAngle = session.averageAngle ?: 0.0,
+                            averageMakeAngle = session.averageMakeAngle ?: 0.0,
+                            averageMissAngle = session.averageMissAngle ?: 0.0,
+                            shotAngles = session.shotAngles ?: emptyList(),
+                            shotsResults = session.shotsResults ?: emptyList(),
                             timestamp = timestamp
                         )
                     )
