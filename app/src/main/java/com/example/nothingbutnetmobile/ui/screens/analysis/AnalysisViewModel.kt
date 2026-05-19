@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.nothingbutnetmobile.domain.repository.AuthRepository
 import com.example.nothingbutnetmobile.domain.repository.CVRepository
 import com.example.nothingbutnetmobile.domain.repository.StatsRepository
-import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
+import com.example.nothingbutnetmobile.domain.model.Session
 import com.example.nothingbutnetmobile.data.local.PreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -100,7 +100,7 @@ class AnalysisViewModel @Inject constructor(
                     val results = data.shotsResults ?: emptyList()
                     val angles = data.shotAngles ?: emptyList()
                     
-                    val newAnalysis = ShotAnalysis(
+                    val newAnalysis = Session(
                         totalShots = data.totalShots,
                         makes = data.makes,
                         misses = data.misses,
@@ -116,7 +116,7 @@ class AnalysisViewModel @Inject constructor(
                     
                     _uiState.value = _uiState.value.copy(
                         status = AnalysisStatus.SUCCESS,
-                        selectedAnalysis = newAnalysis,
+                        selectedSession = newAnalysis,
                         analysisResult = "Analysis Complete: ${data.makes}/${data.totalShots} Shots Made",
                         shotAngles = angles,
                         shotsResults = results
@@ -167,11 +167,11 @@ class AnalysisViewModel @Inject constructor(
             }
 
             // find today's data
-            statsRepository.getAllShotAnalyses().collect { allAnalyses ->
+            statsRepository.getAllSessions().collect { allAnalyses ->
                 val now = System.currentTimeMillis()
-                val todayAnalyses = allAnalyses.filter { isSameDay(it.timestamp, now) }
+                val todaySessions = allAnalyses.filter { isSameDay(it.timestamp, now) }
                 
-                val selected = todayAnalyses.firstOrNull() ?: allAnalyses.firstOrNull()
+                val selected = todaySessions.firstOrNull() ?: allAnalyses.firstOrNull()
                 
                 if (selected != null) {
                     val processedSelected = if (selected.longestStreak == 0 && selected.shotsResults.isNotEmpty()) {
@@ -182,8 +182,8 @@ class AnalysisViewModel @Inject constructor(
                     
                     _uiState.value = _uiState.value.copy(
                         status = AnalysisStatus.SUCCESS,
-                        selectedAnalysis = processedSelected,
-                        recentAnalyses = allAnalyses.take(5),
+                        selectedSession = processedSelected,
+                        recentSessions = allAnalyses.take(5),
                         analysisResult = "Latest Session: ${processedSelected.makes}/${processedSelected.totalShots} Shots Made",
                         shotAngles = processedSelected.shotAngles,
                         shotsResults = processedSelected.shotsResults
@@ -202,7 +202,7 @@ class AnalysisViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(status = AnalysisStatus.LOADING)
             
-            val selected = statsRepository.getShotAnalysisById(id)
+            val selected = statsRepository.getSessionById(id)
             
             if (selected != null) {
                 val processedSelected = if (selected.longestStreak == 0 && selected.shotsResults.isNotEmpty()) {
@@ -212,11 +212,11 @@ class AnalysisViewModel @Inject constructor(
                 }
                 
                 // get recent list
-                statsRepository.getAllShotAnalyses().collect { allAnalyses ->
+                statsRepository.getAllSessions().collect { allAnalyses ->
                     _uiState.value = _uiState.value.copy(
                         status = AnalysisStatus.SUCCESS,
-                        selectedAnalysis = processedSelected,
-                        recentAnalyses = allAnalyses.take(5),
+                        selectedSession = processedSelected,
+                        recentSessions = allAnalyses.take(5),
                         analysisResult = "Viewing Analysis: ${processedSelected.makes}/${processedSelected.totalShots} Shots Made",
                         shotAngles = processedSelected.shotAngles,
                         shotsResults = processedSelected.shotsResults
@@ -238,7 +238,7 @@ class AnalysisViewModel @Inject constructor(
                cal1.get(java.util.Calendar.DAY_OF_YEAR) == cal2.get(java.util.Calendar.DAY_OF_YEAR)
     }
 
-    fun selectAnalysis(analysis: ShotAnalysis) {
+    fun selectAnalysis(analysis: Session) {
         val processedAnalysis = if (analysis.longestStreak == 0 && analysis.shotsResults.isNotEmpty()) {
             analysis.copy(longestStreak = calculateLongestStreak(analysis.shotsResults))
         } else {
@@ -246,7 +246,7 @@ class AnalysisViewModel @Inject constructor(
         }
         
         _uiState.value = _uiState.value.copy(
-            selectedAnalysis = processedAnalysis,
+            selectedSession = processedAnalysis,
             shotAngles = processedAnalysis.shotAngles,
             shotsResults = processedAnalysis.shotsResults
         )
@@ -283,6 +283,6 @@ data class AnalysisUiState(
     val shotAngles: List<Double> = emptyList(),
     val shotsResults: List<Int> = emptyList(),
     val targetAngle: Float = 55f,
-    val selectedAnalysis: ShotAnalysis? = null,
-    val recentAnalyses: List<ShotAnalysis> = emptyList()
+    val selectedSession: Session? = null,
+    val recentSessions: List<Session> = emptyList()
 )

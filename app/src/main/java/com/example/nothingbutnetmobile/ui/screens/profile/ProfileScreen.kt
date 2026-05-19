@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
+import com.example.nothingbutnetmobile.domain.model.Session
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.Date
@@ -274,7 +274,7 @@ fun ProfileScreen(
 }
 
 @Composable
-fun RecentSessionItem(session: ShotAnalysis) {
+fun RecentSessionItem(session: Session) {
     val sdf = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
     val dateString = sdf.format(Date(session.timestamp))
 

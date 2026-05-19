@@ -88,13 +88,6 @@ fun HomeScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
-
-            AIInsightsCard(
-                insight = uiState.aiInsight,
-                tip = uiState.aiTip
-            )
-
             Spacer(modifier = Modifier.height(24.dp))
 
             Row(

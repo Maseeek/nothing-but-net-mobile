@@ -3,10 +3,10 @@ package com.example.nothingbutnetmobile.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
+import com.example.nothingbutnetmobile.domain.model.Session
 
-@Entity(tableName = "shot_analysis")
-data class ShotAnalysisEntity(
+@Entity(tableName = "sessions")
+data class SessionEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val totalShots: Int,
@@ -22,8 +22,8 @@ data class ShotAnalysisEntity(
     val timestamp: Long = System.currentTimeMillis()
 )
 
-fun ShotAnalysisEntity.toDomain(): ShotAnalysis {
-    return ShotAnalysis(
+fun SessionEntity.toDomain(): Session {
+    return Session(
         id = id,
         totalShots = totalShots,
         makes = makes,

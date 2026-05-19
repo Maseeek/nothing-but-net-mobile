@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
+import com.example.nothingbutnetmobile.domain.model.Session
 import com.example.nothingbutnetmobile.ui.components.BottomNavigationBar
 import com.example.nothingbutnetmobile.ui.components.DashboardHeader
 import com.example.nothingbutnetmobile.ui.theme.*
@@ -155,7 +155,7 @@ fun SortChip(
 @Composable
 fun LeaderboardItem(
     rank: Int,
-    session: ShotAnalysis,
+    session: Session,
     sortType: LeaderboardSort
 ) {
     val rankColor = when (rank) {

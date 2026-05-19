@@ -22,7 +22,6 @@
   - [x] Dashboard Header with User Greeting <!-- id: 14 -->
   - [x] Live Session Status Card <!-- id: 15 -->
   - [x] Quick Stats Grid <!-- id: 16 -->
-  - [x] AI Training Insights Component <!-- id: 17 -->
   - [x] Replace Arc Analysis Graph with FG% Progression Graph <!-- id: 18 -->
   - [x] Custom FAB Bottom Navigation <!-- id: 19 -->
 - [x] Refactor Dashboard to show most recent session instead of "Live Session" <!-- id: 36 -->
@@ -61,14 +60,29 @@
 
 ## 🧠 AGENT MEMORY (Current State)
 
-**Current Phase**: Phase 3 (Testing & Polish) - ContentProvider Implementation
+**Current Phase**: Phase 3 (Testing & Polish) - Refactoring & Branding
 
 ### Recent Accomplishments
+- **Session Data Network Serialization & UI Mapping Fix**:
+    - Removed snake_case `@SerializedName` annotations from `SessionRequest` and `SessionData` to align with the Node.js backend's camelCase schema.
+    - Updated `ArcAnalysisCard` in `AnalysisScreen.kt` to receive and display the actual `averageAngle` property of the shot session.
+    - Added dynamic status badges ("PERFECT", "GOOD", "ADJUST ARC") based on the deviation from the user's target angle.
+    - Resolved missing session statistics, shot sequences, streaks, and arcs across the Analysis, History, and Leaderboard views.
+- **App Icon & Loading Screen Branding Alignment**:
+    - Replaced the launcher icons in all density mipmap folders (`mipmap-mdpi`, `mipmap-hdpi`, `mipmap-xhdpi`, `mipmap-xxhdpi`, `mipmap-xxxhdpi`) with the user's official circular branded icon (grey circle background with basketball swooshing into net) in PNG format.
+    - Cleaned up and deleted the XML-based adaptive icon overrides to prioritize the official circular branded launcher icon.
+    - Redesigned `SplashScreen.kt` to include a pulsing brand logo, spaced tagline typography, a custom dual-gradient progress bar, and soft amber background glows.
+- **Session Data Architecture Refactoring & Clean Compile**:
+    - Fully migrated `ShotAnalysis` references to `Session` across the Room database schemas, the Custom ContentProvider endpoints, and all UI packages (`AnalysisViewModel`, `HistoryViewModel`, `HomeViewModel`, `ProfileViewModel`, `LeaderboardViewModel`, and their respective screens).
+    - Resolved JSON serialization conflicts with `longestStreak`.
+    - Renamed and refactored the instrumented provider test to `SessionProviderTest.kt`, updating URI paths to `sessions` and successfully verifying clean compilation and local build verification.
+- **AI Insights Feature Removal**:
+    - Removed all traces of the inaccurate and incomplete AI Training Insights component, UI card, ViewModel state properties, and string resources from the codebase.
+    - Added AI Coaching Insights as a designated future enhancement.
 - **Custom ContentProvider & Instrumented Tests (Coursework Compliance)**:
-    - Added synchronous cursor query and write methods (`selectAllCursor`, `selectByIdCursor`, `insertSynchronous`, `deleteByIdSynchronous`, `updateSynchronous`) to `ShotAnalysisDao.kt`.
-    - Created `ShotAnalysisProvider.kt` custom ContentProvider to expose Room database shot sessions via content URIs.
-    - Registered the provider inside `AndroidManifest.xml` under the `<application>` element.
-    - Added `ShotAnalysisProviderTest.kt` in the `androidTest` folder and successfully validated all CRUD operations (insertion, list columns serialization, directory/single item queries, and deletion) on the connected hardware device.
+    - Added synchronous cursor query and write methods to `SessionDao.kt`.
+    - Created `SessionProvider.kt` custom ContentProvider to expose Room database shot sessions via content URIs.
+    - Declared and registered the provider inside `AndroidManifest.xml` under the `<application>` element.
 - **App Lifecycle & Screen Rotation Fixes**:
     - Refactored transient UI states (zoom/pan parameters `scale`, `offsetX`, `offsetY` in `AnalysisScreen.kt`; `selectionMode` and `isRecording` in `RecordScreen.kt`) to use `rememberSaveable` instead of `remember` so they survive orientation changes.
     - Configured `android:configChanges` for `MainActivity` in `AndroidManifest.xml` to prevent activity destruction and restart on screen rotation.
@@ -127,5 +141,8 @@
 ### Next Steps
 1. **Task 41**: Perform final end-to-end verification with the production server.
 2. **Phase 3**: Initialize unit tests for `StatsRepository` and ViewModels.
+
+## 🔮 Future Enhancements
+- [ ] **AI Coaching Insights**: Re-implement a more accurate and robust AI feedback system with actual telemetry/video classification feedback (removed from MVP due to accuracy and utility issues).
 
 

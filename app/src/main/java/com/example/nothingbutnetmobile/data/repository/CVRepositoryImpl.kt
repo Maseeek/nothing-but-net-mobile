@@ -2,7 +2,7 @@ package com.example.nothingbutnetmobile.data.repository
 
 import com.example.nothingbutnetmobile.data.remote.CVApi
 import com.example.nothingbutnetmobile.data.remote.models.AnalysisResponse
-import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
+import com.example.nothingbutnetmobile.domain.model.Session
 import com.example.nothingbutnetmobile.domain.repository.CVRepository
 import com.example.nothingbutnetmobile.domain.repository.StatsRepository
 import com.google.gson.Gson
@@ -58,7 +58,7 @@ class CVRepositoryImpl @Inject constructor(
                 Log.d("CVRepository", "Analysis successful, processing results")
                 // save local & sync
                 body.data?.let { result ->
-                    val analysis = ShotAnalysis(
+                    val session = Session(
                         totalShots = result.totalShots,
                         makes = result.makes,
                         misses = result.misses,
@@ -71,8 +71,8 @@ class CVRepositoryImpl @Inject constructor(
                         shotsResults = result.shotsResults ?: emptyList(),
                         timestamp = System.currentTimeMillis()
                     )
-                    statsRepository.saveShotAnalysis(analysis)
-                    statsRepository.pushSessionToServer(analysis)
+                    statsRepository.saveSession(session)
+                    statsRepository.pushSessionToServer(session)
                 }
                 Result.success(body)
             } else {

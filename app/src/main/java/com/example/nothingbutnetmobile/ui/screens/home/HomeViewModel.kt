@@ -39,40 +39,22 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun observeStats() {
-        statsRepository.getAllShotAnalyses()
-            .onEach { analyses ->
-                if (analyses.isNotEmpty()) {
-                    val latestAnalysis = analyses.maxByOrNull { it.timestamp }
-                    val sortedLast5 = analyses.sortedBy { it.timestamp }.takeLast(5)
+        statsRepository.getAllSessions()
+            .onEach { sessions ->
+                if (sessions.isNotEmpty()) {
+                    val latestSession = sessions.maxByOrNull { it.timestamp }
+                    val sortedLast5 = sessions.sortedBy { it.timestamp }.takeLast(5)
                     val history = sortedLast5.map { it.fgPercentage.toFloat() }
                     val sdf = SimpleDateFormat("d MMM", Locale.getDefault())
                     val historyDates = sortedLast5.map { sdf.format(Date(it.timestamp)) }
 
-                    latestAnalysis?.let { it ->
-                        val makeAngle = it.averageMakeAngle
-                        val missAngle = it.averageMissAngle
-                        
-                        var insight = "consistent"
-                        var tip = "Keep up the good work!"
-                        
-                        if (makeAngle > 0 && missAngle > 0) {
-                            if (missAngle < makeAngle - 2) {
-                                insight = "needs arc"
-                                tip = "Your misses are flat (${String.format("%.1f", missAngle)}°). Try getting more arc like your makes (${String.format("%.1f", makeAngle)}°)."
-                            } else if (missAngle > makeAngle + 2) {
-                                insight = "too high"
-                                tip = "Your misses have too much arc (${String.format("%.1f", missAngle)}°). Try lowering your release slightly."
-                            }
-                        }
-
+                    latestSession?.let { it ->
                         _uiState.value = _uiState.value.copy(
                             totalShots = it.totalShots.toString(),
                             longestStreak = it.longestStreak.toString(),
                             avgAngle = "${it.averageAngle}°",
                             fgPercentage = it.fgPercentage.toInt(),
                             fgRatio = "${it.makes}/${it.totalShots}",
-                            aiInsight = insight,
-                            aiTip = tip,
                             shotAngles = it.shotAngles,
                             shotsResults = it.shotsResults,
                             averageMakeAngle = it.averageMakeAngle,
@@ -88,8 +70,6 @@ class HomeViewModel @Inject constructor(
                         avgAngle = "0.0°",
                         fgPercentage = 0,
                         fgRatio = "0/0",
-                        aiInsight = "consistent",
-                        aiTip = "Keep shooting to get insights!",
                         shotAngles = emptyList(),
                         shotsResults = emptyList(),
                         averageMakeAngle = 0.0,
@@ -116,8 +96,6 @@ data class HomeUiState(
     val avgAngle: String = "0.0°",
     val fgPercentage: Int = 0,
     val fgRatio: String = "0/0",
-    val aiInsight: String = "consistent",
-    val aiTip: String = "Keep shooting to get insights!",
     val shotAngles: List<Double> = emptyList(),
     val shotsResults: List<Int> = emptyList(),
     val averageMakeAngle: Double = 0.0,

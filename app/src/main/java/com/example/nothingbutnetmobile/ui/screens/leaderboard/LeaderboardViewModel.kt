@@ -2,7 +2,7 @@ package com.example.nothingbutnetmobile.ui.screens.leaderboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
+import com.example.nothingbutnetmobile.domain.model.Session
 import com.example.nothingbutnetmobile.domain.repository.AuthRepository
 import com.example.nothingbutnetmobile.domain.repository.StatsRepository
 import com.example.nothingbutnetmobile.data.local.PreferenceManager
@@ -46,10 +46,10 @@ class LeaderboardViewModel @Inject constructor(
     }
 
     private fun observeLeaderboard() {
-        statsRepository.getAllShotAnalyses()
-            .onEach { analyses ->
+        statsRepository.getAllSessions()
+            .onEach { sessions ->
                 _uiState.value = _uiState.value.copy(
-                    allSessions = analyses
+                    allSessions = sessions
                 )
                 updateSortedList()
             }
@@ -79,6 +79,6 @@ data class LeaderboardUiState(
     val isLoading: Boolean = false,
     val userName: String = "User",
     val sortType: LeaderboardSort = LeaderboardSort.SHOTS,
-    val allSessions: List<ShotAnalysis> = emptyList(),
-    val rankedSessions: List<ShotAnalysis> = emptyList()
+    val allSessions: List<Session> = emptyList(),
+    val rankedSessions: List<Session> = emptyList()
 )

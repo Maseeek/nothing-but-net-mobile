@@ -1,8 +1,8 @@
 package com.example.nothingbutnetmobile.domain.model
 
-import com.example.nothingbutnetmobile.data.local.entity.ShotAnalysisEntity
+import com.example.nothingbutnetmobile.data.local.entity.SessionEntity
 
-data class ShotAnalysis(
+data class Session(
     val id: Long = 0,
     val totalShots: Int,
     val makes: Int,
@@ -17,8 +17,8 @@ data class ShotAnalysis(
     val timestamp: Long
 )
 
-fun ShotAnalysis.toEntity(): ShotAnalysisEntity {
-    return ShotAnalysisEntity(
+fun Session.toEntity(): SessionEntity {
+    return SessionEntity(
         id = id,
         totalShots = totalShots,
         makes = makes,

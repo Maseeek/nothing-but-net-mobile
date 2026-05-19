@@ -38,6 +38,21 @@ Working on Quality Assurance and Performance Optimization.
     - Created a custom `ShotAnalysisProvider` to wrap and expose the local Room database to external clients.
     - Declared the provider under `<application>` in `AndroidManifest.xml` with exported flag.
     - Wrote `ShotAnalysisProviderTest.kt` inside `androidTest` and verified passing CRUD assertions (inserts, directory queries, item queries, deletions) on connected hardware.
+- [x] **AI Insights Feature Removal**:
+    - Removed all traces of the inaccurate and incomplete AI Training Insights component, UI card, ViewModel state properties, and string resources from the codebase.
+    - Registered AI Coaching Insights under future tasks for subsequent enhancement iterations.
+- [x] **Branded App Icon & Splash Screen Alignment**:
+    - Replaced the launcher icons in all density mipmap folders (`mipmap-mdpi`, `mipmap-hdpi`, `mipmap-xhdpi`, `mipmap-xxhdpi`, `mipmap-xxxhdpi`) with the user's official circular branded icon (grey circle background with basketball swooshing into net) in PNG format.
+    - Cleaned up and deleted the XML-based adaptive icon overrides to prioritize the official circular branded launcher icon.
+    - Redesigned `SplashScreen.kt` with a pulsing brand logo, spaced-lettering tagline, and a smooth gradient loading bar.
+- [x] **Session Data Model Refactoring & Test Updates**:
+    - Fully refactored `ShotAnalysis` references to `Session` across all UI view models and screen composables.
+    - Renamed and refactored the instrumented provider test to `SessionProviderTest.kt`, updating URI paths to `sessions` and successfully verifying clean compilation and local build verification.
+- [x] **Session Data Network Serialization & UI Mapping Fix**:
+    - Removed snake_case `@SerializedName` annotations from `SessionRequest` and `SessionData` to align with the Node.js backend's camelCase schema.
+    - Updated `ArcAnalysisCard` in `AnalysisScreen.kt` to receive and display the actual `averageAngle` property of the shot session.
+    - Added dynamic status badges ("PERFECT", "GOOD", "ADJUST ARC") based on the deviation from the user's target angle.
+    - Resolved missing session statistics, shot sequences, streaks, and arcs across the Analysis, History, and Leaderboard views.
 
 ## Next Steps
 1. Unit Testing for ViewModels (Task 10).

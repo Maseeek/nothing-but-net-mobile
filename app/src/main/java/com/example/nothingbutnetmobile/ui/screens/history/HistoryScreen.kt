@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
+import com.example.nothingbutnetmobile.domain.model.Session
 import com.example.nothingbutnetmobile.ui.components.BottomNavigationBar
 import com.example.nothingbutnetmobile.ui.components.DashboardHeader
 import com.example.nothingbutnetmobile.ui.theme.*
@@ -117,7 +117,7 @@ fun HistoryScreen(
 }
 
 @Composable
-fun SessionHistoryCard(session: ShotAnalysis, onClick: () -> Unit) {
+fun SessionHistoryCard(session: Session, onClick: () -> Unit) {
     val sdf = SimpleDateFormat("MMM dd, yyyy · HH:mm", Locale.getDefault())
     val dateString = sdf.format(Date(session.timestamp))
 

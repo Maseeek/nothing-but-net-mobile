@@ -3,7 +3,7 @@ package com.example.nothingbutnetmobile.di
 import android.content.Context
 import androidx.room.Room
 import com.example.nothingbutnetmobile.data.local.AppDatabase
-import com.example.nothingbutnetmobile.data.local.dao.ShotAnalysisDao
+import com.example.nothingbutnetmobile.data.local.dao.SessionDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,7 +26,7 @@ object DatabaseModule {
     }
 
     @Provides
-    fun provideShotAnalysisDao(database: AppDatabase): ShotAnalysisDao {
-        return database.shotAnalysisDao()
+    fun provideSessionDao(database: AppDatabase): SessionDao {
+        return database.sessionDao()
     }
 }

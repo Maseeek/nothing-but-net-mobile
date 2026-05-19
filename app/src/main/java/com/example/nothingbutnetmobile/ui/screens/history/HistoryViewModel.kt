@@ -2,7 +2,7 @@ package com.example.nothingbutnetmobile.ui.screens.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
+import com.example.nothingbutnetmobile.domain.model.Session
 import com.example.nothingbutnetmobile.domain.repository.AuthRepository
 import com.example.nothingbutnetmobile.domain.repository.StatsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +32,7 @@ class HistoryViewModel @Inject constructor(
     }
 
     private fun observeHistory() {
-        statsRepository.getAllShotAnalyses()
+        statsRepository.getAllSessions()
             .onEach { analyses ->
                 _uiState.value = _uiState.value.copy(
                     sessions = analyses.sortedByDescending { it.timestamp }
@@ -44,5 +44,5 @@ class HistoryViewModel @Inject constructor(
 
 data class HistoryUiState(
     val userName: String = "User",
-    val sessions: List<ShotAnalysis> = emptyList()
+    val sessions: List<Session> = emptyList()
 )

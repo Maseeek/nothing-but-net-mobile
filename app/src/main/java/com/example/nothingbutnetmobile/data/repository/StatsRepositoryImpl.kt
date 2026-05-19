@@ -1,11 +1,11 @@
 package com.example.nothingbutnetmobile.data.repository
 
-import com.example.nothingbutnetmobile.data.local.dao.ShotAnalysisDao
-import com.example.nothingbutnetmobile.data.local.entity.ShotAnalysisEntity
+import com.example.nothingbutnetmobile.data.local.dao.SessionDao
+import com.example.nothingbutnetmobile.data.local.entity.SessionEntity
 import com.example.nothingbutnetmobile.data.local.entity.toDomain
 import com.example.nothingbutnetmobile.data.remote.AuthApi
 import com.example.nothingbutnetmobile.data.remote.models.SessionRequest
-import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
+import com.example.nothingbutnetmobile.domain.model.Session
 import com.example.nothingbutnetmobile.domain.model.toEntity
 import com.example.nothingbutnetmobile.domain.repository.AuthRepository
 import com.example.nothingbutnetmobile.domain.repository.StatsRepository
@@ -19,27 +19,27 @@ import android.util.Log
 
 @Singleton
 class StatsRepositoryImpl @Inject constructor(
-    private val shotAnalysisDao: ShotAnalysisDao,
+    private val sessionDao: SessionDao,
     private val authApi: AuthApi,
     private val authRepository: AuthRepository
 ) : StatsRepository {
 
-    override fun getLatestShotAnalysis(): Flow<ShotAnalysis?> {
-        return shotAnalysisDao.getLatestAnalysis().map { it?.toDomain() }
+    override fun getLatestSession(): Flow<Session?> {
+        return sessionDao.getLatestSession().map { it?.toDomain() }
     }
 
-    override fun getAllShotAnalyses(): Flow<List<ShotAnalysis>> {
-        return shotAnalysisDao.getAllAnalyses().map { entities ->
+    override fun getAllSessions(): Flow<List<Session>> {
+        return sessionDao.getAllSessions().map { entities ->
             entities.map { it.toDomain() }
         }
     }
 
-    override suspend fun getShotAnalysisById(id: Long): ShotAnalysis? {
-        return shotAnalysisDao.getAnalysisById(id)?.toDomain()
+    override suspend fun getSessionById(id: Long): Session? {
+        return sessionDao.getSessionById(id)?.toDomain()
     }
 
-    override suspend fun saveShotAnalysis(analysis: ShotAnalysis) {
-        shotAnalysisDao.insertAnalysis(analysis.toEntity())
+    override suspend fun saveSession(session: Session) {
+        sessionDao.insertSession(session.toEntity())
     }
 
     override suspend fun seedDatabase() {
@@ -47,7 +47,7 @@ class StatsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun clearAll() {
-        shotAnalysisDao.deleteAll()
+        sessionDao.deleteAll()
     }
 
     override suspend fun syncWithServer(): Result<Unit> {
@@ -56,23 +56,23 @@ class StatsRepositoryImpl @Inject constructor(
             val response = authApi.getSessions(userId)
             
             if (response.isSuccessful) {
-                val sessions = response.body() ?: emptyList()
-                shotAnalysisDao.deleteAll()
+                val sessionsData = response.body() ?: emptyList()
+                sessionDao.deleteAll()
                 
-                sessions.forEach { session ->
-                    val timestamp = parseServerDate(session.sessionDate)
-                    shotAnalysisDao.insertAnalysis(
-                        ShotAnalysisEntity(
-                            totalShots = session.totalShots,
-                            makes = session.makes,
-                            misses = session.misses,
-                            fgPercentage = session.fgPercentage,
-                            longestStreak = session.longestStreak,
-                            averageAngle = session.averageAngle ?: 0.0,
-                            averageMakeAngle = session.averageMakeAngle ?: 0.0,
-                            averageMissAngle = session.averageMissAngle ?: 0.0,
-                            shotAngles = session.shotAngles ?: emptyList(),
-                            shotsResults = session.shotsResults ?: emptyList(),
+                sessionsData.forEach { sessionData ->
+                    val timestamp = parseServerDate(sessionData.sessionDate)
+                    sessionDao.insertSession(
+                        SessionEntity(
+                            totalShots = sessionData.totalShots,
+                            makes = sessionData.makes,
+                            misses = sessionData.misses,
+                            fgPercentage = sessionData.fgPercentage,
+                            longestStreak = sessionData.longestStreak,
+                            averageAngle = sessionData.averageAngle ?: 0.0,
+                            averageMakeAngle = sessionData.averageMakeAngle ?: 0.0,
+                            averageMissAngle = sessionData.averageMissAngle ?: 0.0,
+                            shotAngles = sessionData.shotAngles ?: emptyList(),
+                            shotsResults = sessionData.shotsResults ?: emptyList(),
                             timestamp = timestamp
                         )
                     )
@@ -103,21 +103,21 @@ class StatsRepositoryImpl @Inject constructor(
         return System.currentTimeMillis()
     }
 
-    override suspend fun pushSessionToServer(analysis: ShotAnalysis): Result<Unit> {
+    override suspend fun pushSessionToServer(session: Session): Result<Unit> {
         return try {
             val userId = authRepository.getUserId()
             val request = SessionRequest(
                 userId = userId,
-                makes = analysis.makes,
-                misses = analysis.misses,
-                longestStreak = analysis.longestStreak,
-                averageAngle = analysis.averageAngle,
-                averageMakeAngle = analysis.averageMakeAngle,
-                averageMissAngle = analysis.averageMissAngle,
-                fgPercentage = analysis.fgPercentage,
-                shotAngles = analysis.shotAngles,
-                shotsResults = analysis.shotsResults,
-                totalShots = analysis.totalShots
+                makes = session.makes,
+                misses = session.misses,
+                longestStreak = session.longestStreak,
+                averageAngle = session.averageAngle,
+                averageMakeAngle = session.averageMakeAngle,
+                averageMissAngle = session.averageMissAngle,
+                fgPercentage = session.fgPercentage,
+                shotAngles = session.shotAngles,
+                shotsResults = session.shotsResults,
+                totalShots = session.totalShots
             )
             
             val response = authApi.saveSession(request)

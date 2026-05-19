@@ -8,22 +8,22 @@ import android.database.Cursor
 import android.net.Uri
 import androidx.room.Room
 import com.example.nothingbutnetmobile.data.local.AppDatabase
-import com.example.nothingbutnetmobile.data.local.entity.ShotAnalysisEntity
+import com.example.nothingbutnetmobile.data.local.entity.SessionEntity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class ShotAnalysisProvider : ContentProvider() {
+class SessionProvider : ContentProvider() {
 
     companion object {
         const val AUTHORITY = "com.example.nothingbutnetmobile.provider"
-        val CONTENT_URI: Uri = Uri.parse("content://$AUTHORITY/shot_analysis")
+        val CONTENT_URI: Uri = Uri.parse("content://$AUTHORITY/sessions")
 
         private const val CODE_DIR = 1
         private const val CODE_ITEM = 2
 
         private val uriMatcher = UriMatcher(UriMatcher.NO_MATCH).apply {
-            addURI(AUTHORITY, "shot_analysis", CODE_DIR)
-            addURI(AUTHORITY, "shot_analysis/#", CODE_ITEM)
+            addURI(AUTHORITY, "sessions", CODE_DIR)
+            addURI(AUTHORITY, "sessions/#", CODE_ITEM)
         }
     }
 
@@ -48,10 +48,10 @@ class ShotAnalysisProvider : ContentProvider() {
         sortOrder: String?
     ): Cursor? {
         val cursor: Cursor = when (uriMatcher.match(uri)) {
-            CODE_DIR -> database.shotAnalysisDao().selectAllCursor()
+            CODE_DIR -> database.sessionDao().selectAllCursor()
             CODE_ITEM -> {
                 val id = ContentUris.parseId(uri)
-                database.shotAnalysisDao().selectByIdCursor(id)
+                database.sessionDao().selectByIdCursor(id)
             }
             else -> throw IllegalArgumentException("Unknown URI: $uri")
         }
@@ -90,7 +90,7 @@ class ShotAnalysisProvider : ContentProvider() {
             emptyList()
         }
 
-        val entity = ShotAnalysisEntity(
+        val entity = SessionEntity(
             id = values.getAsLong("id") ?: 0L,
             totalShots = values.getAsInteger("totalShots") ?: 0,
             makes = values.getAsInteger("makes") ?: 0,
@@ -105,7 +105,7 @@ class ShotAnalysisProvider : ContentProvider() {
             timestamp = values.getAsLong("timestamp") ?: System.currentTimeMillis()
         )
 
-        val id = database.shotAnalysisDao().insertSynchronous(entity)
+        val id = database.sessionDao().insertSynchronous(entity)
         if (id > -1) {
             context.contentResolver.notifyChange(uri, null)
             return ContentUris.withAppendedId(uri, id)
@@ -117,7 +117,7 @@ class ShotAnalysisProvider : ContentProvider() {
         val count = when (uriMatcher.match(uri)) {
             CODE_ITEM -> {
                 val id = ContentUris.parseId(uri)
-                database.shotAnalysisDao().deleteByIdSynchronous(id)
+                database.sessionDao().deleteByIdSynchronous(id)
             }
             else -> throw IllegalArgumentException("Unknown or unsupported deletion URI: $uri")
         }
@@ -128,14 +128,13 @@ class ShotAnalysisProvider : ContentProvider() {
     }
 
     override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<out String>?): Int {
-        // updates are not typically performed for shot statistics sessions, return 0
         return 0
     }
 
     override fun getType(uri: Uri): String {
         return when (uriMatcher.match(uri)) {
-            CODE_DIR -> "vnd.android.cursor.dir/$AUTHORITY.shot_analysis"
-            CODE_ITEM -> "vnd.android.cursor.item/$AUTHORITY.shot_analysis"
+            CODE_DIR -> "vnd.android.cursor.dir/$AUTHORITY.sessions"
+            CODE_ITEM -> "vnd.android.cursor.item/$AUTHORITY.sessions"
             else -> throw IllegalArgumentException("Unknown URI type: $uri")
         }
     }

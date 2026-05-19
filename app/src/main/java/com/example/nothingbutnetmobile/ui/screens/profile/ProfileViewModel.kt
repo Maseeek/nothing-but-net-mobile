@@ -2,7 +2,7 @@ package com.example.nothingbutnetmobile.ui.screens.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
+import com.example.nothingbutnetmobile.domain.model.Session
 import com.example.nothingbutnetmobile.domain.repository.AuthRepository
 import com.example.nothingbutnetmobile.domain.repository.StatsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,29 +42,29 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun observeStats() {
-        statsRepository.getAllShotAnalyses()
-            .onEach { analyses ->
-                if (analyses.isNotEmpty()) {
-                    val totalShots = analyses.sumOf { it.totalShots }
-                    val totalMakes = analyses.sumOf { it.makes }
-                    val totalMisses = analyses.sumOf { it.misses }
+        statsRepository.getAllSessions()
+            .onEach { sessions ->
+                if (sessions.isNotEmpty()) {
+                    val totalShots = sessions.sumOf { it.totalShots }
+                    val totalMakes = sessions.sumOf { it.makes }
+                    val totalMisses = sessions.sumOf { it.misses }
                     val careerFgPercentage = if (totalShots > 0) {
                         (totalMakes.toDouble() / totalShots.toDouble()) * 100
                     } else 0.0
                     
-                    val bestSession = analyses.maxByOrNull { it.fgPercentage }?.fgPercentage ?: 0.0
+                    val bestSession = sessions.maxByOrNull { it.fgPercentage }?.fgPercentage ?: 0.0
                     
-                    val sortedLast5 = analyses.sortedBy { it.timestamp }.takeLast(5)
+                    val sortedLast5 = sessions.sortedBy { it.timestamp }.takeLast(5)
                     val history = sortedLast5.map { it.fgPercentage.toFloat() }
                     val sdf = SimpleDateFormat("d MMM", Locale.getDefault())
                     val historyDates = sortedLast5.map { sdf.format(Date(it.timestamp)) }
                     
-                    val sortedAnalyses = analyses.sortedByDescending { it.timestamp }
-                    val lastSessionFg = if (sortedAnalyses.isNotEmpty()) sortedAnalyses[0].fgPercentage else 0.0
-                    val previousSessionFg = if (sortedAnalyses.size > 1) sortedAnalyses[1].fgPercentage else 0.0
+                    val sortedSessions = sessions.sortedByDescending { it.timestamp }
+                    val lastSessionFg = if (sortedSessions.isNotEmpty()) sortedSessions[0].fgPercentage else 0.0
+                    val previousSessionFg = if (sortedSessions.size > 1) sortedSessions[1].fgPercentage else 0.0
                     val diff = lastSessionFg - previousSessionFg
                     
-                    val progressMessage = if (sortedAnalyses.size > 1) {
+                    val progressMessage = if (sortedSessions.size > 1) {
                         val prevStr = String.format("%.1f", previousSessionFg)
                         val lastStr = String.format("%.1f", lastSessionFg)
                         if (diff >= 0) {
@@ -85,7 +85,7 @@ class ProfileViewModel @Inject constructor(
                         progressMessage = progressMessage,
                         fgHistory = history,
                         fgHistoryDates = historyDates,
-                        recentSessions = analyses.sortedByDescending { it.timestamp }.take(3)
+                        recentSessions = sessions.sortedByDescending { it.timestamp }.take(3)
                     )
                 }
             }
@@ -108,5 +108,5 @@ data class ProfileUiState(
     val progressMessage: String = "Keep practicing to see your progress!",
     val fgHistory: List<Float> = emptyList(),
     val fgHistoryDates: List<String> = emptyList(),
-    val recentSessions: List<ShotAnalysis> = emptyList()
+    val recentSessions: List<Session> = emptyList()
 )

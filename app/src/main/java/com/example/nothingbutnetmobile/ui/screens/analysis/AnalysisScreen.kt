@@ -72,7 +72,7 @@ import androidx.compose.foundation.horizontalScroll
 
 import androidx.compose.material.icons.filled.CloudOff
 import com.example.nothingbutnetmobile.ui.theme.*
-import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
+import com.example.nothingbutnetmobile.domain.model.Session
 
 private fun Context.findActivity(): Activity? {
     var currentContext = this
@@ -506,25 +506,26 @@ fun AnalysisScreen(
                         }
                     }
                     AnalysisStatus.SUCCESS -> {
-                        val analysis = uiState.selectedAnalysis
+                        val session = uiState.selectedSession
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .verticalScroll(rememberScrollState())
                                 .padding(bottom = 24.dp)
                         ) {
-                            if (analysis != null) {
+                            if (session != null) {
                                 // analytics grid
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                                 ) {
                                     EfficiencyCard(
-                                        percentage = analysis.fgPercentage,
+                                        percentage = session.fgPercentage,
                                         modifier = Modifier.weight(1f)
                                     )
                                     
                                     ArcAnalysisCard(
+                                        averageAngle = session.averageAngle,
                                         targetAngle = uiState.targetAngle,
                                         modifier = Modifier.weight(1f)
                                     )
@@ -538,13 +539,13 @@ fun AnalysisScreen(
                                 ) {
                                     StatCard(
                                         label = "TOTAL MAKES",
-                                        value = analysis.makes.toString(),
+                                        value = session.makes.toString(),
                                         icon = Icons.Default.CheckCircle,
                                         modifier = Modifier.weight(1f)
                                     )
                                     StatCard(
                                         label = "MAX STREAK",
-                                        value = analysis.longestStreak.toString(),
+                                        value = session.longestStreak.toString(),
                                         icon = Icons.Default.LocalFireDepartment,
                                         modifier = Modifier.weight(1f)
                                     )
@@ -552,12 +553,12 @@ fun AnalysisScreen(
                                 
                                 Spacer(modifier = Modifier.height(16.dp))
                                 
-                                ShotSequenceCard(results = analysis.shotsResults)
+                                ShotSequenceCard(results = session.shotsResults)
                                 
                                 Spacer(modifier = Modifier.height(16.dp))
                                 
                                 LastSessionsCard(
-                                    sessions = uiState.recentAnalyses,
+                                    sessions = uiState.recentSessions,
                                     onSelect = { viewModel.selectAnalysis(it) },
                                     onViewAll = { navController.navigate("history") }
                                 )
@@ -693,7 +694,21 @@ fun EfficiencyCard(percentage: Double, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ArcAnalysisCard(targetAngle: Float, modifier: Modifier = Modifier) {
+fun ArcAnalysisCard(averageAngle: Double, targetAngle: Float, modifier: Modifier = Modifier) {
+    val angleDiff = kotlin.math.abs(averageAngle - targetAngle.toDouble())
+    val statusText = when {
+        averageAngle == 0.0 -> "NO DATA"
+        angleDiff <= 2.0 -> "PERFECT"
+        angleDiff <= 5.0 -> "GOOD"
+        else -> "ADJUST ARC"
+    }
+    val statusColor = when (statusText) {
+        "PERFECT" -> SuccessGreen
+        "GOOD" -> SuccessGreen.copy(alpha = 0.8f)
+        "NO DATA" -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+        else -> ErrorRed
+    }
+
     Card(
         modifier = modifier.aspectRatio(1f),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -707,31 +722,36 @@ fun ArcAnalysisCard(targetAngle: Float, modifier: Modifier = Modifier) {
             Icon(
                 imageVector = Icons.Default.TrendingUp,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(32.dp)
+                tint = statusColor,
+                modifier = Modifier.size(24.dp)
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Arc Analysis",
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                text = if (averageAngle > 0) String.format("%.1f°", averageAngle) else "--",
+                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Black),
+                color = MaterialTheme.colorScheme.onBackground
             )
             Text(
-                text = "Optimal: ${targetAngle.toInt()}°",
+                text = "Avg Shot Arc",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
             )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Optimal: ${targetAngle.toInt()}°",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+            )
             Spacer(modifier = Modifier.height(8.dp))
             Surface(
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                color = statusColor.copy(alpha = 0.15f),
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
-                    text = "STABLE",
+                    text = statusText,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                     style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Black),
-                    color = MaterialTheme.colorScheme.primary
+                    color = statusColor
                 )
             }
         }
@@ -807,8 +827,8 @@ fun ShotSequenceCard(results: List<Int>) {
 
 @Composable
 fun LastSessionsCard(
-    sessions: List<ShotAnalysis>,
-    onSelect: (ShotAnalysis) -> Unit,
+    sessions: List<Session>,
+    onSelect: (Session) -> Unit,
     onViewAll: () -> Unit
 ) {
     Card(
