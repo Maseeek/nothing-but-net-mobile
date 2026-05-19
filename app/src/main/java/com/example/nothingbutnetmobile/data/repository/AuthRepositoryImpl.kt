@@ -24,7 +24,7 @@ class AuthRepositoryImpl @Inject constructor(
                     tokenManager.saveToken(body.token)
                     tokenManager.saveUsername(username)
                     
-                    // Fetch profile to get userId
+                    // fetch profile for userId
                     try {
                         val profileResponse = api.getProfile()
                         if (profileResponse.isSuccessful) {
@@ -33,8 +33,7 @@ class AuthRepositoryImpl @Inject constructor(
                             }
                         }
                     } catch (e: Exception) {
-                        // Profile fetch failed, but we have the token
-                        // We might want to handle this better later
+                        // profile failed, but we got the token
                     }
                     
                     Result.success(Unit)
@@ -42,7 +41,7 @@ class AuthRepositoryImpl @Inject constructor(
                     Result.failure(Exception(body?.error ?: "Unknown error occurred"))
                 }
             } else {
-                // Try to parse error body if possible, fallback to status message
+                // parse error or fallback
                 val errorMsg = response.errorBody()?.string() ?: response.message()
                 Result.failure(Exception("Login failed: $errorMsg"))
             }
@@ -87,7 +86,6 @@ class AuthRepositoryImpl @Inject constructor(
                     return userId
                 }
             } catch (e: Exception) {
-                // Return null on failure
             }
         }
         return null
@@ -95,8 +93,6 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun logout() {
         tokenManager.clearToken()
-        // We can't easily call suspend clearAll here without a scope
-        // But since clearToken is called, the next sync will fail and clear anyway
-        // or we can use a non-suspend way if available.
+        // clearToken forces sync to clear eventually
     }
 }

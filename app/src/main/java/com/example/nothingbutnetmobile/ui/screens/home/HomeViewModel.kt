@@ -11,6 +11,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,7 +43,10 @@ class HomeViewModel @Inject constructor(
             .onEach { analyses ->
                 if (analyses.isNotEmpty()) {
                     val latestAnalysis = analyses.maxByOrNull { it.timestamp }
-                    val history = analyses.sortedBy { it.timestamp }.takeLast(5).map { it.fgPercentage.toFloat() }
+                    val sortedLast5 = analyses.sortedBy { it.timestamp }.takeLast(5)
+                    val history = sortedLast5.map { it.fgPercentage.toFloat() }
+                    val sdf = SimpleDateFormat("d MMM", Locale.getDefault())
+                    val historyDates = sortedLast5.map { sdf.format(Date(it.timestamp)) }
 
                     latestAnalysis?.let { it ->
                         val makeAngle = it.averageMakeAngle
@@ -71,7 +77,8 @@ class HomeViewModel @Inject constructor(
                             shotsResults = it.shotsResults,
                             averageMakeAngle = it.averageMakeAngle,
                             averageMissAngle = it.averageMissAngle,
-                            fgHistory = history
+                            fgHistory = history,
+                            fgHistoryDates = historyDates
                         )
                     }
                 } else {
@@ -87,7 +94,8 @@ class HomeViewModel @Inject constructor(
                         shotsResults = emptyList(),
                         averageMakeAngle = 0.0,
                         averageMissAngle = 0.0,
-                        fgHistory = emptyList()
+                        fgHistory = emptyList(),
+                        fgHistoryDates = emptyList()
                     )
                 }
             }
@@ -114,5 +122,6 @@ data class HomeUiState(
     val shotsResults: List<Int> = emptyList(),
     val averageMakeAngle: Double = 0.0,
     val averageMissAngle: Double = 0.0,
-    val fgHistory: List<Float> = emptyList()
+    val fgHistory: List<Float> = emptyList(),
+    val fgHistoryDates: List<String> = emptyList()
 )

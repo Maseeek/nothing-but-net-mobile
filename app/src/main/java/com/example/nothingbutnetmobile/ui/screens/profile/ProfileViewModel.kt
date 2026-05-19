@@ -12,6 +12,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -51,7 +54,10 @@ class ProfileViewModel @Inject constructor(
                     
                     val bestSession = analyses.maxByOrNull { it.fgPercentage }?.fgPercentage ?: 0.0
                     
-                    val history = analyses.sortedBy { it.timestamp }.takeLast(5).map { it.fgPercentage.toFloat() }
+                    val sortedLast5 = analyses.sortedBy { it.timestamp }.takeLast(5)
+                    val history = sortedLast5.map { it.fgPercentage.toFloat() }
+                    val sdf = SimpleDateFormat("d MMM", Locale.getDefault())
+                    val historyDates = sortedLast5.map { sdf.format(Date(it.timestamp)) }
                     
                     val sortedAnalyses = analyses.sortedByDescending { it.timestamp }
                     val lastSessionFg = if (sortedAnalyses.isNotEmpty()) sortedAnalyses[0].fgPercentage else 0.0
@@ -78,6 +84,7 @@ class ProfileViewModel @Inject constructor(
                         bestSessionFgPercentage = bestSession,
                         progressMessage = progressMessage,
                         fgHistory = history,
+                        fgHistoryDates = historyDates,
                         recentSessions = analyses.sortedByDescending { it.timestamp }.take(3)
                     )
                 }
@@ -100,5 +107,6 @@ data class ProfileUiState(
     val bestSessionFgPercentage: Double = 0.0,
     val progressMessage: String = "Keep practicing to see your progress!",
     val fgHistory: List<Float> = emptyList(),
+    val fgHistoryDates: List<String> = emptyList(),
     val recentSessions: List<ShotAnalysis> = emptyList()
 )

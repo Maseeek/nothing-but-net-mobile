@@ -97,7 +97,6 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Angle Comparison
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -119,7 +118,8 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             FgProgressionGraph(
-                fgHistory = uiState.fgHistory
+                fgHistory = uiState.fgHistory,
+                fgHistoryDates = uiState.fgHistoryDates
             )
 
             Spacer(modifier = Modifier.height(40.dp))

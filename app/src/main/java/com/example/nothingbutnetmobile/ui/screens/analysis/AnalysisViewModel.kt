@@ -73,7 +73,7 @@ class AnalysisViewModel @Inject constructor(
         val currentLeft = _uiState.value.hoopLeft ?: listOf(100, 100)
         val currentRight = _uiState.value.hoopRight ?: listOf(200, 200)
 
-        // Check file size (50MB limit for Render Free Tier)
+        // check file size (50mb limit)
         val fileSizeMb = videoFile.length() / (1024 * 1024)
         if (fileSizeMb > 50) {
             _uiState.value = _uiState.value.copy(
@@ -140,7 +140,7 @@ class AnalysisViewModel @Inject constructor(
                 )
             }
             
-            // Clean up the temporary video file regardless of success/failure
+            // delete temp file
             try {
                 if (videoFile.exists()) {
                     videoFile.delete()
@@ -155,10 +155,10 @@ class AnalysisViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(status = AnalysisStatus.LOADING)
             
-            // Try to sync with server first
+            // sync with server
             val syncResult = statsRepository.syncWithServer()
             if (syncResult.isFailure) {
-                // If sync fails, it might be a connection issue
+                // connection fail
                 _uiState.value = _uiState.value.copy(
                     status = AnalysisStatus.ERROR,
                     errorMessage = "Connection Error: Could not reach the server to fetch latest data."
@@ -166,7 +166,7 @@ class AnalysisViewModel @Inject constructor(
                 return@launch
             }
 
-            // Get all analyses to find today's data
+            // find today's data
             statsRepository.getAllShotAnalyses().collect { allAnalyses ->
                 val now = System.currentTimeMillis()
                 val todayAnalyses = allAnalyses.filter { isSameDay(it.timestamp, now) }
@@ -211,7 +211,7 @@ class AnalysisViewModel @Inject constructor(
                     selected
                 }
                 
-                // Also get all analyses for the recent list
+                // get recent list
                 statsRepository.getAllShotAnalyses().collect { allAnalyses ->
                     _uiState.value = _uiState.value.copy(
                         status = AnalysisStatus.SUCCESS,

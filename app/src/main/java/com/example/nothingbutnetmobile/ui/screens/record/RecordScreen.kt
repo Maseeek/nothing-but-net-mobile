@@ -111,8 +111,7 @@ fun RecordScreen(navController: NavController) {
                     modifier = Modifier.fillMaxSize()
                 )
             } else {
-                // This shouldn't happen as we check before setting mode, 
-                // but if it does, go back
+                // backup check
                 selectionMode = SelectionMode.NONE
             }
         }
@@ -257,13 +256,13 @@ fun CameraPreview(
             modifier = Modifier.fillMaxSize()
         )
 
-        // Overlay UI
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp)
         ) {
-            // Back Button
+
             IconButton(
                 onClick = onBack,
                 modifier = Modifier

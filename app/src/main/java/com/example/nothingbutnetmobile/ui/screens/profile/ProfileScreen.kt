@@ -62,7 +62,6 @@ fun ProfileScreen(
         ) {
             DashboardHeader(userName = uiState.userName)
             
-            // Profile Header Row
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -142,7 +141,6 @@ fun ProfileScreen(
             
             Spacer(modifier = Modifier.height(16.dp))
             
-            // Stats Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -169,7 +167,6 @@ fun ProfileScreen(
             
             Spacer(modifier = Modifier.height(16.dp))
             
-            // Progress Banner
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -191,7 +188,6 @@ fun ProfileScreen(
             
             Spacer(modifier = Modifier.height(24.dp))
             
-            // Charts
             Text(
                 text = "FG% PERFORMANCE OVER TIME",
                 style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
@@ -207,7 +203,10 @@ fun ProfileScreen(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 shape = RoundedCornerShape(16.dp)
             ) {
-                LineChart(data = uiState.fgHistory)
+                LineChart(
+                    data = uiState.fgHistory,
+                    labels = uiState.fgHistoryDates
+                )
             }
             
             Spacer(modifier = Modifier.height(24.dp))
@@ -382,7 +381,6 @@ fun DonutChart(makes: Int, misses: Int, percentage: Double) {
         ) {
             val strokeWidth = 20.dp.toPx()
             
-            // Misses background arc (Red)
             drawArc(
                 color = ErrorRed,
                 startAngle = 0f,
@@ -392,7 +390,6 @@ fun DonutChart(makes: Int, misses: Int, percentage: Double) {
                 size = Size(size.width, size.height)
             )
             
-            // Makes foreground arc (Green/Teal)
             drawArc(
                 color = SuccessGreen,
                 startAngle = -90f,
@@ -416,7 +413,6 @@ fun DonutChart(makes: Int, misses: Int, percentage: Double) {
             )
         }
         
-        // Legend
         Row(
             modifier = Modifier
                 .align(Alignment.BottomCenter)

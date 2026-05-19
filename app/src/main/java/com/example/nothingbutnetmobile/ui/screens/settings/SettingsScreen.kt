@@ -62,7 +62,6 @@ fun SettingsScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            // General Section
             SettingsSectionHeader("GENERAL")
             SettingsToggleItem(
                 title = "Dark Theme",
@@ -81,7 +80,6 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Basketball Section
             SettingsSectionHeader("BASKETBALL")
             SettingsToggleItem(
                 title = "Show Shot Angles",
@@ -94,7 +92,7 @@ fun SettingsScreen(
             SettingsSliderItem(
                 title = "Target Shot Angle",
                 subtitle = "Optimal arc for your shots",
-                icon = Icons.Default.GolfCourse, // Using GolfCourse as it looks like a trajectory
+                icon = Icons.Default.GolfCourse,
                 value = uiState.targetAngle,
                 onValueChange = { viewModel.setTargetAngle(it) },
                 valueRange = 30f..70f
@@ -102,13 +100,12 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Account Section
             SettingsSectionHeader("ACCOUNT")
             SettingsClickItem(
                 title = "Edit Profile",
                 subtitle = uiState.userName,
                 icon = Icons.Default.Person,
-                onClick = { /* Navigate to edit profile */ }
+                onClick = {}
             )
             SettingsClickItem(
                 title = "Logout",
@@ -125,7 +122,6 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Support Section
             SettingsSectionHeader("SUPPORT")
             SettingsClickItem(
                 title = "Clear Cache",
@@ -137,12 +133,11 @@ fun SettingsScreen(
                 title = "About",
                 subtitle = "Version ${uiState.appVersion}",
                 icon = Icons.Default.Info,
-                onClick = { /* Show about dialog */ }
+                onClick = {}
             )
 
             Spacer(modifier = Modifier.height(40.dp))
             
-            // Branding Footer
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 Text(
                     text = "nothingbutnet",
@@ -215,7 +210,7 @@ fun SettingsClickItem(
     title: String,
     subtitle: String,
     icon: ImageVector,
-    color: Color = Color.Unspecified, // Use Unspecified to detect and apply theme color
+    color: Color = Color.Unspecified,
     onClick: () -> Unit
 ) {
     Surface(

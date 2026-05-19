@@ -86,21 +86,21 @@ fun BottomNavigationBar(
             }
         }
         
-        // Premium Basketball Record Button (Dome Shape)
+        // basketball record button
         Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .offset(y = 12.dp) // Aligns dome bottom with standard icon baseline (62dp)
+                .offset(y = 12.dp) 
                 .width(90.dp)
                 .height(50.dp)
                 .clickable { navigateTo("record") },
             contentAlignment = Alignment.Center
         ) {
-            // The Basketball Dome Icon
+            // basketball icon
             Icon(
                 painter = painterResource(id = R.drawable.ic_basketball),
                 contentDescription = "Record",
-                tint = Color.Unspecified, // Preserve the SVG colors (orange dome, black seams)
+                tint = Color.Unspecified, 
                 modifier = Modifier.fillMaxSize()
             )
         }

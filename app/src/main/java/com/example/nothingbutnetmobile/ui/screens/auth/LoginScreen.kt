@@ -50,7 +50,6 @@ fun LoginScreen(
                 .padding(top = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Brand Logo (Visual Only)
             androidx.compose.foundation.Image(
                 painter = androidx.compose.ui.res.painterResource(id = com.example.nothingbutnetmobile.R.drawable.nbn_light),
                 contentDescription = "NothingButNet Logo",
@@ -59,7 +58,6 @@ fun LoginScreen(
                     .padding(bottom = 0.dp)
             )
 
-            // Login Card with Gradient Border
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -88,7 +86,6 @@ fun LoginScreen(
                         modifier = Modifier.padding(bottom = 24.dp)
                     )
 
-                    // Error Message
                     if (authState is AuthState.Error) {
                         Text(
                             text = authState.message,
@@ -99,7 +96,6 @@ fun LoginScreen(
                         )
                     }
 
-                    // Username Field
                     OutlinedTextField(
                         value = username,
                         onValueChange = { username = it },
@@ -126,7 +122,6 @@ fun LoginScreen(
                         enabled = authState !is AuthState.Loading
                     )
 
-                    // Password Field
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
@@ -167,7 +162,6 @@ fun LoginScreen(
                         enabled = authState !is AuthState.Loading
                     )
 
-                    // Login Button
                     Button(
                         onClick = { onLoginClick(username, password) },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
@@ -197,7 +191,6 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Register Link
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {

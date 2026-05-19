@@ -17,6 +17,12 @@ Working on Quality Assurance and Performance Optimization.
     - Replaced the `ArcAnalysisGraph` component on `HomeScreen` with the new `FgProgressionGraph` component, refactoring the UI.
     - Added corresponding string resources to `strings.xml` for localization.
     - Verified compilation success with `./gradlew assembleDebug`.
+- [x] **Progression Graph Axes Enhancement (FG% & Date)**:
+    - Redesigned `LineChart` to support custom horizontal grid labeling for Y-axis (FG %) and X-axis (session dates).
+    - Utilized Compose's `TextMeasurer` and `drawText` to dynamically position and measure labels, adding offsets to avoid clipping.
+    - Updated `FgProgressionGraph` and its callers (`HomeScreen`, `ProfileScreen`) to pass formatted session dates (`d MMM` format, e.g., "19 May").
+    - Relocated the "LATEST 5 SESSIONS" label inside `FgProgressionGraph` to the top-right corner to prevent layout collision with bottom date labels.
+    - Verified successful compilation.
 
 ## Next Steps
 1. Unit Testing for ViewModels (Task 10).

@@ -14,6 +14,7 @@ import com.example.nothingbutnetmobile.R
 @Composable
 fun FgProgressionGraph(
     fgHistory: List<Float>,
+    fgHistoryDates: List<String>,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -53,6 +54,7 @@ fun FgProgressionGraph(
             ) {
                 LineChart(
                     data = fgHistory,
+                    labels = fgHistoryDates,
                     modifier = Modifier.fillMaxSize()
                 )
                 
@@ -61,8 +63,8 @@ fun FgProgressionGraph(
                     style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                     modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(start = 16.dp, bottom = 12.dp)
+                        .align(Alignment.TopEnd)
+                        .padding(end = 16.dp, top = 12.dp)
                 )
             }
         }

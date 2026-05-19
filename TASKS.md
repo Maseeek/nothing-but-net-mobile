@@ -63,6 +63,15 @@
 **Current Phase**: Phase 3 (Testing & Polish) - Performance Optimization
 
 ### Recent Accomplishments
+- **Codebase Comment Audit & Style Refactoring**:
+    - Performed a thorough audit of all comments across the codebase to ensure consistency with the user's signature casual, minimal, and all-lowercase style.
+    - Removed verbose, repetitive, and AI-like code descriptions.
+    - Updated `AuthRepositoryImpl`, `AnalysisScreen`, `AnalysisViewModel`, `LoginScreen`, `RegisterScreen`, `HomeScreen`, `RecordScreen`, `CVRepositoryImpl`, `NetworkConfig`, `ProfileScreen`, and `LeaderboardScreen`.
+- **Progression Graph Axes Enhancement (FG% & Date)**:
+    - **Y-axis & X-axis Labels**: Redesigned `LineChart` using Compose's `TextMeasurer` and `drawText` to dynamically draw percentage values (0%-100%) on the Y-axis and short session dates (e.g., "19 May") on the X-axis.
+    - **UI Layout Adjustments**: Added padding/margins within the chart's canvas to avoid text clipping and relocated the "LATEST 5 SESSIONS" badge to the top-right of `FgProgressionGraph` to prevent label collision.
+    - **ViewModel Integration**: Updated both `HomeViewModel` and `ProfileViewModel` to fetch and format the session dates matching `fgHistory` and expose them to the UI states.
+    - **Screen Binding**: Linked the new `fgHistoryDates` list in `HomeScreen` and `ProfileScreen` to their respective graphs.
 - **Home Screen Graph Refactoring & UI Optimization**:
     - **Shared Chart Component**: Extracted the duplicate `LineChart` from the profile screen to a new shared composable `LineChart.kt` under `ui/components/`.
     - **New Progression Graph**: Introduced `FgProgressionGraph.kt` under `ui/components/` to handle visual headers, margins, and render the shared `LineChart`.

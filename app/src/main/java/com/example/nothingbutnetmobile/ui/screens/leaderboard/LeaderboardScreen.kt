@@ -69,7 +69,6 @@ fun LeaderboardScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Sorting Tabs
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -180,7 +179,6 @@ fun LeaderboardItem(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Rank Number or Medal
             Box(
                 modifier = Modifier
                     .size(40.dp)
@@ -221,7 +219,6 @@ fun LeaderboardItem(
                 )
             }
 
-            // Highlighting the sorted stat
             Column(horizontalAlignment = Alignment.End) {
                 val primaryValue = when (sortType) {
                     LeaderboardSort.SHOTS -> "${session.totalShots}"

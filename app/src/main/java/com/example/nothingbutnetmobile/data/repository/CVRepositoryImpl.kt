@@ -56,7 +56,7 @@ class CVRepositoryImpl @Inject constructor(
             val body = response.body()
             if (response.isSuccessful && body != null) {
                 Log.d("CVRepository", "Analysis successful, processing results")
-                // Save to database if data is present
+                // save local & sync
                 body.data?.let { result ->
                     val analysis = ShotAnalysis(
                         totalShots = result.totalShots,
@@ -72,8 +72,6 @@ class CVRepositoryImpl @Inject constructor(
                         timestamp = System.currentTimeMillis()
                     )
                     statsRepository.saveShotAnalysis(analysis)
-                    
-                    // Push to Node.js server
                     statsRepository.pushSessionToServer(analysis)
                 }
                 Result.success(body)

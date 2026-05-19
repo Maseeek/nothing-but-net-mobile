@@ -52,7 +52,6 @@ fun RegisterScreen(
                 .padding(top = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Brand Logo (Visual Only)
             androidx.compose.foundation.Image(
                 painter = androidx.compose.ui.res.painterResource(id = com.example.nothingbutnetmobile.R.drawable.nbn_light),
                 contentDescription = "NothingButNet Logo",
@@ -80,7 +79,6 @@ fun RegisterScreen(
                         .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Feedback messages
                     when (authState) {
                         is AuthState.Error -> {
                             Text(

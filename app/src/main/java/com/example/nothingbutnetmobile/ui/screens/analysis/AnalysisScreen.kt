@@ -117,7 +117,7 @@ fun AnalysisScreen(
         }
     }
 
-    // Cleanup on dispose if the video hasn't been analyzed yet
+    // cleanup video if not analyzed yet
     DisposableEffect(videoUri) {
         onDispose {
             videoFile?.let {
@@ -178,14 +178,14 @@ fun AnalysisScreen(
                         val isReady = uiState.status == AnalysisStatus.READY
 
                         if (isLandscape) {
-                            // Landscape layout: Side-by-side
+                            // landscape view
                             Row(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(8.dp),
                                 horizontalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                // Left side: Image selection area
+                                // image selection
                                 Box(
                                     modifier = Modifier
                                         .weight(1.2f)
@@ -262,7 +262,7 @@ fun AnalysisScreen(
                                     } ?: CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                                 }
 
-                                // Right side: Controls and instructions
+                                // controls and details
                                 Column(
                                     modifier = Modifier
                                         .weight(0.8f)
@@ -325,14 +325,14 @@ fun AnalysisScreen(
                                 }
                             }
                         } else {
-                            // Portrait layout
+                            // portrait view
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(16.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                // Step indicator
+                                // step indicator
                                 Box(
                                     modifier = Modifier
                                         .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(16.dp))
@@ -440,7 +440,7 @@ fun AnalysisScreen(
                                     } ?: CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                                 }
                                 
-                                // Bottom Actions
+                                // bottom actions
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
@@ -495,7 +495,7 @@ fun AnalysisScreen(
                                 .padding(bottom = 24.dp)
                         ) {
                             if (analysis != null) {
-                                // Main Analytics Grid
+                                // analytics grid
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.spacedBy(16.dp)

@@ -35,7 +35,6 @@ fun DashboardHeader(
     ) {
         Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            // App Logo
             Image(
                 painter = painterResource(id = R.drawable.nbn_light),
                 contentDescription = "NothingButNet Logo",
@@ -55,7 +54,7 @@ fun DashboardHeader(
         }
 
         IconButton(
-            onClick = { /* TODO */ },
+            onClick = {  }, // ill implement this later, need to add notifications first
             modifier = Modifier
                 .size(48.dp)
                 .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)

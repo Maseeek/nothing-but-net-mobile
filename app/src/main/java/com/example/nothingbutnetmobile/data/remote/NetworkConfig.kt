@@ -1,17 +1,14 @@
 package com.example.nothingbutnetmobile.data.remote
 
 object NetworkConfig {
-    /**
-     * Set to true to use production Render servers.
-     * Set to false to use local servers (e.g., for local CV testing).
-     */
+    // true for render prod, false for local
     const val IS_PRODUCTION = true
 
-    // Authentication Server
+    // auth server
     private const val AUTH_BASE_URL_PROD = "https://nothing-but-net.onrender.com/"
     private const val AUTH_BASE_URL_LOCAL = "http://10.0.2.2:3000/"
 
-    // Computer Vision Server
+    // cv server
     private const val CV_BASE_URL_PROD = "https://nothing-but-net-cv.onrender.com/"
     private const val CV_BASE_URL_LOCAL = "http://10.0.2.2:5001/"
 
