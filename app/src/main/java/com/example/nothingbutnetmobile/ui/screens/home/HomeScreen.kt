@@ -118,9 +118,8 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            ArcAnalysisGraph(
-                shotAngles = uiState.shotAngles,
-                shotsResults = uiState.shotsResults
+            FgProgressionGraph(
+                fgHistory = uiState.fgHistory
             )
 
             Spacer(modifier = Modifier.height(40.dp))

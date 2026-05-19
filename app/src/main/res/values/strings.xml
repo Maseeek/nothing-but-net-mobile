@@ -11,6 +11,8 @@
     <string name="arc_analysis">Arc Analysis</string>
     <string name="real_time_trend">REAL-TIME TREND</string>
     <string name="optimal_angle">55° OPTIMAL</string>
+    <string name="fg_progression">FG% Progression</string>
+    <string name="performance_trend">PERFORMANCE TREND</string>
     
     <!-- Auth Screens -->
     <string name="login">Login</string>

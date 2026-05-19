@@ -35,6 +35,7 @@ import androidx.navigation.NavController
 import com.example.nothingbutnetmobile.R
 import com.example.nothingbutnetmobile.ui.components.BottomNavigationBar
 import com.example.nothingbutnetmobile.ui.components.DashboardHeader
+import com.example.nothingbutnetmobile.ui.components.LineChart
 import com.example.nothingbutnetmobile.ui.theme.*
 
 @Composable
@@ -364,66 +365,6 @@ fun DashboardStatCard(
     }
 }
 
-@Composable
-fun LineChart(data: List<Float>) {
-    val defaultData = if (data.isEmpty()) listOf(20f, 40f, 30f, 50f, 45f) else data
-    val maxVal = 100f
-    val primaryColor = MaterialTheme.colorScheme.primary
-    val backgroundColor = MaterialTheme.colorScheme.background
-    val gridColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
-    
-    Canvas(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        val width = size.width
-        val height = size.height
-        val stepX = width / (defaultData.size - 1).coerceAtLeast(1)
-        
-        val path = Path()
-        
-        defaultData.forEachIndexed { index, value ->
-            val x = index * stepX
-            val y = height - ((value / maxVal) * height)
-            
-            if (index == 0) {
-                path.moveTo(x, y)
-            } else {
-                path.lineTo(x, y)
-            }
-            
-            drawCircle(
-                color = primaryColor,
-                radius = 6.dp.toPx(),
-                center = Offset(x, y)
-            )
-            drawCircle(
-                color = backgroundColor,
-                radius = 4.dp.toPx(),
-                center = Offset(x, y)
-            )
-        }
-        
-        drawPath(
-            path = path,
-            color = primaryColor,
-            style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round)
-        )
-        
-        // Draw grid lines
-        val lines = 5
-        val stepY = height / lines
-        for (i in 0..lines) {
-            drawLine(
-                color = gridColor,
-                start = Offset(0f, i * stepY),
-                end = Offset(width, i * stepY),
-                strokeWidth = 1.dp.toPx()
-            )
-        }
-    }
-}
 
 @Composable
 fun DonutChart(makes: Int, misses: Int, percentage: Double) {

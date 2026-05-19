@@ -23,7 +23,7 @@
   - [x] Live Session Status Card <!-- id: 15 -->
   - [x] Quick Stats Grid <!-- id: 16 -->
   - [x] AI Training Insights Component <!-- id: 17 -->
-  - [x] Arc Analysis Graph <!-- id: 18 -->
+  - [x] Replace Arc Analysis Graph with FG% Progression Graph <!-- id: 18 -->
   - [x] Custom FAB Bottom Navigation <!-- id: 19 -->
 - [x] Refactor Dashboard to show most recent session instead of "Live Session" <!-- id: 36 -->
 - [x] Implement fully working Analytics section <!-- id: 37 -->
@@ -63,6 +63,12 @@
 **Current Phase**: Phase 3 (Testing & Polish) - Performance Optimization
 
 ### Recent Accomplishments
+- **Home Screen Graph Refactoring & UI Optimization**:
+    - **Shared Chart Component**: Extracted the duplicate `LineChart` from the profile screen to a new shared composable `LineChart.kt` under `ui/components/`.
+    - **New Progression Graph**: Introduced `FgProgressionGraph.kt` under `ui/components/` to handle visual headers, margins, and render the shared `LineChart`.
+    - **Observed Stats Refactoring**: Updated `HomeViewModel` to fetch and observe `getAllShotAnalyses()` instead of `getLatestShotAnalysis()`, allowing it to compute the latest session stats as well as the progression history over the last 5 sessions (`fgHistory`).
+    - **Updated Home Screen UI**: Replaced the obsolete `ArcAnalysisGraph` call on `HomeScreen` with `FgProgressionGraph(fgHistory = uiState.fgHistory)`, creating a clean and aesthetically consistent user experience.
+    - **Localization & Build Validation**: Created new string resources `fg_progression` and `performance_trend` in `strings.xml` to decouple graph labels from hardcoded strings. Verified compilation with clean `./gradlew assembleDebug` check.
 - **Cache Optimization & Massive Storage Fix**:
     - **Identified Storage Leaks**: Discovered that recorded and gallery-picked video files were being stored in `context.cacheDir` indefinitely.
     - **Manual Cache Control**: Added a "Clear Cache" button to the Support section in Settings, displaying the current cache size (e.g., "Free up 245.50 MB").
