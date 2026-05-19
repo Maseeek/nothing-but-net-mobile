@@ -20,6 +20,7 @@ import com.example.nothingbutnetmobile.ui.screens.profile.ProfileScreen
 import com.example.nothingbutnetmobile.ui.screens.record.RecordScreen
 import com.example.nothingbutnetmobile.ui.screens.leaderboard.LeaderboardScreen
 import com.example.nothingbutnetmobile.ui.screens.settings.SettingsScreen
+import com.example.nothingbutnetmobile.ui.screens.splash.SplashScreen
 
 @Composable
 fun AppNavigation(tokenManager: TokenManager) {
@@ -27,7 +28,7 @@ fun AppNavigation(tokenManager: TokenManager) {
 
     NavHost(navController = navController, startDestination = "splash") {
         composable("splash") {
-            com.example.nothingbutnetmobile.ui.screens.splash.LoadingScreen(
+            SplashScreen(
                 onTimeout = {
                     val destination = if (tokenManager.isLoggedIn()) "home" else "login"
                     navController.navigate(destination) {

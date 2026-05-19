@@ -21,6 +21,8 @@ import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,7 +54,7 @@ enum class SelectionMode {
 @Composable
 fun RecordScreen(navController: NavController) {
     val context = LocalContext.current
-    var selectionMode by remember { mutableStateOf(SelectionMode.NONE) }
+    var selectionMode by rememberSaveable { mutableStateOf(SelectionMode.NONE) }
     
     val videoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -218,7 +220,7 @@ fun CameraPreview(
     val previewView = remember { PreviewView(context) }
     var videoCapture by remember { mutableStateOf<VideoCapture<Recorder>?>(null) }
     var recording by remember { mutableStateOf<Recording?>(null) }
-    var isRecording by remember { mutableStateOf(false) }
+    var isRecording by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)

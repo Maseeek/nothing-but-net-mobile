@@ -15,11 +15,10 @@ import com.example.nothingbutnetmobile.ui.theme.DarkBackground
 import kotlinx.coroutines.delay
 
 @Composable
-fun LoadingScreen(onTimeout: () -> Unit) {
+fun SplashScreen(onTimeout: () -> Unit) {
     val scale = remember { Animatable(0.8f) }
     
     LaunchedEffect(Unit) {
-        // Pulse animation
         scale.animateTo(
             targetValue = 1.1f,
             animationSpec = infiniteRepeatable(
@@ -30,7 +29,7 @@ fun LoadingScreen(onTimeout: () -> Unit) {
     }
 
     LaunchedEffect(Unit) {
-        delay(2000) // Show for 2 seconds
+        delay(2000)
         onTimeout()
     }
 

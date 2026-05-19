@@ -23,8 +23,16 @@ Working on Quality Assurance and Performance Optimization.
     - Updated `FgProgressionGraph` and its callers (`HomeScreen`, `ProfileScreen`) to pass formatted session dates (`d MMM` format, e.g., "19 May").
     - Relocated the "LATEST 5 SESSIONS" label inside `FgProgressionGraph` to the top-right corner to prevent layout collision with bottom date labels.
     - Verified successful compilation.
+- [x] **External Navigation Intent**:
+    - Implemented a "Contact Support" button in `SettingsScreen` executing an `ACTION_SENDTO` intent with `mailto:neaauth@gmail.com` and a fallback Toast notification.
+    - Resolves the mandatory specification requirement for external app navigation.
+    - Verified compile safety.
+- [x] **App Lifecycle & Screen Rotation Polish**:
+    - Refactored transient UI states (zoom/pan parameters `scale`, `offsetX`, `offsetY` in `AnalysisScreen.kt`; `selectionMode` and `isRecording` in `RecordScreen.kt`) to use `rememberSaveable` instead of `remember` so they survive orientation changes.
+    - Added `android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"` to `MainActivity` in `AndroidManifest.xml` to prevent activity destruction and restart on screen rotation.
+    - Added `findActivity` context helper to `AnalysisScreen.kt` and updated `DisposableEffect` to check `isChangingConfigurations` before deleting temporary video files, preventing video data loss on rotation.
+    - Verified build stability with `./gradlew assembleDebug`.
 
 ## Next Steps
 1. Unit Testing for ViewModels (Task 10).
 2. UI Testing for Core Flows (Task 11).
-3. Final Spec Adherence Check (Task 13).

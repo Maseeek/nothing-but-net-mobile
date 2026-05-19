@@ -19,6 +19,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.nothingbutnetmobile.ui.theme.*
@@ -31,6 +35,7 @@ fun SettingsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -123,6 +128,22 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             SettingsSectionHeader("SUPPORT")
+            SettingsClickItem(
+                title = "Contact Support",
+                subtitle = "Email neaauth@gmail.com",
+                icon = Icons.Default.Email,
+                onClick = {
+                    val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+                        data = Uri.parse("mailto:neaauth@gmail.com")
+                        putExtra(Intent.EXTRA_SUBJECT, "Nothing But Net Support Request")
+                    }
+                    try {
+                        context.startActivity(emailIntent)
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "No email client found. Email: neaauth@gmail.com", Toast.LENGTH_LONG).show()
+                    }
+                }
+            )
             SettingsClickItem(
                 title = "Clear Cache",
                 subtitle = "Free up ${uiState.cacheSize}",

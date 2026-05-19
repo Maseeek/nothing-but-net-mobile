@@ -54,19 +54,32 @@
 - [ ] Unit Testing for ViewModels <!-- id: 10 -->
 - [ ] UI Testing for Core Flows <!-- id: 11 -->
 - [x] Performance Optimization <!-- id: 12 -->
-- [ ] Final Spec Adherence Check <!-- id: 13 -->
+- [x] Final Spec Adherence Check <!-- id: 13 -->
 
 ---
 
 ## 🧠 AGENT MEMORY (Current State)
 
-**Current Phase**: Phase 3 (Testing & Polish) - Performance Optimization
+**Current Phase**: Phase 3 (Testing & Polish) - Final Spec Adherence Check
 
 ### Recent Accomplishments
+- **App Lifecycle & Screen Rotation Fixes**:
+    - Refactored transient UI states (zoom/pan parameters `scale`, `offsetX`, `offsetY` in `AnalysisScreen.kt`; `selectionMode` and `isRecording` in `RecordScreen.kt`) to use `rememberSaveable` instead of `remember` so they survive orientation changes.
+    - Configured `android:configChanges` for `MainActivity` in `AndroidManifest.xml` to prevent activity destruction and restart on screen rotation.
+    - Added `findActivity` extension helper to `AnalysisScreen.kt` and updated `DisposableEffect` to check `isChangingConfigurations` before deleting temporary video files, preventing video data loss on rotation.
+    - Verified build stability with `./gradlew assembleDebug`.
+- **External Navigation Intent Implementation**: Implemented an external intent button ("Contact Support") in the `SettingsScreen` UI. The button launches `Intent.ACTION_SENDTO` routing to `neaauth@gmail.com` with support email subject prepopulated and a friendly Toast fallback error-handler, resolving the specification requirement for external app navigation.
+- **Cleanup of Unused Local Dev Files**: Removed the local python server `backend/` directory and local gradle build log files (`build_output*.txt`) to keep the coursework repository clean and production-focused.
+- **Network Timeout Extension**: Extended the base `OkHttpClient` connect, read, and write timeouts in `NetworkModule.kt` to 300 seconds (5 minutes) to ensure large video uploads and heavy CV processing on the production server complete without timeout errors.
+- **CV Communication Implementation Plan**: Created a detailed architecture and implementation plan (`cv_communication_plan.md` artifact) addressing network security configurations, custom OkHttp timeouts for large multipart video uploads, orientation-change lifecycle handling, nullable JSON parsing fallbacks, and local integration verification steps.
 - **Codebase Comment Audit & Style Refactoring**:
     - Performed a thorough audit of all comments across the codebase to ensure consistency with the user's signature casual, minimal, and all-lowercase style.
     - Removed verbose, repetitive, and AI-like code descriptions.
     - Updated `AuthRepositoryImpl`, `AnalysisScreen`, `AnalysisViewModel`, `LoginScreen`, `RegisterScreen`, `HomeScreen`, `RecordScreen`, `CVRepositoryImpl`, `NetworkConfig`, `ProfileScreen`, and `LeaderboardScreen`.
+- **Unused Files & Component Cleanup**:
+    - Deleted the unused `ArcAnalysisGraph.kt` component since its layout was replaced by the new progression trend graph.
+    - Removed the empty, placeholder `domain/use_case` package.
+    - Renamed `LoadingScreen.kt` and its Composable component to `SplashScreen` (`SplashScreen.kt`) to accurately match the destination route and splash package domain, resolving the Fully-Qualified Name (FQN) layout mismatch inside `AppNavigation`.
 - **Progression Graph Axes Enhancement (FG% & Date)**:
     - **Y-axis & X-axis Labels**: Redesigned `LineChart` using Compose's `TextMeasurer` and `drawText` to dynamically draw percentage values (0%-100%) on the Y-axis and short session dates (e.g., "19 May") on the X-axis.
     - **UI Layout Adjustments**: Added padding/margins within the chart's canvas to avoid text clipping and relocated the "LATEST 5 SESSIONS" badge to the top-right of `FgProgressionGraph` to prevent label collision.
@@ -108,4 +121,5 @@
 ### Next Steps
 1. **Task 41**: Perform final end-to-end verification with the production server.
 2. **Phase 3**: Initialize unit tests for `StatsRepository` and ViewModels.
+
 

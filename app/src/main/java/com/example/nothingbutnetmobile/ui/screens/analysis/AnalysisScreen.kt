@@ -26,6 +26,10 @@ import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.saveable.rememberSaveable
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.net.Uri
 import android.util.Log
 import com.example.nothingbutnetmobile.ui.utils.FileUtils
@@ -70,6 +74,17 @@ import androidx.compose.material.icons.filled.CloudOff
 import com.example.nothingbutnetmobile.ui.theme.*
 import com.example.nothingbutnetmobile.domain.model.ShotAnalysis
 
+private fun Context.findActivity(): Activity? {
+    var currentContext = this
+    while (currentContext is ContextWrapper) {
+        if (currentContext is Activity) {
+            return currentContext
+        }
+        currentContext = currentContext.baseContext
+    }
+    return null
+}
+
 @Composable
 fun AnalysisScreen(
     navController: NavController,
@@ -81,9 +96,9 @@ fun AnalysisScreen(
     val context = LocalContext.current
     var videoFile by remember { mutableStateOf<File?>(null) }
     var videoThumbnail by remember { mutableStateOf<ImageBitmap?>(null) }
-    var scale by remember { mutableFloatStateOf(1f) }
-    var offsetX by remember { mutableFloatStateOf(0f) }
-    var offsetY by remember { mutableFloatStateOf(0f) }
+    var scale by rememberSaveable { mutableFloatStateOf(1f) }
+    var offsetX by rememberSaveable { mutableFloatStateOf(0f) }
+    var offsetY by rememberSaveable { mutableFloatStateOf(0f) }
  
     LaunchedEffect(videoUri, analysisId) {
         Log.d("AnalysisScreen", "LaunchedEffect: videoUri=$videoUri, analysisId=$analysisId")
@@ -120,9 +135,13 @@ fun AnalysisScreen(
     // cleanup video if not analyzed yet
     DisposableEffect(videoUri) {
         onDispose {
-            videoFile?.let {
-                if (it.exists()) {
-                    it.delete()
+            val activity = context.findActivity()
+            val isChangingConfigurations = activity?.isChangingConfigurations == true
+            if (!isChangingConfigurations) {
+                videoFile?.let {
+                    if (it.exists()) {
+                        it.delete()
+                    }
                 }
             }
         }
