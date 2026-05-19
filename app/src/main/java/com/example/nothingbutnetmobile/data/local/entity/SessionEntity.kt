@@ -5,6 +5,8 @@ import androidx.room.PrimaryKey
 
 import com.example.nothingbutnetmobile.domain.model.Session
 import com.example.nothingbutnetmobile.domain.model.calculateLongestStreak
+import com.example.nothingbutnetmobile.domain.model.calculateAverageMakeAngle
+import com.example.nothingbutnetmobile.domain.model.calculateAverageMissAngle
 
 @Entity(tableName = "sessions")
 data class SessionEntity(
@@ -26,6 +28,8 @@ data class SessionEntity(
 fun SessionEntity.toDomain(): Session {
     val computedTotalShots = if (totalShots > 0) totalShots else (makes + misses)
     val computedStreak = if (longestStreak > 0) longestStreak else calculateLongestStreak(shotsResults)
+    val computedMakeAngle = if (averageMakeAngle > 0.0) averageMakeAngle else calculateAverageMakeAngle(shotAngles, shotsResults)
+    val computedMissAngle = if (averageMissAngle > 0.0) averageMissAngle else calculateAverageMissAngle(shotAngles, shotsResults)
     return Session(
         id = id,
         totalShots = computedTotalShots,
@@ -34,8 +38,8 @@ fun SessionEntity.toDomain(): Session {
         fgPercentage = fgPercentage,
         longestStreak = computedStreak,
         averageAngle = averageAngle,
-        averageMakeAngle = averageMakeAngle,
-        averageMissAngle = averageMissAngle,
+        averageMakeAngle = computedMakeAngle,
+        averageMissAngle = computedMissAngle,
         shotAngles = shotAngles,
         shotsResults = shotsResults,
         timestamp = timestamp

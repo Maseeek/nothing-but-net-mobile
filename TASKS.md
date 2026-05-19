@@ -63,6 +63,12 @@
 **Current Phase**: Phase 3 (Testing & Polish) - Refactoring & Branding
 
 ### Recent Accomplishments
+- **Shot Analysis UI Polish and Card Centering**:
+    - Enhanced the `StatCard` in `AnalysisScreen.kt` by setting `fillMaxWidth()` on its inner `Column` layout, fixing the centering issue for statistical cards (`TOTAL MAKES`, `MAX STREAK`, `MAKE ANGLE`, `MISS ANGLE`).
+    - Upgraded `EfficiencyCard` to accept both the `makes` and `totalShots` values, displaying the actual ratio (e.g. "8/10") under the progress percentage circle gauge.
+    - Replaced the generic `TrendingUp` icon in `ArcAnalysisCard` with a custom-drawn, dynamic quadratic Bezier curve on a `Canvas`, representing the actual release shot trajectory corresponding to the average angle.
+    - Redesigned `ShotSequenceCard` from a simple index box row to a scrollable list of custom cards showing the shot index, color-coded result (MAKE/MISS), and individual shot angles.
+    - Verified compilation success with a clean Gradle build.
 - **Shot Analysis Metrics Layout & Background Refactoring**:
     - Removed the inconsistent wrapping background box (`onSurfaceVariant` with alpha) from `AnalysisScreen.kt` to allow standard cards to sit directly on the screen's main background, aligning it with other pages.
     - Added the missing `MAKE ANGLE` and `MISS ANGLE` statistics cards inside the SUCCESS state of `AnalysisScreen.kt` for layout parity.

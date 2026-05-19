@@ -90,6 +90,14 @@ Working on Quality Assurance and Performance Optimization.
     - Added the `MAKE ANGLE` and `MISS ANGLE` statistics cards under the makes and streak metrics in the SUCCESS state of `AnalysisScreen.kt` to ensure complete shot metrics are consistently displayed.
     - Refactored the odd, uneven spacing on `HomeScreen.kt` by grouping the count/streak metrics into a 2-column layout (`Total Shots`, `Streak`) and all three angle metrics into a 3-column layout (`Avg Angle`, `Make Angle`, `Miss Angle`), achieving clean visual balance.
     - Verified compile safety with a clean Gradle build execution.
+- [x] **Shot Analysis UI Polish and Card Centering**:
+    - Enhanced the `StatCard` in `AnalysisScreen.kt` by setting `fillMaxWidth()` on its inner `Column` layout, fixing the centering issue for statistical cards (`TOTAL MAKES`, `MAX STREAK`, `MAKE ANGLE`, `MISS ANGLE`).
+    - Upgraded `EfficiencyCard` to accept both the `makes` and `totalShots` values, displaying the actual ratio (e.g. "8/10") under the progress percentage circle gauge.
+    - Replaced the generic `TrendingUp` icon in `ArcAnalysisCard` with a custom-drawn, dynamic quadratic Bezier curve on a `Canvas`, representing the actual release shot trajectory corresponding to the average angle.
+    - Redesigned `ShotSequenceCard` from a simple index box row to a scrollable list of custom cards showing the shot index, color-coded result (MAKE/MISS), and individual shot angles.
+    - Verified compilation success with a clean Gradle build.
+
+
 
 ## Next Steps
 1. Unit Testing for ViewModels (Task 10).

@@ -74,6 +74,10 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.material.icons.filled.CloudOff
 import com.example.nothingbutnetmobile.ui.theme.*
 import com.example.nothingbutnetmobile.domain.model.Session
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.unit.sp
 
 private fun Context.findActivity(): Activity? {
     var currentContext = this
@@ -95,6 +99,7 @@ fun AnalysisScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    // TODO: profile performance of video rendering on physical devices - emulator lags slightly
     var videoFile by remember { mutableStateOf<File?>(null) }
     var videoThumbnail by remember { mutableStateOf<ImageBitmap?>(null) }
     var scale by rememberSaveable { mutableFloatStateOf(1f) }
@@ -133,7 +138,7 @@ fun AnalysisScreen(
         }
     }
 
-    // cleanup video if not analyzed yet
+    // clean up video if we exit screen, but keep it if we rotate screen
     DisposableEffect(videoUri) {
         onDispose {
             val activity = context.findActivity()
@@ -521,6 +526,8 @@ fun AnalysisScreen(
                                 ) {
                                     EfficiencyCard(
                                         percentage = session.fgPercentage,
+                                        makes = session.makes,
+                                        totalShots = session.totalShots ?: 0,
                                         modifier = Modifier.weight(1f)
                                     )
                                     
@@ -573,7 +580,7 @@ fun AnalysisScreen(
                                 
                                 Spacer(modifier = Modifier.height(16.dp))
                                 
-                                ShotSequenceCard(results = session.shotsResults)
+                                 ShotSequenceCard(results = session.shotsResults, angles = session.shotAngles)
                                 
                                 Spacer(modifier = Modifier.height(16.dp))
                                 
@@ -661,6 +668,7 @@ fun BoxScope.SelectionMarker(normalizedPos: Pair<Float, Float>?, label: String, 
                 modifier = Modifier
                     .offset(x = x - 12.dp, y = y - 12.dp)
                     .graphicsLayer {
+                        // scale marker down by currentScale so it stays the same 24dp size when zoomed
                         scaleX = 1f / currentScale
                         scaleY = 1f / currentScale
                     }
@@ -680,40 +688,46 @@ fun BoxScope.SelectionMarker(normalizedPos: Pair<Float, Float>?, label: String, 
     }
 }
 @Composable
-fun EfficiencyCard(percentage: Double, modifier: Modifier = Modifier) {
-    val trackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f)
+fun EfficiencyCard(percentage: Double, makes: Int, totalShots: Int, modifier: Modifier = Modifier) {
+    val trackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f)
     Card(
         modifier = modifier.aspectRatio(1f),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = RoundedCornerShape(24.dp)
     ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Canvas(modifier = Modifier.size(120.dp)) {
+        Box(modifier = Modifier.fillMaxSize().padding(12.dp), contentAlignment = Alignment.Center) {
+            Canvas(modifier = Modifier.fillMaxSize().padding(12.dp)) {
                 drawArc(
                     color = trackColor,
                     startAngle = 135f,
                     sweepAngle = 270f,
                     useCenter = false,
-                    style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round)
+                    style = Stroke(width = 10.dp.toPx(), cap = StrokeCap.Round)
                 )
                 drawArc(
                     brush = Brush.horizontalGradient(EmberGradient),
                     startAngle = 135f,
                     sweepAngle = (270f * (percentage / 100f)).toFloat(),
                     useCenter = false,
-                    style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round)
+                    style = Stroke(width = 10.dp.toPx(), cap = StrokeCap.Round)
                 )
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = String.format("%.2f%%", percentage),
+                    text = String.format("%.1f%%", percentage),
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Black),
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "Field Goal %",
-                    style = MaterialTheme.typography.labelSmall,
+                    text = "FIELD GOAL",
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = "$makes/$totalShots",
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }
@@ -735,6 +749,7 @@ fun ArcAnalysisCard(averageAngle: Double, targetAngle: Float, modifier: Modifier
         "NO DATA" -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
         else -> ErrorRed
     }
+    val trackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f)
 
     Card(
         modifier = modifier.aspectRatio(1f),
@@ -742,34 +757,64 @@ fun ArcAnalysisCard(averageAngle: Double, targetAngle: Float, modifier: Modifier
         shape = RoundedCornerShape(24.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
+            modifier = Modifier.fillMaxSize().padding(12.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                imageVector = Icons.Default.TrendingUp,
-                contentDescription = null,
-                tint = statusColor,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .padding(4.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    drawLine(
+                        color = trackColor,
+                        start = Offset(0f, size.height),
+                        end = Offset(size.width, size.height),
+                        strokeWidth = 2.dp.toPx(),
+                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(6f, 6f), 0f)
+                    )
+                    
+                    if (averageAngle > 0.0) {
+                        val angleRad = Math.toRadians(averageAngle)
+                        val path = Path().apply {
+                            moveTo(0f, size.height)
+                            val ctrlX = size.width * 0.4f
+                            val ctrlY = size.height - (size.width * Math.tan(angleRad) * 0.5f).toFloat()
+                            quadraticTo(
+                                ctrlX, ctrlY.coerceIn(0f, size.height),
+                                size.width, size.height * 0.2f
+                            )
+                        }
+                        drawPath(
+                            path = path,
+                            color = statusColor,
+                            style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round)
+                        )
+                    }
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(4.dp))
+            
             Text(
                 text = if (averageAngle > 0) String.format("%.1f°", averageAngle) else "--",
                 style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Black),
                 color = MaterialTheme.colorScheme.onBackground
             )
             Text(
-                text = "Avg Shot Arc",
-                style = MaterialTheme.typography.labelSmall,
+                text = "AVG SHOT ARC",
+                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = "Optimal: ${targetAngle.toInt()}°",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             Surface(
                 color = statusColor.copy(alpha = 0.15f),
                 shape = RoundedCornerShape(8.dp)
@@ -793,19 +838,19 @@ fun StatCard(label: String, value: String, icon: androidx.compose.ui.graphics.ve
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(imageVector = icon, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f), modifier = Modifier.size(16.dp))
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
+            Text(text = label.uppercase(), style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp), color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
             Text(text = value, style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Black), color = MaterialTheme.colorScheme.onBackground)
         }
     }
 }
 
 @Composable
-fun ShotSequenceCard(results: List<Int>) {
+fun ShotSequenceCard(results: List<Int>, angles: List<Double>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -813,8 +858,8 @@ fun ShotSequenceCard(results: List<Int>) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "SHOT SEQUENCE",
-                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                text = "SHOT-BY-SHOT BREAKDOWN",
+                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
             )
             Spacer(modifier = Modifier.height(12.dp))
@@ -822,29 +867,45 @@ fun ShotSequenceCard(results: List<Int>) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 results.forEachIndexed { index, result ->
                     val isMake = result == 1
+                    val angle = angles.getOrNull(index)
+                    val statusColor = if (isMake) SuccessGreen else ErrorRed
+                    val cardBg = statusColor.copy(alpha = 0.08f)
+                    val borderBg = statusColor.copy(alpha = 0.25f)
+                    
                     Box(
                         modifier = Modifier
-                            .size(36.dp)
-                            .background(
-                                color = if (isMake) SuccessGreen.copy(alpha = 0.15f) else ErrorRed.copy(alpha = 0.15f),
-                                shape = RoundedCornerShape(10.dp)
-                            )
-                            .border(
-                                1.dp,
-                                if (isMake) SuccessGreen.copy(alpha = 0.5f) else ErrorRed.copy(alpha = 0.5f),
-                                RoundedCornerShape(10.dp)
-                            ),
+                            .width(80.dp)
+                            .background(cardBg, RoundedCornerShape(12.dp))
+                            .border(1.dp, borderBg, RoundedCornerShape(12.dp))
+                            .padding(vertical = 8.dp, horizontal = 6.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = (index + 1).toString(),
-                            color = if (isMake) SuccessGreen else ErrorRed,
-                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold)
-                        )
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = "SHOT #${index + 1}",
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 10.sp
+                                ),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                            )
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Text(
+                                text = if (isMake) "MAKE" else "MISS",
+                                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Black),
+                                color = statusColor
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = if (angle != null && angle > 0) String.format("%.1f°", angle) else "--",
+                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
                     }
                 }
             }

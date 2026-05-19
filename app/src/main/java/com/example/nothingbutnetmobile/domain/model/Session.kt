@@ -48,3 +48,18 @@ fun calculateLongestStreak(results: List<Int>): Int {
     return maxStreak
 }
 
+fun calculateAverageMakeAngle(angles: List<Double>, results: List<Int>): Double {
+    val makeAngles = angles.filterIndexed { index, valAngle -> 
+        index < results.size && results[index] == 1 && valAngle > 0.0 
+    }
+    return if (makeAngles.isNotEmpty()) makeAngles.average() else 0.0
+}
+
+fun calculateAverageMissAngle(angles: List<Double>, results: List<Int>): Double {
+    val missAngles = angles.filterIndexed { index, valAngle -> 
+        index < results.size && results[index] == 0 && valAngle > 0.0 
+    }
+    return if (missAngles.isNotEmpty()) missAngles.average() else 0.0
+}
+
+

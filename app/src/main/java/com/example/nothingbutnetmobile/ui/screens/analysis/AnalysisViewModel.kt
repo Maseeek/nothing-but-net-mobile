@@ -104,6 +104,11 @@ class AnalysisViewModel @Inject constructor(
                     val results = data.shotsResults ?: emptyList()
                     val angles = data.shotAngles ?: emptyList()
                     
+                    val rawMakeAngle = data.averageMakeAngle ?: 0.0
+                    val rawMissAngle = data.averageMissAngle ?: 0.0
+                    val computedMakeAngle = if (rawMakeAngle > 0.0) rawMakeAngle else com.example.nothingbutnetmobile.domain.model.calculateAverageMakeAngle(angles, results)
+                    val computedMissAngle = if (rawMissAngle > 0.0) rawMissAngle else com.example.nothingbutnetmobile.domain.model.calculateAverageMissAngle(angles, results)
+
                     val newAnalysis = Session(
                         totalShots = if (data.totalShots > 0) data.totalShots else (data.makes + data.misses),
                         makes = data.makes,
@@ -111,8 +116,8 @@ class AnalysisViewModel @Inject constructor(
                         fgPercentage = data.fgPercentage,
                         longestStreak = if (data.longestStreak > 0) data.longestStreak else calculateLongestStreak(results),
                         averageAngle = data.averageAngle,
-                        averageMakeAngle = data.averageMakeAngle,
-                        averageMissAngle = data.averageMissAngle,
+                        averageMakeAngle = computedMakeAngle,
+                        averageMissAngle = computedMissAngle,
                         shotAngles = angles,
                         shotsResults = results,
                         timestamp = System.currentTimeMillis()
