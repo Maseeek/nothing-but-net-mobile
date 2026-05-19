@@ -4,6 +4,11 @@
 Working on Quality Assurance and Performance Optimization.
 
 ## Completed Tasks
+- [x] **Analysis Screen FG% Progression Graph Port**:
+    - Identified that the `FgProgressionGraph` component was missing from the `AnalysisScreen.kt` SUCCESS view after the recent UI refactors.
+    - Updated `AnalysisViewModel.kt` to compute `fgHistory` and `fgHistoryDates` by collecting `statsRepository.getAllSessions()` dynamically upon loading specific, latest, or newly analyzed sessions.
+    - Imported and rendered `FgProgressionGraph` inside `AnalysisScreen.kt` between `ShotSequenceCard` and `LastSessionsCard` to maintain UI consistency across the app.
+    - Verified clean compilation with no regressions.
 - [x] **Session Model Field Goal Rendering Fix**:
     - Identified that `total_shots` was sometimes omitted/zero in historical MongoDB session documents.
     - Made `totalShots` inside `SessionData` nullable (`Int? = 0`).

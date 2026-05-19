@@ -8,6 +8,7 @@ import com.example.nothingbutnetmobile.data.remote.models.SessionRequest
 import com.example.nothingbutnetmobile.data.remote.models.MongoObjectId
 import com.example.nothingbutnetmobile.domain.model.Session
 import com.example.nothingbutnetmobile.domain.model.toEntity
+import com.example.nothingbutnetmobile.domain.model.calculateLongestStreak
 import com.example.nothingbutnetmobile.domain.repository.AuthRepository
 import com.example.nothingbutnetmobile.domain.repository.StatsRepository
 import kotlinx.coroutines.flow.Flow
@@ -64,22 +65,26 @@ class StatsRepositoryImpl @Inject constructor(
                     val timestamp = parseServerDate(sessionData.sessionDate)
                     val rawTotal = sessionData.totalShots ?: 0
                     val computedTotalShots = if (rawTotal > 0) rawTotal else (sessionData.makes + sessionData.misses)
+                    val results = sessionData.shotsResults ?: emptyList()
+                    val rawStreak = sessionData.longestStreak ?: 0
+                    val computedStreak = if (rawStreak > 0) rawStreak else calculateLongestStreak(results)
                     sessionDao.insertSession(
                         SessionEntity(
                             totalShots = computedTotalShots,
                             makes = sessionData.makes,
                             misses = sessionData.misses,
                             fgPercentage = sessionData.fgPercentage ?: 0.0,
-                            longestStreak = sessionData.longestStreak,
+                            longestStreak = computedStreak,
                             averageAngle = sessionData.averageAngle ?: 0.0,
                             averageMakeAngle = sessionData.averageMakeAngle ?: 0.0,
                             averageMissAngle = sessionData.averageMissAngle ?: 0.0,
                             shotAngles = sessionData.shotAngles ?: emptyList(),
-                            shotsResults = sessionData.shotsResults ?: emptyList(),
+                            shotsResults = results,
                             timestamp = timestamp
                         )
                     )
                 }
+
                 Result.success(Unit)
             } else {
                 Result.failure(Exception("Sync failed: ${response.message()}"))
@@ -90,17 +95,36 @@ class StatsRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun parseServerDate(dateStr: String): Long {
+    private fun parseServerDate(dateStr: String?): Long {
+        if (dateStr.isNullOrBlank()) return System.currentTimeMillis()
+        
+        // Check if it's already a numeric timestamp
+        val asLong = dateStr.toLongOrNull()
+        if (asLong != null) {
+            // Check if it's in seconds (e.g. 1716153000) instead of ms
+            return if (asLong < 1000000000000L) asLong * 1000L else asLong
+        }
+
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                return java.time.Instant.parse(dateStr).toEpochMilli()
+            }
+        } catch (e: Exception) {
+            // Fallback to SimpleDateFormat
+        }
+
         val formats = listOf(
             "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss'Z'"
+            "yyyy-MM-dd'T'HH:mm:ss'Z'",
+            "EEE, dd MMM yyyy HH:mm:ss zzz"
         )
         for (format in formats) {
             try {
                 val sdf = SimpleDateFormat(format, Locale.US).apply {
                     timeZone = TimeZone.getTimeZone("UTC")
                 }
-                return sdf.parse(dateStr)?.time ?: System.currentTimeMillis()
+                val parsed = sdf.parse(dateStr)
+                if (parsed != null) return parsed.time
             } catch (e: Exception) { continue }
         }
         return System.currentTimeMillis()

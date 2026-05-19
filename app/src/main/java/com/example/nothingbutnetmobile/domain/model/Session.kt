@@ -33,3 +33,18 @@ fun Session.toEntity(): SessionEntity {
         timestamp = timestamp
     )
 }
+
+fun calculateLongestStreak(results: List<Int>): Int {
+    var maxStreak = 0
+    var currentStreak = 0
+    for (res in results) {
+        if (res == 1) {
+            currentStreak++
+            if (currentStreak > maxStreak) maxStreak = currentStreak
+        } else {
+            currentStreak = 0
+        }
+    }
+    return maxStreak
+}
+

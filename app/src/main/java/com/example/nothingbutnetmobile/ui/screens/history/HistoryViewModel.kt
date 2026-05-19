@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,6 +30,22 @@ class HistoryViewModel @Inject constructor(
         )
         
         observeHistory()
+        syncHistory()
+    }
+
+    fun syncHistory() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+            val result = statsRepository.syncWithServer()
+            if (result.isFailure) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    errorMessage = result.exceptionOrNull()?.message ?: "Failed to sync history"
+                )
+            } else {
+                _uiState.value = _uiState.value.copy(isLoading = false)
+            }
+        }
     }
 
     private fun observeHistory() {
@@ -44,5 +61,7 @@ class HistoryViewModel @Inject constructor(
 
 data class HistoryUiState(
     val userName: String = "User",
-    val sessions: List<Session> = emptyList()
+    val sessions: List<Session> = emptyList(),
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
 )

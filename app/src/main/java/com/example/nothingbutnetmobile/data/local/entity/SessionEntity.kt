@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 import com.example.nothingbutnetmobile.domain.model.Session
+import com.example.nothingbutnetmobile.domain.model.calculateLongestStreak
 
 @Entity(tableName = "sessions")
 data class SessionEntity(
@@ -24,13 +25,14 @@ data class SessionEntity(
 
 fun SessionEntity.toDomain(): Session {
     val computedTotalShots = if (totalShots > 0) totalShots else (makes + misses)
+    val computedStreak = if (longestStreak > 0) longestStreak else calculateLongestStreak(shotsResults)
     return Session(
         id = id,
         totalShots = computedTotalShots,
         makes = makes,
         misses = misses,
         fgPercentage = fgPercentage,
-        longestStreak = longestStreak,
+        longestStreak = computedStreak,
         averageAngle = averageAngle,
         averageMakeAngle = averageMakeAngle,
         averageMissAngle = averageMissAngle,
@@ -39,3 +41,4 @@ fun SessionEntity.toDomain(): Session {
         timestamp = timestamp
     )
 }
+

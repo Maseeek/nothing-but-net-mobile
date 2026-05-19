@@ -3,6 +3,7 @@ package com.example.nothingbutnetmobile.data.repository
 import com.example.nothingbutnetmobile.data.remote.CVApi
 import com.example.nothingbutnetmobile.data.remote.models.AnalysisResponse
 import com.example.nothingbutnetmobile.domain.model.Session
+import com.example.nothingbutnetmobile.domain.model.calculateLongestStreak
 import com.example.nothingbutnetmobile.domain.repository.CVRepository
 import com.example.nothingbutnetmobile.domain.repository.StatsRepository
 import com.google.gson.Gson
@@ -58,22 +59,24 @@ class CVRepositoryImpl @Inject constructor(
                 Log.d("CVRepository", "Analysis successful, processing results")
                 // save local & sync
                 body.data?.let { result ->
+                    val results = result.shotsResults ?: emptyList()
                     val session = Session(
                         totalShots = if (result.totalShots > 0) result.totalShots else (result.makes + result.misses),
                         makes = result.makes,
                         misses = result.misses,
                         fgPercentage = result.fgPercentage,
-                        longestStreak = result.longestStreak,
+                        longestStreak = if (result.longestStreak > 0) result.longestStreak else calculateLongestStreak(results),
                         averageAngle = result.averageAngle,
                         averageMakeAngle = result.averageMakeAngle,
                         averageMissAngle = result.averageMissAngle,
                         shotAngles = result.shotAngles ?: emptyList(),
-                        shotsResults = result.shotsResults ?: emptyList(),
+                        shotsResults = results,
                         timestamp = System.currentTimeMillis()
                     )
                     statsRepository.saveSession(session)
                     statsRepository.pushSessionToServer(session)
                 }
+
                 Result.success(body)
             } else {
                 val errorMsg = response.errorBody()?.string() ?: response.message()

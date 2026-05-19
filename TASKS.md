@@ -63,6 +63,11 @@
 **Current Phase**: Phase 3 (Testing & Polish) - Refactoring & Branding
 
 ### Recent Accomplishments
+- **Analysis Screen FG% Progression Graph Port**:
+    - Identified that the `FgProgressionGraph` component was missing from the `AnalysisScreen.kt` SUCCESS view after the recent UI refactors.
+    - Updated `AnalysisViewModel.kt` to compute `fgHistory` and `fgHistoryDates` by collecting `statsRepository.getAllSessions()` dynamically upon loading specific, latest, or newly analyzed sessions.
+    - Imported and rendered `FgProgressionGraph` inside `AnalysisScreen.kt` between `ShotSequenceCard` and `LastSessionsCard` to maintain UI consistency across the app.
+    - Verified clean compilation with no regressions.
 - **Session Model usage & Field Goal Ratio Fix**:
     - Identified that `total_shots` was sometimes missing or returned as `0` in historical MongoDB Session documents.
     - Updated `SessionData` to make `totalShots` nullable and default to `0` to prevent deserialization issues.

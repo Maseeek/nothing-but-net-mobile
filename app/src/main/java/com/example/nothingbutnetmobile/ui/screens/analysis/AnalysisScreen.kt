@@ -16,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.navigation.NavController
 import com.example.nothingbutnetmobile.ui.components.BottomNavigationBar
 import com.example.nothingbutnetmobile.ui.components.DashboardHeader
+import com.example.nothingbutnetmobile.ui.components.FgProgressionGraph
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Error
@@ -554,6 +555,13 @@ fun AnalysisScreen(
                                 Spacer(modifier = Modifier.height(16.dp))
                                 
                                 ShotSequenceCard(results = session.shotsResults)
+                                
+                                Spacer(modifier = Modifier.height(16.dp))
+                                
+                                FgProgressionGraph(
+                                    fgHistory = uiState.fgHistory,
+                                    fgHistoryDates = uiState.fgHistoryDates
+                                )
                                 
                                 Spacer(modifier = Modifier.height(16.dp))
                                 

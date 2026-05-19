@@ -6,6 +6,7 @@ import com.example.nothingbutnetmobile.domain.repository.AuthRepository
 import com.example.nothingbutnetmobile.domain.repository.CVRepository
 import com.example.nothingbutnetmobile.domain.repository.StatsRepository
 import com.example.nothingbutnetmobile.domain.model.Session
+import com.example.nothingbutnetmobile.domain.model.calculateLongestStreak
 import com.example.nothingbutnetmobile.data.local.PreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +15,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Date
 import javax.inject.Inject
 
 enum class AnalysisStatus {
@@ -114,13 +118,25 @@ class AnalysisViewModel @Inject constructor(
                         timestamp = System.currentTimeMillis()
                     )
                     
-                    _uiState.value = _uiState.value.copy(
-                        status = AnalysisStatus.SUCCESS,
-                        selectedSession = newAnalysis,
-                        analysisResult = "Analysis Complete: ${data.makes}/${data.totalShots} Shots Made",
-                        shotAngles = angles,
-                        shotsResults = results
-                    )
+                    viewModelScope.launch {
+                        statsRepository.getAllSessions().collect { allAnalyses ->
+                            val sortedLast5 = allAnalyses.sortedBy { it.timestamp }.takeLast(5)
+                            val history = sortedLast5.map { it.fgPercentage.toFloat() }
+                            val sdf = SimpleDateFormat("d MMM", Locale.getDefault())
+                            val historyDates = sortedLast5.map { sdf.format(Date(it.timestamp)) }
+
+                            _uiState.value = _uiState.value.copy(
+                                status = AnalysisStatus.SUCCESS,
+                                selectedSession = newAnalysis,
+                                recentSessions = allAnalyses.take(5),
+                                fgHistory = history,
+                                fgHistoryDates = historyDates,
+                                analysisResult = "Analysis Complete: ${data.makes}/${data.totalShots} Shots Made",
+                                shotAngles = angles,
+                                shotsResults = results
+                            )
+                        }
+                    }
                 } else {
                     _uiState.value = _uiState.value.copy(
                         status = AnalysisStatus.ERROR,
@@ -180,10 +196,17 @@ class AnalysisViewModel @Inject constructor(
                         selected
                     }
                     
+                    val sortedLast5 = allAnalyses.sortedBy { it.timestamp }.takeLast(5)
+                    val history = sortedLast5.map { it.fgPercentage.toFloat() }
+                    val sdf = SimpleDateFormat("d MMM", Locale.getDefault())
+                    val historyDates = sortedLast5.map { sdf.format(Date(it.timestamp)) }
+
                     _uiState.value = _uiState.value.copy(
                         status = AnalysisStatus.SUCCESS,
                         selectedSession = processedSelected,
                         recentSessions = allAnalyses.take(5),
+                        fgHistory = history,
+                        fgHistoryDates = historyDates,
                         analysisResult = "Latest Session: ${processedSelected.makes}/${processedSelected.totalShots} Shots Made",
                         shotAngles = processedSelected.shotAngles,
                         shotsResults = processedSelected.shotsResults
@@ -213,10 +236,17 @@ class AnalysisViewModel @Inject constructor(
                 
                 // get recent list
                 statsRepository.getAllSessions().collect { allAnalyses ->
+                    val sortedLast5 = allAnalyses.sortedBy { it.timestamp }.takeLast(5)
+                    val history = sortedLast5.map { it.fgPercentage.toFloat() }
+                    val sdf = SimpleDateFormat("d MMM", Locale.getDefault())
+                    val historyDates = sortedLast5.map { sdf.format(Date(it.timestamp)) }
+
                     _uiState.value = _uiState.value.copy(
                         status = AnalysisStatus.SUCCESS,
                         selectedSession = processedSelected,
                         recentSessions = allAnalyses.take(5),
+                        fgHistory = history,
+                        fgHistoryDates = historyDates,
                         analysisResult = "Viewing Analysis: ${processedSelected.makes}/${processedSelected.totalShots} Shots Made",
                         shotAngles = processedSelected.shotAngles,
                         shotsResults = processedSelected.shotsResults
@@ -252,20 +282,6 @@ class AnalysisViewModel @Inject constructor(
         )
     }
 
-    private fun calculateLongestStreak(results: List<Int>): Int {
-        var maxStreak = 0
-        var currentStreak = 0
-        for (res in results) {
-            if (res == 1) {
-                currentStreak++
-                if (currentStreak > maxStreak) maxStreak = currentStreak
-            } else {
-                currentStreak = 0
-            }
-        }
-        return maxStreak
-    }
-
     fun resetStatus() {
         _uiState.value = _uiState.value.copy(status = AnalysisStatus.IDLE, errorMessage = null)
     }
@@ -284,5 +300,7 @@ data class AnalysisUiState(
     val shotsResults: List<Int> = emptyList(),
     val targetAngle: Float = 55f,
     val selectedSession: Session? = null,
-    val recentSessions: List<Session> = emptyList()
+    val recentSessions: List<Session> = emptyList(),
+    val fgHistory: List<Float> = emptyList(),
+    val fgHistoryDates: List<String> = emptyList()
 )

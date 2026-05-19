@@ -92,6 +92,8 @@
 - [x] Cleaned up full package path references in `AnalysisScreen.kt` and standardized imports.
 - [x] Adjusted "Record" basketball dome size and vertical offset in `BottomNavigationBar` for improved visual prominence and premium feel.
 - [x] Fixed SelectionMarker scaling in AnalysisScreen: added inverse scale logic to ensure "L" and "R" labels remain a consistent 24dp size during zoom gestures.
-
-
-
+- [x] Completely redesigned the History Screen using the "Liquid Glass & Ember" aesthetic, providing rich styling based on FG% and dynamic empty/loading states.
+- [x] Implemented standard ShareSheet Intent functionality on individual history cards to fulfill the 3rd coursework feature requirement.
+- [x] Bulletproofed Network Date/ObjectId Parsing: implemented custom Gson TypeAdapters in NetworkModule to gracefully handle both Extended JSON objects and raw String formats.
+- [x] Fixed `HistoryViewModel` memory logic: wired the History page to trigger a live `syncWithServer()` upon initialization and on pull-to-refresh to fetch fresh data.
+- [x] Solved the `System.currentTimeMillis()` date corruption bug by upgrading `parseServerDate` to robustly consume `Instant.parse()` epoch strings.
