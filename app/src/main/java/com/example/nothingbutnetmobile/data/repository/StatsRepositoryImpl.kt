@@ -5,6 +5,7 @@ import com.example.nothingbutnetmobile.data.local.entity.SessionEntity
 import com.example.nothingbutnetmobile.data.local.entity.toDomain
 import com.example.nothingbutnetmobile.data.remote.AuthApi
 import com.example.nothingbutnetmobile.data.remote.models.SessionRequest
+import com.example.nothingbutnetmobile.data.remote.models.MongoObjectId
 import com.example.nothingbutnetmobile.domain.model.Session
 import com.example.nothingbutnetmobile.domain.model.toEntity
 import com.example.nothingbutnetmobile.domain.repository.AuthRepository
@@ -66,7 +67,7 @@ class StatsRepositoryImpl @Inject constructor(
                             totalShots = sessionData.totalShots,
                             makes = sessionData.makes,
                             misses = sessionData.misses,
-                            fgPercentage = sessionData.fgPercentage,
+                            fgPercentage = sessionData.fgPercentage ?: 0.0,
                             longestStreak = sessionData.longestStreak,
                             averageAngle = sessionData.averageAngle ?: 0.0,
                             averageMakeAngle = sessionData.averageMakeAngle ?: 0.0,
@@ -107,7 +108,7 @@ class StatsRepositoryImpl @Inject constructor(
         return try {
             val userId = authRepository.getUserId()
             val request = SessionRequest(
-                userId = userId,
+                userId = userId?.let { MongoObjectId(it) },
                 makes = session.makes,
                 misses = session.misses,
                 longestStreak = session.longestStreak,

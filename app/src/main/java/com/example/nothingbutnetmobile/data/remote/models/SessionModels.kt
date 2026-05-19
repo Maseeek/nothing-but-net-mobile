@@ -2,18 +2,26 @@ package com.example.nothingbutnetmobile.data.remote.models
 
 import com.google.gson.annotations.SerializedName
 
+data class MongoObjectId(
+    @SerializedName("\$oid") val oid: String
+)
+
+data class MongoDate(
+    @SerializedName("\$date") val dateStr: String
+)
+
 data class SessionRequest(
-    val userId: String?,
-    val makes: Int,
-    val misses: Int,
-    val longestStreak: Int,
-    val averageAngle: Double,
-    val averageMakeAngle: Double,
-    val averageMissAngle: Double,
-    val fgPercentage: Double,
-    val shotAngles: List<Double>,
-    val shotsResults: List<Int>,
-    val totalShots: Int
+    @SerializedName("userId") val userId: MongoObjectId?,
+    @SerializedName("makes") val makes: Int,
+    @SerializedName("misses") val misses: Int,
+    @SerializedName("longestStreak") val longestStreak: Int,
+    @SerializedName("average_angle") val averageAngle: Double,
+    @SerializedName("average_make_angle") val averageMakeAngle: Double,
+    @SerializedName("average_miss_angle") val averageMissAngle: Double,
+    @SerializedName("fg_percentage") val fgPercentage: Double,
+    @SerializedName("shot_angles") val shotAngles: List<Double>,
+    @SerializedName("shots_results") val shotsResults: List<Int>,
+    @SerializedName("total_shots") val totalShots: Int
 )
 
 data class SessionResponse(
@@ -22,20 +30,25 @@ data class SessionResponse(
 )
 
 data class SessionData(
-    @SerializedName("_id") val id: String,
-    val userId: String?,
-    val sessionDate: String,
-    val makes: Int,
-    val misses: Int,
-    val longestStreak: Int,
-    val fgPercentage: Double,
-    val totalShots: Int,
-    val averageAngle: Double? = 0.0,
-    val averageMakeAngle: Double? = 0.0,
-    val averageMissAngle: Double? = 0.0,
-    val shotAngles: List<Double>? = emptyList(),
-    val shotsResults: List<Int>? = emptyList()
-)
+    @SerializedName("_id") val mongoId: MongoObjectId?,
+    @SerializedName("userId") val mongoUserId: MongoObjectId?,
+    @SerializedName("sessionDate") val mongoDate: MongoDate?,
+    @SerializedName("makes") val makes: Int,
+    @SerializedName("misses") val misses: Int,
+    @SerializedName("longestStreak") val longestStreak: Int,
+    @SerializedName("average_angle") val averageAngle: Double? = 0.0,
+    @SerializedName("average_make_angle") val averageMakeAngle: Double? = 0.0,
+    @SerializedName("average_miss_angle") val averageMissAngle: Double? = 0.0,
+    @SerializedName("fg_percentage") val fgPercentage: Double? = 0.0,
+    @SerializedName("shot_angles") val shotAngles: List<Double>? = emptyList(),
+    @SerializedName("shots_results") val shotsResults: List<Int>? = emptyList(),
+    @SerializedName("total_shots") val totalShots: Int,
+    @SerializedName("__v") val version: Int? = 0
+) {
+    val id: String get() = mongoId?.oid ?: ""
+    val userId: String get() = mongoUserId?.oid ?: ""
+    val sessionDate: String get() = mongoDate?.dateStr ?: ""
+}
 
 data class FgPercentageResponse(
     val fieldGoalPercentage: String

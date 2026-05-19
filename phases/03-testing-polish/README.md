@@ -48,12 +48,24 @@ Working on Quality Assurance and Performance Optimization.
 - [x] **Session Data Model Refactoring & Test Updates**:
     - Fully refactored `ShotAnalysis` references to `Session` across all UI view models and screen composables.
     - Renamed and refactored the instrumented provider test to `SessionProviderTest.kt`, updating URI paths to `sessions` and successfully verifying clean compilation and local build verification.
+- [x] **Session Schema Alignment and Naming Conventions Update**:
+    - Aligned `SessionRequest` and `SessionData` models with the updated MongoDB Session schema conventions.
+    - Added `@SerializedName` annotations for snake_case properties (`average_angle`, `average_make_angle`, `average_miss_angle`, `fg_percentage`, `shot_angles`, `shots_results`, `total_shots`) and camelCase properties (`longestStreak`, `sessionDate`, `userId`).
+    - Introduced wrapper classes `MongoObjectId` and `MongoDate` to parse MongoDB-specific `$oid` and `$date` JSON sub-objects safely.
+    - Updated `StatsRepositoryImpl` to handle optional fields like `fgPercentage` and wrap `userId` in `MongoObjectId` during synchronization.
+    - Successfully compiled and ran unit tests to verify zero regressions.
 - [x] **Session Data Network Serialization & UI Mapping Fix**:
-    - Removed snake_case `@SerializedName` annotations from `SessionRequest` and `SessionData` to align with the Node.js backend's camelCase schema.
     - Updated `ArcAnalysisCard` in `AnalysisScreen.kt` to receive and display the actual `averageAngle` property of the shot session.
     - Added dynamic status badges ("PERFECT", "GOOD", "ADJUST ARC") based on the deviation from the user's target angle.
     - Resolved missing session statistics, shot sequences, streaks, and arcs across the Analysis, History, and Leaderboard views.
+- [x] **Adaptive App Icon Rendering Fix**:
+    - Restored the adaptive icon support for modern Android (API 26+) by creating `mipmap-anydpi-v26/ic_launcher.xml` and `ic_launcher_round.xml`.
+    - Defined a solid background color `@color/ic_launcher_background` matching the icon's grey circle color (`#68808C`) and added it to `colors.xml`.
+    - Generated centered and scaled transparent `ic_launcher_foreground.png` launcher foreground assets for all densities (`mdpi`, `hdpi`, `xhdpi`, `xxhdpi`, `xxxhdpi`) to ensure the basketball logo elements fit cleanly within the 66% adaptive icon safe zone and do not get clipped.
+    - Verified compilation safety with a clean local build using `./gradlew assembleDebug`.
 
 ## Next Steps
 1. Unit Testing for ViewModels (Task 10).
 2. UI Testing for Core Flows (Task 11).
+
+
