@@ -55,14 +55,20 @@
 - [ ] UI Testing for Core Flows <!-- id: 11 -->
 - [x] Performance Optimization <!-- id: 12 -->
 - [x] Final Spec Adherence Check <!-- id: 13 -->
+- [x] Custom ContentProvider & Instrumented Tests <!-- id: 14 -->
 
 ---
 
 ## 🧠 AGENT MEMORY (Current State)
 
-**Current Phase**: Phase 3 (Testing & Polish) - Final Spec Adherence Check
+**Current Phase**: Phase 3 (Testing & Polish) - ContentProvider Implementation
 
 ### Recent Accomplishments
+- **Custom ContentProvider & Instrumented Tests (Coursework Compliance)**:
+    - Added synchronous cursor query and write methods (`selectAllCursor`, `selectByIdCursor`, `insertSynchronous`, `deleteByIdSynchronous`, `updateSynchronous`) to `ShotAnalysisDao.kt`.
+    - Created `ShotAnalysisProvider.kt` custom ContentProvider to expose Room database shot sessions via content URIs.
+    - Registered the provider inside `AndroidManifest.xml` under the `<application>` element.
+    - Added `ShotAnalysisProviderTest.kt` in the `androidTest` folder and successfully validated all CRUD operations (insertion, list columns serialization, directory/single item queries, and deletion) on the connected hardware device.
 - **App Lifecycle & Screen Rotation Fixes**:
     - Refactored transient UI states (zoom/pan parameters `scale`, `offsetX`, `offsetY` in `AnalysisScreen.kt`; `selectionMode` and `isRecording` in `RecordScreen.kt`) to use `rememberSaveable` instead of `remember` so they survive orientation changes.
     - Configured `android:configChanges` for `MainActivity` in `AndroidManifest.xml` to prevent activity destruction and restart on screen rotation.

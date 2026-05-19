@@ -33,6 +33,12 @@ Working on Quality Assurance and Performance Optimization.
     - Added `findActivity` context helper to `AnalysisScreen.kt` and updated `DisposableEffect` to check `isChangingConfigurations` before deleting temporary video files, preventing video data loss on rotation.
     - Verified build stability with `./gradlew assembleDebug`.
 
+- [x] **Custom ContentProvider & Tests**:
+    - Implemented synchronous cursor database queries (`selectAllCursor`, `selectByIdCursor`, `insertSynchronous`, etc.) in `ShotAnalysisDao.kt` to comply with provider requirements.
+    - Created a custom `ShotAnalysisProvider` to wrap and expose the local Room database to external clients.
+    - Declared the provider under `<application>` in `AndroidManifest.xml` with exported flag.
+    - Wrote `ShotAnalysisProviderTest.kt` inside `androidTest` and verified passing CRUD assertions (inserts, directory queries, item queries, deletions) on connected hardware.
+
 ## Next Steps
 1. Unit Testing for ViewModels (Task 10).
 2. UI Testing for Core Flows (Task 11).

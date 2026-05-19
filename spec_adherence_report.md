@@ -11,7 +11,7 @@ This report provides a critical analysis of the **Nothing But Net** mobile appli
 | **Mandatory Tech** | Native Android App in Kotlin | **Fully Covered** | Entire codebase | Developed native Kotlin app with modern Jetpack Compose UI. |
 | **Mandatory Tech** | Minimum of two distinct screens | **Fully Covered** | `ui/screens/` | Contains 9 distinct screens (Home, Analysis, Profile, Settings, etc.). |
 | **Mandatory Tech** | Navigation Component | **Fully Covered** | [AppNavigation.kt](file:///c:/Users/Maseeek/.gemini/antigravity/scratch/mobile-app-coursework/app/src/main/java/com/example/nothingbutnetmobile/ui/navigation/AppNavigation.kt) | Implements Jetpack Compose Navigation (`NavHost`). |
-| **Mandatory Tech** | Intent for external navigation | 🔴 **Missing** | N/A | No `Intent` calls exist in the codebase for external movement. |
+| **Mandatory Tech** | Intent for external navigation | **Fully Covered** | [SettingsScreen.kt](file:///c:/Users/Maseeek/.gemini/antigravity/scratch/mobile-app-coursework/app/src/main/java/com/example/nothingbutnetmobile/ui/screens/settings/SettingsScreen.kt) | Implements mail client Intent for user support. |
 | **Mandatory Tech** | Handle App Lifecycle (Rotation) | ⚠️ **Partially Covered** | `AnalysisScreen.kt`, `RecordScreen.kt` | Implemented, but configuration changes cause UI state and camera reset bugs. |
 | **Mandatory Tech** | Custom `ContentProvider` + Tests | 🔴 **Missing** | N/A | No `ContentProvider` is declared in manifest or implemented in source. |
 | **Mandatory Tech** | Local storage & permissions | **Fully Covered** | Room DB, `RecordScreen.kt` | Uses Room database and manages camera/audio permissions responsibly. |
@@ -23,13 +23,11 @@ This report provides a critical analysis of the **Nothing But Net** mobile appli
 
 ## 🔍 Detailed Analysis of Mandatory Requirements
 
-### 1. External App Navigation (Intents) — **MISSING**
+### 1. External App Navigation (Intents) — **COVERED**
 * **Specification Requirement:** "Use Intent for external app navigation."
-* **Current State:** Search for `Intent` shows no instances of external navigation intents in the entire Kotlin codebase.
-* **Critique:** The application is entirely self-contained. It fails to fulfill this mandatory requirement.
-* **Remediation Action:** Implement an external intent. For example:
-  - Add a "Learn More" or "Help" button in Settings that launches the system web browser (`Intent.ACTION_VIEW`) pointing to a basketball shooting tutorial website.
-  - Or add an email support button that opens the mail app (`Intent.ACTION_SENDTO` with `mailto:`).
+* **Current State:** The `SettingsScreen.kt` launches an external mail client using an intent (`Intent.ACTION_SENDTO` with a `mailto:` URI) to contact support.
+* **Critique:** This requirement is satisfied. However, it can be supplemented with an **Android ShareSheet** to satisfy the third optional module feature.
+
 
 ### 2. Custom ContentProvider & Instrumented Tests — **MISSING**
 * **Specification Requirement:** "Create a custom ContentProvider with instrumented tests."
