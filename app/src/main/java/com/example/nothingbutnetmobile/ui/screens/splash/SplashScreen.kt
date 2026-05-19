@@ -118,14 +118,14 @@ fun SplashScreen(onTimeout: () -> Unit) {
             ) {
                 // Logo with subtle pulse
                 Image(
-                    painter = painterResource(id = R.drawable.nbn_logo_transparent),
+                    painter = painterResource(id = R.drawable.nbn_light),
                     contentDescription = "NothingButNet Logo",
                     modifier = Modifier
-                        .height(110.dp)
+                        .size(150.dp)
                         .scale(scale.value)
                 )
 
-                Spacer(modifier = Modifier.height(28.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 // Brand Name
                 Text(

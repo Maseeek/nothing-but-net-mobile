@@ -4,6 +4,11 @@
 Working on Quality Assurance and Performance Optimization.
 
 ## Completed Tasks
+- [x] **Session Model Field Goal Rendering Fix**:
+    - Identified that `total_shots` was sometimes omitted/zero in historical MongoDB session documents.
+    - Made `totalShots` inside `SessionData` nullable (`Int? = 0`).
+    - Implemented a fallback calculation (`totalShots = if (totalShots > 0) totalShots else makes + misses`) in `StatsRepositoryImpl`, `CVRepositoryImpl`, `AnalysisViewModel`, `SessionEntity`, and `SessionProvider` to resolve the `1/0` rendering issue.
+    - Verified compilation and ran local JUnit tests successfully.
 - [x] **Cache Optimization**: 
     - Identified massive cache growth caused by non-deleted video files in `context.cacheDir`.
     - Implemented `FileUtils.getCacheSize` and `FileUtils.clearCache`.

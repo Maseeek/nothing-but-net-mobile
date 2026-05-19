@@ -90,11 +90,16 @@ class SessionProvider : ContentProvider() {
             emptyList()
         }
 
+        val rawTotal = values.getAsInteger("totalShots") ?: 0
+        val makesVal = values.getAsInteger("makes") ?: 0
+        val missesVal = values.getAsInteger("misses") ?: 0
+        val computedTotal = if (rawTotal > 0) rawTotal else (makesVal + missesVal)
+
         val entity = SessionEntity(
             id = values.getAsLong("id") ?: 0L,
-            totalShots = values.getAsInteger("totalShots") ?: 0,
-            makes = values.getAsInteger("makes") ?: 0,
-            misses = values.getAsInteger("misses") ?: 0,
+            totalShots = computedTotal,
+            makes = makesVal,
+            misses = missesVal,
             fgPercentage = values.getAsDouble("fgPercentage") ?: 0.0,
             longestStreak = values.getAsInteger("longestStreak") ?: 0,
             averageAngle = values.getAsDouble("averageAngle") ?: 0.0,

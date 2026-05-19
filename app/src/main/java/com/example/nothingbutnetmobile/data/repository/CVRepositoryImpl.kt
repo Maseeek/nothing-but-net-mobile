@@ -59,7 +59,7 @@ class CVRepositoryImpl @Inject constructor(
                 // save local & sync
                 body.data?.let { result ->
                     val session = Session(
-                        totalShots = result.totalShots,
+                        totalShots = if (result.totalShots > 0) result.totalShots else (result.makes + result.misses),
                         makes = result.makes,
                         misses = result.misses,
                         fgPercentage = result.fgPercentage,

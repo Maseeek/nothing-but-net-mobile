@@ -23,9 +23,10 @@ data class SessionEntity(
 )
 
 fun SessionEntity.toDomain(): Session {
+    val computedTotalShots = if (totalShots > 0) totalShots else (makes + misses)
     return Session(
         id = id,
-        totalShots = totalShots,
+        totalShots = computedTotalShots,
         makes = makes,
         misses = misses,
         fgPercentage = fgPercentage,

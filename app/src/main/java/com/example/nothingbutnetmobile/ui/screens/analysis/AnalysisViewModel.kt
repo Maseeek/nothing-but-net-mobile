@@ -101,7 +101,7 @@ class AnalysisViewModel @Inject constructor(
                     val angles = data.shotAngles ?: emptyList()
                     
                     val newAnalysis = Session(
-                        totalShots = data.totalShots,
+                        totalShots = if (data.totalShots > 0) data.totalShots else (data.makes + data.misses),
                         makes = data.makes,
                         misses = data.misses,
                         fgPercentage = data.fgPercentage,

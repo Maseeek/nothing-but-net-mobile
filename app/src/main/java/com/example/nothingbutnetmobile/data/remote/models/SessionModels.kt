@@ -42,7 +42,7 @@ data class SessionData(
     @SerializedName("fg_percentage") val fgPercentage: Double? = 0.0,
     @SerializedName("shot_angles") val shotAngles: List<Double>? = emptyList(),
     @SerializedName("shots_results") val shotsResults: List<Int>? = emptyList(),
-    @SerializedName("total_shots") val totalShots: Int,
+    @SerializedName("total_shots") val totalShots: Int? = 0,
     @SerializedName("__v") val version: Int? = 0
 ) {
     val id: String get() = mongoId?.oid ?: ""

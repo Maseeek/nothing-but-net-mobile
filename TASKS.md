@@ -63,6 +63,12 @@
 **Current Phase**: Phase 3 (Testing & Polish) - Refactoring & Branding
 
 ### Recent Accomplishments
+- **Session Model usage & Field Goal Ratio Fix**:
+    - Identified that `total_shots` was sometimes missing or returned as `0` in historical MongoDB Session documents.
+    - Updated `SessionData` to make `totalShots` nullable and default to `0` to prevent deserialization issues.
+    - Implemented a robust fallback calculation (`if (totalShots > 0) totalShots else makes + misses`) across `StatsRepositoryImpl`, `CVRepositoryImpl`, `AnalysisViewModel`, `SessionEntity`, and `SessionProvider` to ensure the total shot count is computed correctly in the app logic.
+    - Resolved the issue where the app incorrectly rendered ratios like `1/0` for field goals.
+    - Verified compilation and unit tests with clean local builds.
 - **Adaptive App Icon Rendering Fix**:
     - Restored the adaptive icon support for modern Android (API 26+) by creating `mipmap-anydpi-v26/ic_launcher.xml` and `ic_launcher_round.xml`.
     - Defined a solid background color `@color/ic_launcher_background` matching the icon's grey circle color (`#68808C`) and added it to `colors.xml`.

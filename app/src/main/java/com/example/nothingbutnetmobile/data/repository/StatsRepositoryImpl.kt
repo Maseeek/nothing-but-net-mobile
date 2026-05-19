@@ -62,9 +62,11 @@ class StatsRepositoryImpl @Inject constructor(
                 
                 sessionsData.forEach { sessionData ->
                     val timestamp = parseServerDate(sessionData.sessionDate)
+                    val rawTotal = sessionData.totalShots ?: 0
+                    val computedTotalShots = if (rawTotal > 0) rawTotal else (sessionData.makes + sessionData.misses)
                     sessionDao.insertSession(
                         SessionEntity(
-                            totalShots = sessionData.totalShots,
+                            totalShots = computedTotalShots,
                             makes = sessionData.makes,
                             misses = sessionData.misses,
                             fgPercentage = sessionData.fgPercentage ?: 0.0,
