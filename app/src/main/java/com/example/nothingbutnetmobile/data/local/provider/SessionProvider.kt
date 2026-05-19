@@ -12,6 +12,7 @@ import com.example.nothingbutnetmobile.data.local.entity.SessionEntity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
+// content provider required for coursework spec contentprovider requirement, queries room database synchronously
 class SessionProvider : ContentProvider() {
 
     companion object {
@@ -133,6 +134,7 @@ class SessionProvider : ContentProvider() {
     }
 
     override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<out String>?): Int {
+        // update operation not required for this coursework spec
         return 0
     }
 

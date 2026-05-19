@@ -43,10 +43,10 @@ fun LineChart(
         val width = size.width
         val height = size.height
         
-        val paddingLeft = 40.dp.toPx()
+        val paddingLeft = 40.dp.toPx() // extra space on left for double digit labels like 100%
         val paddingRight = 12.dp.toPx()
         val paddingTop = 12.dp.toPx()
-        val paddingBottom = 20.dp.toPx()
+        val paddingBottom = 24.dp.toPx() // padding bottom to clear the date labels
         
         val chartWidth = width - paddingLeft - paddingRight
         val chartHeight = height - paddingTop - paddingBottom
@@ -71,6 +71,7 @@ fun LineChart(
                 text = labelText,
                 style = labelStyle
             )
+            // offset the y-axis labels to the left of the grid line
             val textWidth = textLayoutResult.size.width
             val textHeight = textLayoutResult.size.height
             drawText(
