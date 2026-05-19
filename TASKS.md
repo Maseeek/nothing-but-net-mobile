@@ -63,6 +63,23 @@
 **Current Phase**: Phase 3 (Testing & Polish) - Refactoring & Branding
 
 ### Recent Accomplishments
+- **Shot Analysis Metrics Layout & Background Refactoring**:
+    - Removed the inconsistent wrapping background box (`onSurfaceVariant` with alpha) from `AnalysisScreen.kt` to allow standard cards to sit directly on the screen's main background, aligning it with other pages.
+    - Added the missing `MAKE ANGLE` and `MISS ANGLE` statistics cards inside the SUCCESS state of `AnalysisScreen.kt` for layout parity.
+    - Grouped stats cards on `HomeScreen.kt` into a 2-column count/streak row (`Total Shots`, `Streak`) and a 3-column angle row (`Avg Angle`, `Make Angle`, `Miss Angle`) to eliminate odd size differences and spacing.
+    - Verified compile safety with a clean Gradle build.
+- **Heading Styles Standardisation**:
+    - Identified inconsistency where the "Shot Analysis" heading in `AnalysisScreen.kt` was set to `headlineMedium` and lacked font bolding/weight, while other primary page headings (History, Profile, Leaderboard) used `headlineSmall.copy(fontWeight = FontWeight.Black)`.
+    - Standardised primary screen headers to `headlineSmall.copy(fontWeight = FontWeight.Black)` across the application.
+    - Updated `HomeScreen.kt` to import `FontWeight` and use `headlineSmall.copy(fontWeight = FontWeight.Black)` for its greeting header.
+    - Updated `AnalysisScreen.kt` to use `headlineSmall.copy(fontWeight = FontWeight.Black)` for the "Shot Analysis" page header.
+    - Updated `SettingsScreen.kt`'s `TopAppBar` title to use `headlineSmall.copy(fontWeight = FontWeight.Black)` for visual alignment.
+    - Verified compilation success with a clean Gradle assembleDebug build run.
+- **Bottom Navigation Redirection & Active State Fix**:
+    - Identified a bug where navigating away from tabs via inline redirects (e.g. History detail screen to Analysis, or Profile "View All" to History) stored stale backstack states that prevented subsequent bottom navbar tab selection.
+    - Updated `BottomNavigationBar.kt` to disable `saveState` and `restoreState` during cross-tab navigations to ensure clicking any tab button always opens the root destination of that tab.
+    - Introduced a precise `isSameTab` check mapping active screens (`home`, `analysis`, `history`, `profile`, `record`) to prevent redundant navigations.
+    - Verified compilation and build stability with a local Gradle run.
 - **Analysis Screen FG% Progression Graph Port**:
     - Identified that the `FgProgressionGraph` component was missing from the `AnalysisScreen.kt` SUCCESS view after the recent UI refactors.
     - Updated `AnalysisViewModel.kt` to compute `fgHistory` and `fgHistoryDates` by collecting `statsRepository.getAllSessions()` dynamically upon loading specific, latest, or newly analyzed sessions.

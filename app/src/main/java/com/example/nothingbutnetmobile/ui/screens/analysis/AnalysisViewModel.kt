@@ -119,23 +119,22 @@ class AnalysisViewModel @Inject constructor(
                     )
                     
                     viewModelScope.launch {
-                        statsRepository.getAllSessions().collect { allAnalyses ->
-                            val sortedLast5 = allAnalyses.sortedBy { it.timestamp }.takeLast(5)
-                            val history = sortedLast5.map { it.fgPercentage.toFloat() }
-                            val sdf = SimpleDateFormat("d MMM", Locale.getDefault())
-                            val historyDates = sortedLast5.map { sdf.format(Date(it.timestamp)) }
+                        val allAnalyses = statsRepository.getAllSessions().firstOrNull() ?: emptyList()
+                        val sortedLast5 = allAnalyses.sortedBy { it.timestamp }.takeLast(5)
+                        val history = sortedLast5.map { it.fgPercentage.toFloat() }
+                        val sdf = SimpleDateFormat("d MMM", Locale.getDefault())
+                        val historyDates = sortedLast5.map { sdf.format(Date(it.timestamp)) }
 
-                            _uiState.value = _uiState.value.copy(
-                                status = AnalysisStatus.SUCCESS,
-                                selectedSession = newAnalysis,
-                                recentSessions = allAnalyses.take(5),
-                                fgHistory = history,
-                                fgHistoryDates = historyDates,
-                                analysisResult = "Analysis Complete: ${data.makes}/${data.totalShots} Shots Made",
-                                shotAngles = angles,
-                                shotsResults = results
-                            )
-                        }
+                        _uiState.value = _uiState.value.copy(
+                            status = AnalysisStatus.SUCCESS,
+                            selectedSession = newAnalysis,
+                            recentSessions = allAnalyses.take(5),
+                            fgHistory = history,
+                            fgHistoryDates = historyDates,
+                            analysisResult = "Analysis Complete: ${data.makes}/${data.totalShots} Shots Made",
+                            shotAngles = angles,
+                            shotsResults = results
+                        )
                     }
                 } else {
                     _uiState.value = _uiState.value.copy(
@@ -171,53 +170,60 @@ class AnalysisViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(status = AnalysisStatus.LOADING)
             
+            // Try to load cached data first for offline access
+            val cachedAnalyses = statsRepository.getAllSessions().firstOrNull() ?: emptyList()
+            if (cachedAnalyses.isNotEmpty()) {
+                updateLatestState(cachedAnalyses)
+            }
+
             // sync with server
             val syncResult = statsRepository.syncWithServer()
-            if (syncResult.isFailure) {
-                // connection fail
+            if (syncResult.isSuccess) {
+                val updatedAnalyses = statsRepository.getAllSessions().firstOrNull() ?: emptyList()
+                updateLatestState(updatedAnalyses)
+            } else if (cachedAnalyses.isEmpty()) {
+                // Only show error if we have no cached data at all
                 _uiState.value = _uiState.value.copy(
                     status = AnalysisStatus.ERROR,
                     errorMessage = "Connection Error: Could not reach the server to fetch latest data."
                 )
-                return@launch
             }
+        }
+    }
 
-            // find today's data
-            statsRepository.getAllSessions().collect { allAnalyses ->
-                val now = System.currentTimeMillis()
-                val todaySessions = allAnalyses.filter { isSameDay(it.timestamp, now) }
-                
-                val selected = todaySessions.firstOrNull() ?: allAnalyses.firstOrNull()
-                
-                if (selected != null) {
-                    val processedSelected = if (selected.longestStreak == 0 && selected.shotsResults.isNotEmpty()) {
-                        selected.copy(longestStreak = calculateLongestStreak(selected.shotsResults))
-                    } else {
-                        selected
-                    }
-                    
-                    val sortedLast5 = allAnalyses.sortedBy { it.timestamp }.takeLast(5)
-                    val history = sortedLast5.map { it.fgPercentage.toFloat() }
-                    val sdf = SimpleDateFormat("d MMM", Locale.getDefault())
-                    val historyDates = sortedLast5.map { sdf.format(Date(it.timestamp)) }
-
-                    _uiState.value = _uiState.value.copy(
-                        status = AnalysisStatus.SUCCESS,
-                        selectedSession = processedSelected,
-                        recentSessions = allAnalyses.take(5),
-                        fgHistory = history,
-                        fgHistoryDates = historyDates,
-                        analysisResult = "Latest Session: ${processedSelected.makes}/${processedSelected.totalShots} Shots Made",
-                        shotAngles = processedSelected.shotAngles,
-                        shotsResults = processedSelected.shotsResults
-                    )
-                } else {
-                    _uiState.value = _uiState.value.copy(
-                        status = AnalysisStatus.IDLE,
-                        analysisResult = "No sessions found. Start by analyzing a video!"
-                    )
-                }
+    private fun updateLatestState(allAnalyses: List<Session>) {
+        val now = System.currentTimeMillis()
+        val todaySessions = allAnalyses.filter { isSameDay(it.timestamp, now) }
+        
+        val selected = todaySessions.firstOrNull() ?: allAnalyses.firstOrNull()
+        
+        if (selected != null) {
+            val processedSelected = if (selected.longestStreak == 0 && selected.shotsResults.isNotEmpty()) {
+                selected.copy(longestStreak = calculateLongestStreak(selected.shotsResults))
+            } else {
+                selected
             }
+            
+            val sortedLast5 = allAnalyses.sortedBy { it.timestamp }.takeLast(5)
+            val history = sortedLast5.map { it.fgPercentage.toFloat() }
+            val sdf = SimpleDateFormat("d MMM", Locale.getDefault())
+            val historyDates = sortedLast5.map { sdf.format(Date(it.timestamp)) }
+
+            _uiState.value = _uiState.value.copy(
+                status = AnalysisStatus.SUCCESS,
+                selectedSession = processedSelected,
+                recentSessions = allAnalyses.take(5),
+                fgHistory = history,
+                fgHistoryDates = historyDates,
+                analysisResult = "Latest Session: ${processedSelected.makes}/${processedSelected.totalShots} Shots Made",
+                shotAngles = processedSelected.shotAngles,
+                shotsResults = processedSelected.shotsResults
+            )
+        } else {
+            _uiState.value = _uiState.value.copy(
+                status = AnalysisStatus.IDLE,
+                analysisResult = "No sessions found. Start by analyzing a video!"
+            )
         }
     }
 
@@ -235,23 +241,22 @@ class AnalysisViewModel @Inject constructor(
                 }
                 
                 // get recent list
-                statsRepository.getAllSessions().collect { allAnalyses ->
-                    val sortedLast5 = allAnalyses.sortedBy { it.timestamp }.takeLast(5)
-                    val history = sortedLast5.map { it.fgPercentage.toFloat() }
-                    val sdf = SimpleDateFormat("d MMM", Locale.getDefault())
-                    val historyDates = sortedLast5.map { sdf.format(Date(it.timestamp)) }
+                val allAnalyses = statsRepository.getAllSessions().firstOrNull() ?: emptyList()
+                val sortedLast5 = allAnalyses.sortedBy { it.timestamp }.takeLast(5)
+                val history = sortedLast5.map { it.fgPercentage.toFloat() }
+                val sdf = SimpleDateFormat("d MMM", Locale.getDefault())
+                val historyDates = sortedLast5.map { sdf.format(Date(it.timestamp)) }
 
-                    _uiState.value = _uiState.value.copy(
-                        status = AnalysisStatus.SUCCESS,
-                        selectedSession = processedSelected,
-                        recentSessions = allAnalyses.take(5),
-                        fgHistory = history,
-                        fgHistoryDates = historyDates,
-                        analysisResult = "Viewing Analysis: ${processedSelected.makes}/${processedSelected.totalShots} Shots Made",
-                        shotAngles = processedSelected.shotAngles,
-                        shotsResults = processedSelected.shotsResults
-                    )
-                }
+                _uiState.value = _uiState.value.copy(
+                    status = AnalysisStatus.SUCCESS,
+                    selectedSession = processedSelected,
+                    recentSessions = allAnalyses.take(5),
+                    fgHistory = history,
+                    fgHistoryDates = historyDates,
+                    analysisResult = "Viewing Analysis: ${processedSelected.makes}/${processedSelected.totalShots} Shots Made",
+                    shotAngles = processedSelected.shotAngles,
+                    shotsResults = processedSelected.shotsResults
+                )
             } else {
                 _uiState.value = _uiState.value.copy(
                     status = AnalysisStatus.ERROR,

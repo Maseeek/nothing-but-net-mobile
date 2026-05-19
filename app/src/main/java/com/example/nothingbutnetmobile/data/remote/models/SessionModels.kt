@@ -19,8 +19,8 @@ data class SessionRequest(
     @SerializedName("average_make_angle") val averageMakeAngle: Double,
     @SerializedName("average_miss_angle") val averageMissAngle: Double,
     @SerializedName("fg_percentage") val fgPercentage: Double,
-    @SerializedName("shot_angles") val shotAngles: List<Double>,
-    @SerializedName("shots_results") val shotsResults: List<Int>,
+    @SerializedName(value = "shot_angles", alternate = ["shotAngles"]) val shotAngles: List<Double>,
+    @SerializedName(value = "shot_results", alternate = ["shotsResults", "shots_results", "shotResults"]) val shotsResults: List<Int>,
     @SerializedName("total_shots") val totalShots: Int
 )
 
@@ -40,8 +40,8 @@ data class SessionData(
     @SerializedName("average_make_angle") val averageMakeAngle: Double? = 0.0,
     @SerializedName("average_miss_angle") val averageMissAngle: Double? = 0.0,
     @SerializedName("fg_percentage") val fgPercentage: Double? = 0.0,
-    @SerializedName("shot_angles") val shotAngles: List<Double>? = emptyList(),
-    @SerializedName("shots_results") val shotsResults: List<Int>? = emptyList(),
+    @SerializedName(value = "shot_angles", alternate = ["shotAngles"]) val shotAngles: List<Double>? = emptyList(),
+    @SerializedName(value = "shot_results", alternate = ["shotsResults", "shots_results", "shotResults"]) val shotsResults: List<Int>? = emptyList(),
     @SerializedName("total_shots") val totalShots: Int? = 0,
     @SerializedName("__v") val version: Int? = 0
 ) {

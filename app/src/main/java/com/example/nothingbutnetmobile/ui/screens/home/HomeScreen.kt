@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -50,7 +51,7 @@ fun HomeScreen(
 
             Text(
                 text = "Ready to hoop, ${uiState.userName}?",
-                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Black),
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Black),
                 color = MaterialTheme.colorScheme.onBackground
             )
 
@@ -80,12 +81,6 @@ fun HomeScreen(
                     icon = Icons.Default.LocalFireDepartment,
                     modifier = Modifier.weight(1f)
                 )
-                StatCard(
-                    label = "Avg Angle",
-                    value = uiState.avgAngle,
-                    icon = Icons.Default.AvTimer,
-                    modifier = Modifier.weight(1f)
-                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -94,6 +89,12 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                StatCard(
+                    label = "Avg Angle",
+                    value = uiState.avgAngle,
+                    icon = Icons.Default.AvTimer,
+                    modifier = Modifier.weight(1f)
+                )
                 StatCard(
                     label = "Make Angle",
                     value = String.format("%.1f°", uiState.averageMakeAngle),

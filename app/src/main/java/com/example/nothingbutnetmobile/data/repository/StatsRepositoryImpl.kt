@@ -59,31 +59,28 @@ class StatsRepositoryImpl @Inject constructor(
             
             if (response.isSuccessful) {
                 val sessionsData = response.body() ?: emptyList()
-                sessionDao.deleteAll()
-                
-                sessionsData.forEach { sessionData ->
+                val sessionEntities = sessionsData.map { sessionData ->
                     val timestamp = parseServerDate(sessionData.sessionDate)
                     val rawTotal = sessionData.totalShots ?: 0
                     val computedTotalShots = if (rawTotal > 0) rawTotal else (sessionData.makes + sessionData.misses)
                     val results = sessionData.shotsResults ?: emptyList()
                     val rawStreak = sessionData.longestStreak ?: 0
                     val computedStreak = if (rawStreak > 0) rawStreak else calculateLongestStreak(results)
-                    sessionDao.insertSession(
-                        SessionEntity(
-                            totalShots = computedTotalShots,
-                            makes = sessionData.makes,
-                            misses = sessionData.misses,
-                            fgPercentage = sessionData.fgPercentage ?: 0.0,
-                            longestStreak = computedStreak,
-                            averageAngle = sessionData.averageAngle ?: 0.0,
-                            averageMakeAngle = sessionData.averageMakeAngle ?: 0.0,
-                            averageMissAngle = sessionData.averageMissAngle ?: 0.0,
-                            shotAngles = sessionData.shotAngles ?: emptyList(),
-                            shotsResults = results,
-                            timestamp = timestamp
-                        )
+                    SessionEntity(
+                        totalShots = computedTotalShots,
+                        makes = sessionData.makes,
+                        misses = sessionData.misses,
+                        fgPercentage = sessionData.fgPercentage ?: 0.0,
+                        longestStreak = computedStreak,
+                        averageAngle = sessionData.averageAngle ?: 0.0,
+                        averageMakeAngle = sessionData.averageMakeAngle ?: 0.0,
+                        averageMissAngle = sessionData.averageMissAngle ?: 0.0,
+                        shotAngles = sessionData.shotAngles ?: emptyList(),
+                        shotsResults = results,
+                        timestamp = timestamp
                     )
                 }
+                sessionDao.replaceAllSessions(sessionEntities)
 
                 Result.success(Unit)
             } else {

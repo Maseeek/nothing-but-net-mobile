@@ -167,7 +167,7 @@ fun AnalysisScreen(
             
             Text(
                 text = "Shot Analysis",
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Black),
                 color = MaterialTheme.colorScheme.onBackground
             )
             
@@ -176,8 +176,7 @@ fun AnalysisScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
-                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f), MaterialTheme.shapes.medium),
+                    .weight(1f),
                 contentAlignment = Alignment.Center
             ) {
                 when (uiState.status) {
@@ -548,6 +547,26 @@ fun AnalysisScreen(
                                         label = "MAX STREAK",
                                         value = session.longestStreak.toString(),
                                         icon = Icons.Default.LocalFireDepartment,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                                
+                                Spacer(modifier = Modifier.height(16.dp))
+                                
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                                ) {
+                                    StatCard(
+                                        label = "MAKE ANGLE",
+                                        value = if (session.averageMakeAngle > 0) String.format("%.1f°", session.averageMakeAngle) else "--",
+                                        icon = Icons.Default.CheckCircle,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    StatCard(
+                                        label = "MISS ANGLE",
+                                        value = if (session.averageMissAngle > 0) String.format("%.1f°", session.averageMissAngle) else "--",
+                                        icon = Icons.Default.Cancel,
                                         modifier = Modifier.weight(1f)
                                     )
                                 }

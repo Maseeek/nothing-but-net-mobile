@@ -34,13 +34,21 @@ fun BottomNavigationBar(
     val currentRoute = navBackStackEntry?.destination?.route
 
     val navigateTo = { route: String ->
-        if (currentRoute != route) {
+        val isSameTab = when (route) {
+            "home" -> currentRoute == "home"
+            "analysis" -> currentRoute?.startsWith("analysis") == true
+            "history" -> currentRoute == "history"
+            "profile" -> currentRoute == "profile"
+            "record" -> currentRoute == "record"
+            else -> currentRoute == route
+        }
+        if (!isSameTab) {
             navController.navigate(route) {
                 popUpTo("home") {
-                    saveState = true
+                    saveState = false
                 }
                 launchSingleTop = true
-                restoreState = true
+                restoreState = false
             }
         }
     }

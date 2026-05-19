@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Transaction
 import com.example.nothingbutnetmobile.data.local.entity.SessionEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -25,6 +26,12 @@ interface SessionDao {
 
     @Query("DELETE FROM sessions")
     suspend fun deleteAll()
+
+    @Transaction
+    suspend fun replaceAllSessions(sessions: List<SessionEntity>) {
+        deleteAll()
+        sessions.forEach { insertSession(it) }
+    }
 
     // content provider queries
     @Query("SELECT * FROM sessions ORDER BY timestamp DESC")

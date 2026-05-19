@@ -24,7 +24,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -193,11 +192,6 @@ fun SessionHistoryCard(session: Session, onClick: () -> Unit) {
     
     val isGood = session.fgPercentage >= 50.0
     val accentColor = if (isGood) SuccessGreen else ErrorRed
-    val gradientColors = if (isGood) {
-        listOf(SuccessGreen.copy(alpha = 0.1f), Color.Transparent)
-    } else {
-        listOf(ErrorRed.copy(alpha = 0.1f), Color.Transparent)
-    }
 
     Card(
         modifier = Modifier
@@ -209,7 +203,6 @@ fun SessionHistoryCard(session: Session, onClick: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Brush.horizontalGradient(gradientColors))
                 .border(1.dp, MaterialTheme.colorScheme.onBackground.copy(alpha = 0.05f), RoundedCornerShape(24.dp))
         ) {
             Column(modifier = Modifier.padding(20.dp)) {

@@ -4,6 +4,13 @@
 Working on Quality Assurance and Performance Optimization.
 
 ## Completed Tasks
+- [x] **Heading Styles Standardisation**:
+    - Identified inconsistency where the "Shot Analysis" heading in `AnalysisScreen.kt` was set to `headlineMedium` and lacked font bolding/weight, while other primary page headings (History, Profile, Leaderboard) used `headlineSmall.copy(fontWeight = FontWeight.Black)`.
+    - Standardised primary screen headers to `headlineSmall.copy(fontWeight = FontWeight.Black)` across the application.
+    - Updated `HomeScreen.kt` to import `FontWeight` and use `headlineSmall.copy(fontWeight = FontWeight.Black)` for its greeting header.
+    - Updated `AnalysisScreen.kt` to use `headlineSmall.copy(fontWeight = FontWeight.Black)` for the "Shot Analysis" page header.
+    - Updated `SettingsScreen.kt`'s `TopAppBar` title to use `headlineSmall.copy(fontWeight = FontWeight.Black)` for visual alignment.
+    - Verified compilation success with a clean Gradle assembleDebug build run.
 - [x] **Analysis Screen FG% Progression Graph Port**:
     - Identified that the `FgProgressionGraph` component was missing from the `AnalysisScreen.kt` SUCCESS view after the recent UI refactors.
     - Updated `AnalysisViewModel.kt` to compute `fgHistory` and `fgHistoryDates` by collecting `statsRepository.getAllSessions()` dynamically upon loading specific, latest, or newly analyzed sessions.
@@ -73,6 +80,16 @@ Working on Quality Assurance and Performance Optimization.
     - Defined a solid background color `@color/ic_launcher_background` matching the icon's grey circle color (`#68808C`) and added it to `colors.xml`.
     - Generated centered and scaled transparent `ic_launcher_foreground.png` launcher foreground assets for all densities (`mdpi`, `hdpi`, `xhdpi`, `xxhdpi`, `xxxhdpi`) to ensure the basketball logo elements fit cleanly within the 66% adaptive icon safe zone and do not get clipped.
     - Verified compilation safety with a clean local build using `./gradlew assembleDebug`.
+- [x] **Bottom Navigation Redirection & Active State Fix**:
+    - Identified a bug where navigating away from tabs via inline redirects (e.g. History detail screen to Analysis, or Profile "View All" to History) stored stale backstack states that prevented subsequent bottom navbar tab selection.
+    - Updated `BottomNavigationBar.kt` to disable `saveState` and `restoreState` during cross-tab navigations to ensure clicking any tab button always opens the root destination of that tab.
+    - Introduced a precise `isSameTab` check mapping active screens (`home`, `analysis`, `history`, `profile`, `record`) to prevent redundant navigations.
+    - Verified compilation and build stability with a local Gradle run.
+- [x] **Shot Analysis Metrics Layout & Background Refactoring**:
+    - Identified inconsistent grey wrapping background container (`onSurfaceVariant` with alpha) on the `AnalysisScreen.kt` and removed it, so the analytical cards sit directly on the screen's main background (`MaterialTheme.colorScheme.background`) like other pages.
+    - Added the `MAKE ANGLE` and `MISS ANGLE` statistics cards under the makes and streak metrics in the SUCCESS state of `AnalysisScreen.kt` to ensure complete shot metrics are consistently displayed.
+    - Refactored the odd, uneven spacing on `HomeScreen.kt` by grouping the count/streak metrics into a 2-column layout (`Total Shots`, `Streak`) and all three angle metrics into a 3-column layout (`Avg Angle`, `Make Angle`, `Miss Angle`), achieving clean visual balance.
+    - Verified compile safety with a clean Gradle build execution.
 
 ## Next Steps
 1. Unit Testing for ViewModels (Task 10).

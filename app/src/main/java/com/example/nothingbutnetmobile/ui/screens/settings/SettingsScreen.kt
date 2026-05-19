@@ -43,7 +43,7 @@ fun SettingsScreen(
                 title = { 
                     Text(
                         "Settings", 
-                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Black),
                         color = MaterialTheme.colorScheme.onBackground
                     ) 
                 },
@@ -155,6 +155,19 @@ fun SettingsScreen(
                 subtitle = "Version ${uiState.appVersion}",
                 icon = Icons.Default.Info,
                 onClick = {}
+            )
+            SettingsClickItem(
+                title = "Website",
+                subtitle = "Visit nothingbutnet.online",
+                icon = Icons.Default.Language,
+                onClick = {
+                    val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://nothingbutnet.online"))
+                    try {
+                        context.startActivity(urlIntent)
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "No browser found.", Toast.LENGTH_LONG).show()
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.height(40.dp))
