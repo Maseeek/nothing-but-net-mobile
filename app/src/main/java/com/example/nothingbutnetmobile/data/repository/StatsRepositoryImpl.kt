@@ -45,7 +45,7 @@ class StatsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun seedDatabase() {
-        // No longer seeding dummy data automatically
+        // no longer seeding dummy data
     }
 
     override suspend fun clearAll() {
@@ -95,10 +95,10 @@ class StatsRepositoryImpl @Inject constructor(
     private fun parseServerDate(dateStr: String?): Long {
         if (dateStr.isNullOrBlank()) return System.currentTimeMillis()
         
-        // Check if it's already a numeric timestamp
+        // check if already a numeric timestamp
         val asLong = dateStr.toLongOrNull()
         if (asLong != null) {
-            // Check if it's in seconds (e.g. 1716153000) instead of ms
+            // check if seconds instead of ms
             return if (asLong < 1000000000000L) asLong * 1000L else asLong
         }
 
@@ -107,7 +107,7 @@ class StatsRepositoryImpl @Inject constructor(
                 return java.time.Instant.parse(dateStr).toEpochMilli()
             }
         } catch (e: Exception) {
-            // Fallback to SimpleDateFormat
+            // fallback to simpledateformat
         }
 
         val formats = listOf(

@@ -23,38 +23,38 @@ class HomeViewModelTest {
 
     @Test
     fun `init sets userName from authRepository and calls sync`() {
-        // Given
+        // given
         fakeAuthRepository.currentUser = User("lebron_james")
 
-        // When
+        // when
         val viewModel = HomeViewModel(fakeAuthRepository, fakeStatsRepository)
 
-        // Then
+        // then
         assertEquals("lebron_james", viewModel.uiState.value.userName)
         assertTrue(fakeStatsRepository.syncCalled)
     }
 
     @Test
     fun `init handles null user gracefully`() {
-        // Given
+        // given
         fakeAuthRepository.currentUser = null
 
-        // When
+        // when
         val viewModel = HomeViewModel(fakeAuthRepository, fakeStatsRepository)
 
-        // Then
+        // then
         assertEquals("User", viewModel.uiState.value.userName)
     }
 
     @Test
     fun `observeStats maps empty sessions list to default UI state values`() {
-        // Given
+        // given
         fakeStatsRepository.emit(emptyList())
 
-        // When
+        // when
         val viewModel = HomeViewModel(fakeAuthRepository, fakeStatsRepository)
 
-        // Then
+        // then
         val state = viewModel.uiState.value
         assertEquals("0", state.totalShots)
         assertEquals("0", state.longestStreak)
@@ -67,21 +67,21 @@ class HomeViewModelTest {
 
     @Test
     fun `observeStats processes sessions and calculates latest stats and history`() {
-        // Given: 6 sessions to test the "takeLast(5)" logic
+        // given: 6 sessions to test takelast(5)
         val sessions = listOf(
             Session(id = 1, totalShots = 10, makes = 5, misses = 5, fgPercentage = 50.0, longestStreak = 3, averageAngle = 52.0, averageMakeAngle = 53.0, averageMissAngle = 51.0, shotAngles = listOf(50.0), shotsResults = listOf(1), timestamp = 1000L),
             Session(id = 2, totalShots = 8, makes = 6, misses = 2, fgPercentage = 75.0, longestStreak = 4, averageAngle = 54.0, averageMakeAngle = 55.0, averageMissAngle = 53.0, shotAngles = listOf(50.0), shotsResults = listOf(1), timestamp = 2000L),
             Session(id = 3, totalShots = 12, makes = 9, misses = 3, fgPercentage = 75.0, longestStreak = 5, averageAngle = 55.0, averageMakeAngle = 56.0, averageMissAngle = 54.0, shotAngles = listOf(50.0), shotsResults = listOf(1), timestamp = 3000L),
             Session(id = 4, totalShots = 10, makes = 8, misses = 2, fgPercentage = 80.0, longestStreak = 6, averageAngle = 53.0, averageMakeAngle = 54.0, averageMissAngle = 52.0, shotAngles = listOf(50.0), shotsResults = listOf(1), timestamp = 4000L),
             Session(id = 5, totalShots = 15, makes = 12, misses = 3, fgPercentage = 80.0, longestStreak = 7, averageAngle = 56.0, averageMakeAngle = 57.0, averageMissAngle = 55.0, shotAngles = listOf(50.0), shotsResults = listOf(1), timestamp = 5000L),
-            Session(id = 6, totalShots = 10, makes = 9, misses = 1, fgPercentage = 90.0, longestStreak = 8, averageAngle = 58.0, averageMakeAngle = 59.0, averageMissAngle = 57.0, shotAngles = listOf(50.0), shotsResults = listOf(1), timestamp = 6000L) // Latest
+            Session(id = 6, totalShots = 10, makes = 9, misses = 1, fgPercentage = 90.0, longestStreak = 8, averageAngle = 58.0, averageMakeAngle = 59.0, averageMissAngle = 57.0, shotAngles = listOf(50.0), shotsResults = listOf(1), timestamp = 6000L) // latest
         )
         fakeStatsRepository.emit(sessions)
 
-        // When
+        // when
         val viewModel = HomeViewModel(fakeAuthRepository, fakeStatsRepository)
 
-        // Then
+        // then
         val state = viewModel.uiState.value
         assertEquals("10", state.totalShots)
         assertEquals("8", state.longestStreak)
@@ -89,7 +89,7 @@ class HomeViewModelTest {
         assertEquals(90, state.fgPercentage)
         assertEquals("9/10", state.fgRatio)
         
-        // Check fgHistory has exactly last 5 sessions (sessions 2 to 6)
+        // verify fghistory has last 5 sessions
         assertEquals(5, state.fgHistory.size)
         assertEquals(75.0f, state.fgHistory[0])
         assertEquals(75.0f, state.fgHistory[1])
@@ -97,7 +97,7 @@ class HomeViewModelTest {
         assertEquals(80.0f, state.fgHistory[3])
         assertEquals(90.0f, state.fgHistory[4])
 
-        // Verify dates are parsed successfully (e.g. not empty)
+        // verify dates are parsed successfully
         assertEquals(5, state.fgHistoryDates.size)
     }
 

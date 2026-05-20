@@ -40,7 +40,7 @@ fun AppNavigation(tokenManager: TokenManager) {
             val authViewModel: AuthViewModel = hiltViewModel()
             val authState by authViewModel.authState.collectAsState()
 
-            // Navigate to home upon successful login
+            // navigate to home on successful login
             LaunchedEffect(authState) {
                 if (authState is AuthState.Success) {
                     authViewModel.resetState()
@@ -68,7 +68,7 @@ fun AppNavigation(tokenManager: TokenManager) {
 
             LaunchedEffect(authState) {
                 if (authState is AuthState.RegisterSuccess) {
-                    // Navigate to login after successful registration
+                    // navigate to login after successful registration
                     navController.navigate("login") {
                         popUpTo("register") { inclusive = true }
                     }

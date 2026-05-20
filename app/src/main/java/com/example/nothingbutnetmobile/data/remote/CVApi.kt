@@ -9,14 +9,7 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 
 interface CVApi {
-    /**
-     * Uploads a video and hoop coordinates for shot analysis.
-     * 
-     * @param video The video file as a MultipartBody.Part
-     * @param hoopLeft JSON string for left hoop coordinates (e.g., "[x, y]")
-     * @param hoopRight JSON string for right hoop coordinates (e.g., "[x, y]")
-     * @param showAngle String "true" or "false" to include detailed angle data
-     */
+    // upload video and hoop coords for analysis
     @Multipart
     @POST("upload-and-analyze")
     suspend fun uploadAndAnalyze(

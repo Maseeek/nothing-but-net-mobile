@@ -37,10 +37,10 @@ class AnalysisViewModelTest {
 
     @Test
     fun `init sets userName and targetAngle from preferences`() {
-        // Given
+        // given
         fakeAuthRepository.currentUser = User("stephen_curry")
 
-        // When
+        // when
         val viewModel = AnalysisViewModel(
             fakeAuthRepository,
             fakeCVRepository,
@@ -48,7 +48,7 @@ class AnalysisViewModelTest {
             mockPreferenceManager
         )
 
-        // Then
+        // then
         assertEquals("stephen_curry", viewModel.uiState.value.userName)
         assertEquals(55f, viewModel.uiState.value.targetAngle)
         assertEquals(AnalysisStatus.IDLE, viewModel.uiState.value.status)
@@ -58,10 +58,10 @@ class AnalysisViewModelTest {
     fun `setHoopLeft updates state and changes status to SELECTING_RIGHT`() {
         val viewModel = AnalysisViewModel(fakeAuthRepository, fakeCVRepository, fakeStatsRepository, mockPreferenceManager)
 
-        // When
+        // when
         viewModel.setHoopLeft(10, 20, 0.1f, 0.2f)
 
-        // Then
+        // then
         val state = viewModel.uiState.value
         assertEquals(listOf(10, 20), state.hoopLeft)
         assertEquals(Pair(0.1f, 0.2f), state.hoopLeftNormalized)
@@ -72,10 +72,10 @@ class AnalysisViewModelTest {
     fun `setHoopRight updates state and changes status to READY`() {
         val viewModel = AnalysisViewModel(fakeAuthRepository, fakeCVRepository, fakeStatsRepository, mockPreferenceManager)
 
-        // When
+        // when
         viewModel.setHoopRight(40, 50, 0.4f, 0.5f)
 
-        // Then
+        // then
         val state = viewModel.uiState.value
         assertEquals(listOf(40, 50), state.hoopRight)
         assertEquals(Pair(0.4f, 0.5f), state.hoopRightNormalized)
@@ -88,10 +88,10 @@ class AnalysisViewModelTest {
         viewModel.setHoopLeft(10, 20, 0.1f, 0.2f)
         viewModel.setHoopRight(40, 50, 0.4f, 0.5f)
 
-        // When
+        // when
         viewModel.startSelection()
 
-        // Then
+        // then
         val state = viewModel.uiState.value
         assertNull(state.hoopLeft)
         assertNull(state.hoopRight)
@@ -104,13 +104,13 @@ class AnalysisViewModelTest {
     fun `resetStatus transitions status to IDLE and clears errors`() {
         val viewModel = AnalysisViewModel(fakeAuthRepository, fakeCVRepository, fakeStatsRepository, mockPreferenceManager)
         
-        // Mock error state manually through updates or select right to transition
+        // mock error state or select right to transition
         viewModel.setHoopLeft(10, 20, 0.1f, 0.2f)
 
-        // When
+        // when
         viewModel.resetStatus()
 
-        // Then
+        // then
         val state = viewModel.uiState.value
         assertEquals(AnalysisStatus.IDLE, state.status)
         assertNull(state.errorMessage)
@@ -120,15 +120,15 @@ class AnalysisViewModelTest {
     fun `startAnalysis returns validation error if video file is too large`() {
         val viewModel = AnalysisViewModel(fakeAuthRepository, fakeCVRepository, fakeStatsRepository, mockPreferenceManager)
         
-        // Given: a mocked file that claims to be 51MB
+        // given: mocked file > 50mb
         val largeFile = mock<File>().apply {
             whenever(length()).thenReturn(51L * 1024 * 1024)
         }
 
-        // When
+        // when
         viewModel.startAnalysis(largeFile)
 
-        // Then
+        // then
         val state = viewModel.uiState.value
         assertEquals(AnalysisStatus.ERROR, state.status)
         assertTrue(state.errorMessage?.contains("Video is too large") == true)
@@ -139,13 +139,13 @@ class AnalysisViewModelTest {
     fun `startAnalysis parses successful response and deletes temporary file`() {
         val viewModel = AnalysisViewModel(fakeAuthRepository, fakeCVRepository, fakeStatsRepository, mockPreferenceManager)
         
-        // Create an actual temp file we can verify gets deleted
+        // create actual temp file to verify deletion
         val tempFile = File.createTempFile("test_video_upload", ".mp4").apply {
             writeText("dummy content")
         }
         assertTrue(tempFile.exists())
 
-        // Set up mock CV response data
+        // mock cv response data
         val analysisResult = AnalysisResult(
             makes = 3,
             misses = 2,
@@ -162,10 +162,10 @@ class AnalysisViewModelTest {
             AnalysisResponse(success = true, data = analysisResult, error = null)
         )
 
-        // When
+        // when
         viewModel.startAnalysis(tempFile)
 
-        // Then
+        // then
         val state = viewModel.uiState.value
         assertEquals(AnalysisStatus.SUCCESS, state.status)
         assertTrue(state.analysisResult?.contains("3/5 Shots Made") == true)
@@ -174,7 +174,7 @@ class AnalysisViewModelTest {
         assertEquals(5, state.selectedSession?.totalShots)
         assertEquals(2, state.selectedSession?.longestStreak)
 
-        // Verify the temporary file was cleaned up/deleted
+        // verify temp file was deleted
         assertFalse(tempFile.exists())
     }
 
@@ -185,15 +185,15 @@ class AnalysisViewModelTest {
         
         fakeCVRepository.resultToReturn = Result.failure(Exception("Upload Failed"))
 
-        // When
+        // when
         viewModel.startAnalysis(tempFile)
 
-        // Then
+        // then
         val state = viewModel.uiState.value
         assertEquals(AnalysisStatus.ERROR, state.status)
         assertEquals("Upload Failed", state.errorMessage)
         
-        // Verify temp file is still deleted even on failure
+        // verify temp file is deleted on failure
         assertFalse(tempFile.exists())
     }
 

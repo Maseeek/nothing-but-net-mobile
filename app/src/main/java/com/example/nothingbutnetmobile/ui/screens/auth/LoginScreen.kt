@@ -62,7 +62,7 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(24.dp))
-                    .padding(2.dp) // Border thickness
+                    .padding(2.dp) // border thickness
                     .background(
                         Brush.verticalGradient(
                             colors = listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f), Color.Transparent)

@@ -100,7 +100,7 @@ fun AnalysisScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    // TODO: profile performance of video rendering on physical devices - emulator lags slightly
+    // todo: profile video rendering performance on physical device
     var videoFile by remember { mutableStateOf<File?>(null) }
     var videoThumbnail by remember { mutableStateOf<ImageBitmap?>(null) }
     var scale by rememberSaveable { mutableFloatStateOf(1f) }

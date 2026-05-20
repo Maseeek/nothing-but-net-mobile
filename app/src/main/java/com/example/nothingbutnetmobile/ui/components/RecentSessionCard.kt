@@ -102,7 +102,7 @@ fun RecentSessionCard(
                 }
 
                 FilledIconButton(
-                    onClick = { /* TODO */ },
+                    onClick = { },
                     modifier = Modifier.size(56.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = IconButtonDefaults.filledIconButtonColors(

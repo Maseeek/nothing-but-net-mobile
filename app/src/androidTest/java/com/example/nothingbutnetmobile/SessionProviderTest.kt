@@ -23,7 +23,7 @@ class SessionProviderTest {
     fun testProviderInsertQueryAndDelete() {
         val resolver = context.contentResolver
 
-        // 1. Insert shot session data via content provider
+        // insert session data
         val values = ContentValues().apply {
             put("totalShots", 5)
             put("makes", 3)
@@ -44,7 +44,7 @@ class SessionProviderTest {
         val insertedId = ContentUris.parseId(insertedUri!!)
         assertTrue("Inserted ID should be valid", insertedId > 0)
 
-        // 2. Query directory URI (all analyses)
+        // query all sessions
         val directoryCursor = resolver.query(providerUri, null, null, null, null)
         assertNotNull("Directory cursor should not be null", directoryCursor)
         
@@ -57,7 +57,7 @@ class SessionProviderTest {
                 if (directoryCursor.getLong(idIndex) == insertedId) {
                     found = true
                     
-                    // Verify fields are retrieved correctly
+                    // verify fields are retrieved correctly
                     val totalShotsIndex = directoryCursor.getColumnIndex("totalShots")
                     val makesIndex = directoryCursor.getColumnIndex("makes")
                     val fgPercentageIndex = directoryCursor.getColumnIndex("fgPercentage")
@@ -69,7 +69,7 @@ class SessionProviderTest {
                     assertEquals(3, directoryCursor.getInt(makesIndex))
                     assertEquals(60.0, directoryCursor.getDouble(fgPercentageIndex), 0.01)
 
-                    // Verify list JSON parsing
+                    // verify list json parsing
                     val shotAnglesStr = directoryCursor.getString(shotAnglesIndex)
                     val shotsResultsStr = directoryCursor.getString(shotsResultsIndex)
                     
@@ -91,7 +91,7 @@ class SessionProviderTest {
             directoryCursor?.close()
         }
 
-        // 3. Query item URI (specific record by ID)
+        // query specific session by id
         val itemUri = ContentUris.withAppendedId(providerUri, insertedId)
         val itemCursor = resolver.query(itemUri, null, null, null, null)
         assertNotNull("Item cursor should not be null", itemCursor)
@@ -104,11 +104,11 @@ class SessionProviderTest {
             itemCursor?.close()
         }
 
-        // 4. Delete item via content resolver
+        // delete item
         val deleteCount = resolver.delete(itemUri, null, null)
         assertEquals("Should delete exactly 1 record", 1, deleteCount)
 
-        // 5. Verify record is deleted
+        // verify record is deleted
         val checkCursor = resolver.query(itemUri, null, null, null, null)
         assertNotNull("Cursor should not be null", checkCursor)
         try {

@@ -9,7 +9,7 @@ class SessionDataTest {
 
     @Test
     fun `test SessionData parses shot_angles and longest_streak correctly`() {
-        // Given a JSON payload similar to what the server might send
+        // given a json payload similar to server response
         val jsonPayload = """
             {
                 "makes": 5,
@@ -23,10 +23,10 @@ class SessionDataTest {
 
         val gson = Gson()
 
-        // When deserializing
+        // when deserializing
         val sessionData = gson.fromJson(jsonPayload, SessionData::class.java)
 
-        // Then verify the streak and angles are correctly mapped
+        // then verify streak and angles map correctly
         assertNotNull(sessionData)
         assertEquals(3, sessionData.longestStreak)
         assertNotNull(sessionData.shotAngles)
@@ -49,10 +49,10 @@ class SessionDataTest {
 
         val gson = Gson()
 
-        // When deserializing
+        // when deserializing
         val sessionData = gson.fromJson(jsonPayload, SessionData::class.java)
 
-        // Then verify the alternate keys map correctly
+        // then verify alternate keys map correctly
         assertNotNull(sessionData.shotAngles)
         assertEquals(3, sessionData.shotAngles?.size)
         assertEquals(50.0, sessionData.shotAngles?.get(0))
@@ -68,14 +68,14 @@ class SessionDataTest {
         val angles = listOf(45.0, 0.0, 50.0, 30.0, 40.0)
         val results = listOf(1, 1, 1, 0, 0)
         
-        // Makes are at indices 0, 1, 2. The angles are 45.0, 0.0, 50.0. 
-        // 0.0 is filtered out as a failed detection.
-        // So valid make angles are 45.0 and 50.0. Average is 47.5.
+        // makes are at 0, 1, 2. angles are 45.0, 0.0, 50.0
+        // 0.0 is filtered out as failed detection
+        // valid make angles are 45.0 and 50.0. avg is 47.5
         val avgMake = com.example.nothingbutnetmobile.domain.model.calculateAverageMakeAngle(angles, results)
         assertEquals(47.5, avgMake, 0.001)
 
-        // Misses are at indices 3, 4. The angles are 30.0, 40.0.
-        // Both are valid (>0.0). Average is 35.0.
+        // misses are at 3, 4. angles are 30.0, 40.0
+        // both are valid (>0.0). avg is 35.0
         val avgMiss = com.example.nothingbutnetmobile.domain.model.calculateAverageMissAngle(angles, results)
         assertEquals(35.0, avgMiss, 0.001)
     }
