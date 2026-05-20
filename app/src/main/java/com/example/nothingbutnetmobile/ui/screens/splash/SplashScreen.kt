@@ -32,7 +32,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
     val scale = remember { Animatable(0.9f) }
     val progress = remember { Animatable(0f) }
     
-    // Pulse animation for the logo
+    // pulse animation for the logo
     LaunchedEffect(Unit) {
         scale.animateTo(
             targetValue = 1.05f,
@@ -43,7 +43,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
         )
     }
 
-    // Progress bar animation filling up in 2000ms
+    // progress bar animation (2000ms)
     LaunchedEffect(Unit) {
         progress.animateTo(
             targetValue = 1f,
@@ -56,7 +56,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
         onTimeout()
     }
 
-    // Animate the ambient glow alpha/intensity
+    // animate the ambient glow alpha/intensity
     val infiniteTransition = rememberInfiniteTransition(label = "glowTransition")
     val glowAlpha by infiniteTransition.animateFloat(
         initialValue = 0.1f,
@@ -74,7 +74,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
             .background(DarkBackground),
         contentAlignment = Alignment.Center
     ) {
-        // Ambient Radial Glow (Ember)
+        // ambient radial glow
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -90,7 +90,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
                 )
         )
 
-        // Glassmorphic Container
+        // glassmorphic container
         Box(
             modifier = Modifier
                 .padding(24.dp)
@@ -116,7 +116,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                // Logo with subtle pulse
+                // logo with subtle pulse
                 Image(
                     painter = painterResource(id = R.drawable.nbn_light),
                     contentDescription = "NothingButNet Logo",
@@ -127,7 +127,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // Brand Name
+                // brand name
                 Text(
                     text = "NOTHING BUT NET",
                     style = MaterialTheme.typography.titleMedium.copy(
@@ -139,7 +139,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(6.dp))
 
-                // Subtitle / Tagline
+                // subtitle/tagline
                 Text(
                     text = "SMART BASKETBALL ANALYTICS",
                     style = MaterialTheme.typography.bodySmall.copy(
@@ -151,7 +151,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Ember Gradient Progress Bar
+                // ember gradient progress bar
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()

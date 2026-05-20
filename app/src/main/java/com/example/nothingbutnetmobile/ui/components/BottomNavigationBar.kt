@@ -73,7 +73,7 @@ fun BottomNavigationBar(
                 navigateTo("analysis")
             }
             
-            // Space for Record FAB and its label
+            // space for record fab and label
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.width(64.dp)

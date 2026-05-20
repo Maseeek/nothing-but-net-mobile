@@ -12,7 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.EmojiEvents
+
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
@@ -90,20 +90,7 @@ fun HistoryScreen(
                             modifier = Modifier.size(20.dp)
                         )
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    IconButton(
-                        onClick = { navController.navigate("leaderboard") },
-                        modifier = Modifier
-                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f), CircleShape)
-                            .size(40.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.EmojiEvents,
-                            contentDescription = "Leaderboard",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
+
                 }
             }
             
@@ -206,7 +193,7 @@ fun SessionHistoryCard(session: Session, onClick: () -> Unit) {
                 .border(1.dp, MaterialTheme.colorScheme.onBackground.copy(alpha = 0.05f), RoundedCornerShape(24.dp))
         ) {
             Column(modifier = Modifier.padding(20.dp)) {
-                // Header: Date and Share Button
+                // header: date and share button
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -256,7 +243,7 @@ fun SessionHistoryCard(session: Session, onClick: () -> Unit) {
                 
                 Spacer(modifier = Modifier.height(20.dp))
                 
-                // Main Stats Area
+                // main stats area
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.Bottom,
@@ -299,7 +286,7 @@ fun SessionHistoryCard(session: Session, onClick: () -> Unit) {
                 
                 Spacer(modifier = Modifier.height(20.dp))
                 
-                // Bottom Bar: Extra Stats and Arrow
+                // bottom bar: extra stats and arrow
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,

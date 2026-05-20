@@ -175,7 +175,7 @@ class AnalysisViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(status = AnalysisStatus.LOADING)
             
-            // Try to load cached data first for offline access
+            // load cache first for offline access
             val cachedAnalyses = statsRepository.getAllSessions().firstOrNull() ?: emptyList()
             if (cachedAnalyses.isNotEmpty()) {
                 updateLatestState(cachedAnalyses)
@@ -187,7 +187,7 @@ class AnalysisViewModel @Inject constructor(
                 val updatedAnalyses = statsRepository.getAllSessions().firstOrNull() ?: emptyList()
                 updateLatestState(updatedAnalyses)
             } else if (cachedAnalyses.isEmpty()) {
-                // Only show error if we have no cached data at all
+                // only show error if no cached data
                 _uiState.value = _uiState.value.copy(
                     status = AnalysisStatus.ERROR,
                     errorMessage = "Connection Error: Could not reach the server to fetch latest data."

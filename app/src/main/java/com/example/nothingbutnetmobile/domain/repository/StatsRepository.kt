@@ -11,7 +11,7 @@ interface StatsRepository {
     suspend fun seedDatabase()
     suspend fun clearAll()
     
-    // Server Sync
+    // server sync
     suspend fun syncWithServer(): Result<Unit>
     suspend fun pushSessionToServer(session: Session): Result<Unit>
 }
