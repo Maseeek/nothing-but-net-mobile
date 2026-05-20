@@ -10,7 +10,7 @@ import retrofit2.http.Part
 
 interface CVApi {
     /**
-     * Uploads a video and hoop coordinates for AI analysis.
+     * Uploads a video and hoop coordinates for shot analysis.
      * 
      * @param video The video file as a MultipartBody.Part
      * @param hoopLeft JSON string for left hoop coordinates (e.g., "[x, y]")
