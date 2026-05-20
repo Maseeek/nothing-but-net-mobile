@@ -3,33 +3,24 @@ package com.example.nothingbutnetmobile.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class TokenManager @Inject constructor(@ApplicationContext context: Context) {
-    private val masterKey = MasterKey.Builder(context)
-        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-        .build()
 
-    private val prefs: SharedPreferences = EncryptedSharedPreferences.create(
-        context,
-        "auth_prefs",
-        masterKey,
-        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-    )
+    private val prefs: SharedPreferences = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
 
     companion object {
         private const val AUTH_TOKEN = "auth_token"
-        private const val USERNAME = "username"
+        private const val USERNAME = "userName"
         private const val USER_ID = "user_id"
     }
 
     fun saveToken(token: String) {
-        prefs.edit().putString(AUTH_TOKEN, token).apply()
+        val editor = prefs.edit()
+        editor.putString(AUTH_TOKEN, token)
+        editor.apply()
     }
 
     fun getToken(): String? {
@@ -37,11 +28,17 @@ class TokenManager @Inject constructor(@ApplicationContext context: Context) {
     }
 
     fun clearToken() {
-        prefs.edit().remove(AUTH_TOKEN).remove(USERNAME).remove(USER_ID).apply()
+        val editor = prefs.edit()
+        editor.remove(AUTH_TOKEN)
+        editor.remove(USERNAME)
+        editor.remove(USER_ID)
+        editor.apply()
     }
 
     fun saveUsername(username: String) {
-        prefs.edit().putString(USERNAME, username).apply()
+        val editor = prefs.edit()
+        editor.putString(USERNAME, username)
+        editor.apply()
     }
 
     fun getUsername(): String? {
@@ -49,7 +46,9 @@ class TokenManager @Inject constructor(@ApplicationContext context: Context) {
     }
 
     fun saveUserId(userId: String) {
-        prefs.edit().putString(USER_ID, userId).apply()
+        val editor = prefs.edit()
+        editor.putString(USER_ID, userId)
+        editor.apply()
     }
 
     fun getUserId(): String? {
@@ -60,3 +59,4 @@ class TokenManager @Inject constructor(@ApplicationContext context: Context) {
         return getToken() != null
     }
 }
+

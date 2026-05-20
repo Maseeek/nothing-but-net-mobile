@@ -49,17 +49,29 @@ fun calculateLongestStreak(results: List<Int>): Int {
 }
 
 fun calculateAverageMakeAngle(angles: List<Double>, results: List<Int>): Double {
-    val makeAngles = angles.filterIndexed { index, valAngle -> 
-        index < results.size && results[index] == 1 && valAngle > 0.0 
+    var total_ang = 0.0
+    var cnt = 0
+    for (i in 0 until angles.size) {
+        val valAngle = angles[i]
+        if (i < results.size && results[i] == 1 && valAngle > 0.0) {
+            total_ang += valAngle
+            cnt++
+        }
     }
-    return if (makeAngles.isNotEmpty()) makeAngles.average() else 0.0
+    return if (cnt > 0) total_ang / cnt else 0.0
 }
 
 fun calculateAverageMissAngle(angles: List<Double>, results: List<Int>): Double {
-    val missAngles = angles.filterIndexed { index, valAngle -> 
-        index < results.size && results[index] == 0 && valAngle > 0.0 
+    var totalMissWithAngles = 0.0
+    var missCounter = 0
+    for (idx in angles.indices) {
+        val valAngle = angles[idx]
+        if (idx < results.size && results[idx] == 0 && valAngle > 0.0) {
+            totalMissWithAngles += valAngle
+            missCounter++
+        }
     }
-    return if (missAngles.isNotEmpty()) missAngles.average() else 0.0
+    return if (missCounter > 0) totalMissWithAngles / missCounter else 0.0
 }
 
 

@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InputStream
 
 object FileUtils {
     fun getFileFromUri(context: Context, uri: Uri): File? {
@@ -11,19 +12,37 @@ object FileUtils {
             return uri.path?.let { File(it) }
         }
         
-        return try {
-            val inputStream = context.contentResolver.openInputStream(uri)
-            val tempFile = File(context.cacheDir, "temp_video_${System.currentTimeMillis()}.mp4")
-            val outputStream = FileOutputStream(tempFile)
-            inputStream?.use { input ->
-                outputStream.use { output ->
-                    input.copyTo(output)
+        var inputStream: InputStream? = null
+        var outputStream: FileOutputStream? = null
+        var tempFile: File? = null
+        try {
+            inputStream = context.contentResolver.openInputStream(uri)
+            tempFile = File(context.cacheDir, "temp_video_${System.currentTimeMillis()}.mp4")
+            outputStream = FileOutputStream(tempFile)
+            
+            if (inputStream != null) {
+                val buffer = ByteArray(4096)
+                var bytesRead = inputStream.read(buffer)
+                while (bytesRead != -1) {
+                    outputStream.write(buffer, 0, bytesRead)
+                    bytesRead = inputStream.read(buffer)
                 }
             }
-            tempFile
+            return tempFile
         } catch (e: Exception) {
-            e.printStackTrace()
-            null
+            println("error writing out file: " + e.message)
+            return null
+        } finally {
+            try {
+                inputStream?.close()
+            } catch (e: Exception) {
+                // no-op
+            }
+            try {
+                outputStream?.close()
+            } catch (e: Exception) {
+                // no-op
+            }
         }
     }
 
