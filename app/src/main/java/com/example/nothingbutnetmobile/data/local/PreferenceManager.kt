@@ -12,8 +12,6 @@ class PreferenceManager @Inject constructor(@ApplicationContext context: Context
 
     companion object {
         private const val KEY_SHOW_SHOT_ANGLES = "show_shot_angles"
-        private const val KEY_DARK_THEME = "dark_theme"
-        private const val KEY_NOTIFICATIONS = "notifications_enabled"
         private const val KEY_TARGET_ANGLE = "target_angle"
     }
 
@@ -23,22 +21,6 @@ class PreferenceManager @Inject constructor(@ApplicationContext context: Context
 
     fun getShowShotAngles(): Boolean {
         return prefs.getBoolean(KEY_SHOW_SHOT_ANGLES, true)
-    }
-
-    fun setDarkTheme(enabled: Boolean) {
-        prefs.edit().putBoolean(KEY_DARK_THEME, enabled).apply()
-    }
-
-    fun getDarkTheme(): Boolean {
-        return prefs.getBoolean(KEY_DARK_THEME, true)
-    }
-
-    fun setNotificationsEnabled(enabled: Boolean) {
-        prefs.edit().putBoolean(KEY_NOTIFICATIONS, enabled).apply()
-    }
-
-    fun getNotificationsEnabled(): Boolean {
-        return prefs.getBoolean(KEY_NOTIFICATIONS, true)
     }
 
     fun setTargetAngle(angle: Float) {

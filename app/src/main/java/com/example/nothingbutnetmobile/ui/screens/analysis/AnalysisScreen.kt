@@ -100,7 +100,6 @@ fun AnalysisScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    // todo: profile video rendering performance on physical device
     var videoFile by remember { mutableStateOf<File?>(null) }
     var videoThumbnail by remember { mutableStateOf<ImageBitmap?>(null) }
     var scale by rememberSaveable { mutableFloatStateOf(1f) }
@@ -139,7 +138,6 @@ fun AnalysisScreen(
         }
     }
 
-    // clean up video if we exit screen, but keep it if we rotate screen
     DisposableEffect(videoUri) {
         onDispose {
             val activity = context.findActivity()
@@ -203,14 +201,12 @@ fun AnalysisScreen(
                         val isReady = uiState.status == AnalysisStatus.READY
 
                         if (isLandscape) {
-                            // landscape view
                             Row(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(8.dp),
                                 horizontalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                // image selection
                                 Box(
                                     modifier = Modifier
                                         .weight(1.2f)
@@ -287,7 +283,6 @@ fun AnalysisScreen(
                                     } ?: CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                                 }
 
-                                // controls and details
                                 Column(
                                     modifier = Modifier
                                         .weight(0.8f)
@@ -350,14 +345,12 @@ fun AnalysisScreen(
                                 }
                             }
                         } else {
-                            // portrait view
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(16.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                // step indicator
                                 Box(
                                     modifier = Modifier
                                         .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(16.dp))
@@ -465,7 +458,6 @@ fun AnalysisScreen(
                                     } ?: CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                                 }
                                 
-                                // bottom actions
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
@@ -520,7 +512,6 @@ fun AnalysisScreen(
                                 .padding(bottom = 24.dp)
                         ) {
                             if (session != null) {
-                                // analytics grid
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -669,7 +660,6 @@ fun BoxScope.SelectionMarker(normalizedPos: Pair<Float, Float>?, label: String, 
                 modifier = Modifier
                     .offset(x = x - 12.dp, y = y - 12.dp)
                     .graphicsLayer {
-                        // scale marker down by currentScale so it stays the same 24dp size when zoomed
                         scaleX = 1f / currentScale
                         scaleY = 1f / currentScale
                     }

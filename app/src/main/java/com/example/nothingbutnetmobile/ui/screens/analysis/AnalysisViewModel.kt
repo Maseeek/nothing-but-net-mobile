@@ -104,20 +104,15 @@ class AnalysisViewModel @Inject constructor(
                     val results = data.shotsResults ?: emptyList()
                     val angles = data.shotAngles ?: emptyList()
                     
-                    val rawMakeAngle = data.averageMakeAngle ?: 0.0
-                    val rawMissAngle = data.averageMissAngle ?: 0.0
-                    val computedMakeAngle = if (rawMakeAngle > 0.0) rawMakeAngle else com.example.nothingbutnetmobile.domain.model.calculateAverageMakeAngle(angles, results)
-                    val computedMissAngle = if (rawMissAngle > 0.0) rawMissAngle else com.example.nothingbutnetmobile.domain.model.calculateAverageMissAngle(angles, results)
-
                     val newAnalysis = Session(
-                        totalShots = if (data.totalShots > 0) data.totalShots else (data.makes + data.misses),
+                        totalShots = data.totalShots.takeIf { it > 0 } ?: (data.makes + data.misses),
                         makes = data.makes,
                         misses = data.misses,
                         fgPercentage = data.fgPercentage,
-                        longestStreak = if (data.longestStreak > 0) data.longestStreak else calculateLongestStreak(results),
+                        longestStreak = data.longestStreak.takeIf { it > 0 } ?: calculateLongestStreak(results),
                         averageAngle = data.averageAngle,
-                        averageMakeAngle = computedMakeAngle,
-                        averageMissAngle = computedMissAngle,
+                        averageMakeAngle = data.averageMakeAngle ?: 0.0,
+                        averageMissAngle = data.averageMissAngle ?: 0.0,
                         shotAngles = angles,
                         shotsResults = results,
                         timestamp = System.currentTimeMillis()
@@ -203,12 +198,6 @@ class AnalysisViewModel @Inject constructor(
         val selected = todaySessions.firstOrNull() ?: allAnalyses.firstOrNull()
         
         if (selected != null) {
-            val processedSelected = if (selected.longestStreak == 0 && selected.shotsResults.isNotEmpty()) {
-                selected.copy(longestStreak = calculateLongestStreak(selected.shotsResults))
-            } else {
-                selected
-            }
-            
             val sortedLast5 = allAnalyses.sortedBy { it.timestamp }.takeLast(5)
             val history = sortedLast5.map { it.fgPercentage.toFloat() }
             val sdf = SimpleDateFormat("d MMM", Locale.getDefault())
@@ -216,13 +205,13 @@ class AnalysisViewModel @Inject constructor(
 
             _uiState.value = _uiState.value.copy(
                 status = AnalysisStatus.SUCCESS,
-                selectedSession = processedSelected,
+                selectedSession = selected,
                 recentSessions = allAnalyses.take(5),
                 fgHistory = history,
                 fgHistoryDates = historyDates,
-                analysisResult = "Latest Session: ${processedSelected.makes}/${processedSelected.totalShots} Shots Made",
-                shotAngles = processedSelected.shotAngles,
-                shotsResults = processedSelected.shotsResults
+                analysisResult = "Latest Session: ${selected.makes}/${selected.totalShots} Shots Made",
+                shotAngles = selected.shotAngles,
+                shotsResults = selected.shotsResults
             )
         } else {
             _uiState.value = _uiState.value.copy(
@@ -239,12 +228,6 @@ class AnalysisViewModel @Inject constructor(
             val selected = statsRepository.getSessionById(id)
             
             if (selected != null) {
-                val processedSelected = if (selected.longestStreak == 0 && selected.shotsResults.isNotEmpty()) {
-                    selected.copy(longestStreak = calculateLongestStreak(selected.shotsResults))
-                } else {
-                    selected
-                }
-                
                 // get recent list
                 val allAnalyses = statsRepository.getAllSessions().firstOrNull() ?: emptyList()
                 val sortedLast5 = allAnalyses.sortedBy { it.timestamp }.takeLast(5)
@@ -254,13 +237,13 @@ class AnalysisViewModel @Inject constructor(
 
                 _uiState.value = _uiState.value.copy(
                     status = AnalysisStatus.SUCCESS,
-                    selectedSession = processedSelected,
+                    selectedSession = selected,
                     recentSessions = allAnalyses.take(5),
                     fgHistory = history,
                     fgHistoryDates = historyDates,
-                    analysisResult = "Viewing Analysis: ${processedSelected.makes}/${processedSelected.totalShots} Shots Made",
-                    shotAngles = processedSelected.shotAngles,
-                    shotsResults = processedSelected.shotsResults
+                    analysisResult = "Viewing Analysis: ${selected.makes}/${selected.totalShots} Shots Made",
+                    shotAngles = selected.shotAngles,
+                    shotsResults = selected.shotsResults
                 )
             } else {
                 _uiState.value = _uiState.value.copy(
@@ -279,16 +262,10 @@ class AnalysisViewModel @Inject constructor(
     }
 
     fun selectAnalysis(analysis: Session) {
-        val processedAnalysis = if (analysis.longestStreak == 0 && analysis.shotsResults.isNotEmpty()) {
-            analysis.copy(longestStreak = calculateLongestStreak(analysis.shotsResults))
-        } else {
-            analysis
-        }
-        
         _uiState.value = _uiState.value.copy(
-            selectedSession = processedAnalysis,
-            shotAngles = processedAnalysis.shotAngles,
-            shotsResults = processedAnalysis.shotsResults
+            selectedSession = analysis,
+            shotAngles = analysis.shotAngles,
+            shotsResults = analysis.shotsResults
         )
     }
 

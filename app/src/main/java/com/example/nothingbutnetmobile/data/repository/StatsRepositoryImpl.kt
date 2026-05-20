@@ -61,17 +61,13 @@ class StatsRepositoryImpl @Inject constructor(
                 val sessionsData = response.body() ?: emptyList()
                 val sessionEntities = sessionsData.map { sessionData ->
                     val timestamp = parseServerDate(sessionData.sessionDate)
-                    val rawTotal = sessionData.totalShots ?: 0
-                    val computedTotalShots = if (rawTotal > 0) rawTotal else (sessionData.makes + sessionData.misses)
                     val results = sessionData.shotsResults ?: emptyList()
-                    val rawStreak = sessionData.longestStreak ?: 0
-                    val computedStreak = if (rawStreak > 0) rawStreak else calculateLongestStreak(results)
                     SessionEntity(
-                        totalShots = computedTotalShots,
+                        totalShots = sessionData.totalShots ?: (sessionData.makes + sessionData.misses),
                         makes = sessionData.makes,
                         misses = sessionData.misses,
                         fgPercentage = sessionData.fgPercentage ?: 0.0,
-                        longestStreak = computedStreak,
+                        longestStreak = sessionData.longestStreak ?: calculateLongestStreak(results),
                         averageAngle = sessionData.averageAngle ?: 0.0,
                         averageMakeAngle = sessionData.averageMakeAngle ?: 0.0,
                         averageMissAngle = sessionData.averageMissAngle ?: 0.0,
@@ -95,36 +91,29 @@ class StatsRepositoryImpl @Inject constructor(
     private fun parseServerDate(dateStr: String?): Long {
         if (dateStr.isNullOrBlank()) return System.currentTimeMillis()
         
-        // check if already a numeric timestamp
         val asLong = dateStr.toLongOrNull()
         if (asLong != null) {
-            // check if seconds instead of ms
             return if (asLong < 1000000000000L) asLong * 1000L else asLong
         }
 
+        // Student-like workaround: replace T and Z to parse using simpler format
+        val cleaned = dateStr.replace("T", " ").replace("Z", "")
+        
         try {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                return java.time.Instant.parse(dateStr).toEpochMilli()
+            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US).apply {
+                timeZone = TimeZone.getTimeZone("UTC")
             }
+            return sdf.parse(cleaned)?.time ?: System.currentTimeMillis()
         } catch (e: Exception) {
-            // fallback to simpledateformat
-        }
-
-        val formats = listOf(
-            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-            "yyyy-MM-dd'T'HH:mm:ss'Z'",
-            "EEE, dd MMM yyyy HH:mm:ss zzz"
-        )
-        for (format in formats) {
             try {
-                val sdf = SimpleDateFormat(format, Locale.US).apply {
+                val sdf2 = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).apply {
                     timeZone = TimeZone.getTimeZone("UTC")
                 }
-                val parsed = sdf.parse(dateStr)
-                if (parsed != null) return parsed.time
-            } catch (e: Exception) { continue }
+                return sdf2.parse(cleaned)?.time ?: System.currentTimeMillis()
+            } catch (ex: Exception) {
+                return System.currentTimeMillis()
+            }
         }
-        return System.currentTimeMillis()
     }
 
     override suspend fun pushSessionToServer(session: Session): Result<Unit> {

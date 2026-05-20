@@ -6,7 +6,6 @@ import com.example.nothingbutnetmobile.domain.model.Session
 import com.example.nothingbutnetmobile.domain.model.calculateLongestStreak
 import com.example.nothingbutnetmobile.domain.repository.CVRepository
 import com.example.nothingbutnetmobile.domain.repository.StatsRepository
-import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -38,9 +37,8 @@ class CVRepositoryImpl @Inject constructor(
                 videoFile.asRequestBody("video/*".toMediaTypeOrNull())
             )
 
-            val gson = Gson()
-            val hoopLeftBody = gson.toJson(hoopLeft).toRequestBody("text/plain".toMediaTypeOrNull())
-            val hoopRightBody = gson.toJson(hoopRight).toRequestBody("text/plain".toMediaTypeOrNull())
+            val hoopLeftBody = "[${hoopLeft.joinToString(",")}]".toRequestBody("text/plain".toMediaTypeOrNull())
+            val hoopRightBody = "[${hoopRight.joinToString(",")}]".toRequestBody("text/plain".toMediaTypeOrNull())
             val showAngleBody = showAngle.toString().toRequestBody("text/plain".toMediaTypeOrNull())
             val targetAngleBody = targetAngle.toString().toRequestBody("text/plain".toMediaTypeOrNull())
 

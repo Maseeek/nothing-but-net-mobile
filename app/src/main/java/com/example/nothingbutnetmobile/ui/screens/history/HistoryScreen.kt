@@ -193,7 +193,6 @@ fun SessionHistoryCard(session: Session, onClick: () -> Unit) {
                 .border(1.dp, MaterialTheme.colorScheme.onBackground.copy(alpha = 0.05f), RoundedCornerShape(24.dp))
         ) {
             Column(modifier = Modifier.padding(20.dp)) {
-                // header: date and share button
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -243,7 +242,6 @@ fun SessionHistoryCard(session: Session, onClick: () -> Unit) {
                 
                 Spacer(modifier = Modifier.height(20.dp))
                 
-                // main stats area
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.Bottom,
@@ -286,7 +284,6 @@ fun SessionHistoryCard(session: Session, onClick: () -> Unit) {
                 
                 Spacer(modifier = Modifier.height(20.dp))
                 
-                // bottom bar: extra stats and arrow
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,

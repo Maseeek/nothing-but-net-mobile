@@ -72,8 +72,6 @@ fun BottomNavigationBar(
             NavItem(Icons.Default.Analytics, "Analysis", currentRoute?.startsWith("analysis") == true) {
                 navigateTo("analysis")
             }
-            
-            // space for record fab and label
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.width(64.dp)
@@ -94,7 +92,6 @@ fun BottomNavigationBar(
             }
         }
         
-        // basketball record button
         Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -104,7 +101,6 @@ fun BottomNavigationBar(
                 .clickable { navigateTo("record") },
             contentAlignment = Alignment.Center
         ) {
-            // basketball icon
             Icon(
                 painter = painterResource(id = R.drawable.ic_basketball),
                 contentDescription = "Record",

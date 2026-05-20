@@ -9,8 +9,6 @@ import android.net.Uri
 import androidx.room.Room
 import com.example.nothingbutnetmobile.data.local.AppDatabase
 import com.example.nothingbutnetmobile.data.local.entity.SessionEntity
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 // content provider required for coursework spec contentprovider requirement, queries room database synchronously
 class SessionProvider : ContentProvider() {
@@ -29,7 +27,6 @@ class SessionProvider : ContentProvider() {
     }
 
     private lateinit var database: AppDatabase
-    private val gson = Gson()
 
     override fun onCreate(): Boolean {
         val ctx = context ?: return false
@@ -69,24 +66,16 @@ class SessionProvider : ContentProvider() {
 
         val shotAnglesStr = values.getAsString("shotAngles")
         val shotAnglesList: List<Double> = if (!shotAnglesStr.isNullOrEmpty()) {
-            try {
-                val type = object : TypeToken<List<Double>>() {}.type
-                gson.fromJson(shotAnglesStr, type) ?: emptyList()
-            } catch (e: Exception) {
-                emptyList()
-            }
+            val cleaned = shotAnglesStr.removeSurrounding("[", "]").trim()
+            if (cleaned.isEmpty()) emptyList() else cleaned.split(",").mapNotNull { it.trim().toDoubleOrNull() }
         } else {
             emptyList()
         }
 
         val shotsResultsStr = values.getAsString("shotsResults")
         val shotsResultsList: List<Int> = if (!shotsResultsStr.isNullOrEmpty()) {
-            try {
-                val type = object : TypeToken<List<Int>>() {}.type
-                gson.fromJson(shotsResultsStr, type) ?: emptyList()
-            } catch (e: Exception) {
-                emptyList()
-            }
+            val cleaned = shotsResultsStr.removeSurrounding("[", "]").trim()
+            if (cleaned.isEmpty()) emptyList() else cleaned.split(",").mapNotNull { it.trim().toIntOrNull() }
         } else {
             emptyList()
         }

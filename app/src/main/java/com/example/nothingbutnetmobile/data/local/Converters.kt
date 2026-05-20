@@ -1,31 +1,32 @@
 package com.example.nothingbutnetmobile.data.local
 
 import androidx.room.TypeConverter
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 class Converters {
-    private val gson = Gson()
 
     @TypeConverter
     fun fromDoubleList(value: List<Double>?): String {
-        return gson.toJson(value)
+        return value?.let { "[${it.joinToString(",")}]" } ?: "[]"
     }
 
     @TypeConverter
-    fun toDoubleList(value: String): List<Double> {
-        val type = object : TypeToken<List<Double>>() {}.type
-        return gson.fromJson(value, type) ?: emptyList()
+    fun toDoubleList(value: String?): List<Double> {
+        if (value.isNullOrBlank()) return emptyList()
+        val cleaned = value.removeSurrounding("[", "]").trim()
+        if (cleaned.isEmpty()) return emptyList()
+        return cleaned.split(",").mapNotNull { it.trim().toDoubleOrNull() }
     }
 
     @TypeConverter
     fun fromIntList(value: List<Int>?): String {
-        return gson.toJson(value)
+        return value?.let { "[${it.joinToString(",")}]" } ?: "[]"
     }
 
     @TypeConverter
-    fun toIntList(value: String): List<Int> {
-        val type = object : TypeToken<List<Int>>() {}.type
-        return gson.fromJson(value, type) ?: emptyList()
+    fun toIntList(value: String?): List<Int> {
+        if (value.isNullOrBlank()) return emptyList()
+        val cleaned = value.removeSurrounding("[", "]").trim()
+        if (cleaned.isEmpty()) return emptyList()
+        return cleaned.split(",").mapNotNull { it.trim().toIntOrNull() }
     }
 }

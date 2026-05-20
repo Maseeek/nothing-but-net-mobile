@@ -26,20 +26,16 @@ data class SessionEntity(
 )
 
 fun SessionEntity.toDomain(): Session {
-    val computedTotalShots = if (totalShots > 0) totalShots else (makes + misses)
-    val computedStreak = if (longestStreak > 0) longestStreak else calculateLongestStreak(shotsResults)
-    val computedMakeAngle = if (averageMakeAngle > 0.0) averageMakeAngle else calculateAverageMakeAngle(shotAngles, shotsResults)
-    val computedMissAngle = if (averageMissAngle > 0.0) averageMissAngle else calculateAverageMissAngle(shotAngles, shotsResults)
     return Session(
         id = id,
-        totalShots = computedTotalShots,
+        totalShots = totalShots,
         makes = makes,
         misses = misses,
         fgPercentage = fgPercentage,
-        longestStreak = computedStreak,
+        longestStreak = longestStreak,
         averageAngle = averageAngle,
-        averageMakeAngle = computedMakeAngle,
-        averageMissAngle = computedMissAngle,
+        averageMakeAngle = averageMakeAngle,
+        averageMissAngle = averageMissAngle,
         shotAngles = shotAngles,
         shotsResults = shotsResults,
         timestamp = timestamp

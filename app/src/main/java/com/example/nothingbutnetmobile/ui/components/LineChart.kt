@@ -21,8 +21,8 @@ fun LineChart(
     labels: List<String> = emptyList(),
     modifier: Modifier = Modifier
 ) {
-    val defaultData = if (data.isEmpty()) listOf(20f, 40f, 30f, 50f, 45f) else data
-    val defaultLabels = if (data.isEmpty()) listOf("S1", "S2", "S3", "S4", "S5") else labels
+    if (data.isEmpty()) return
+
     val maxVal = 100f
     val primaryColor = MaterialTheme.colorScheme.primary
     val backgroundColor = MaterialTheme.colorScheme.background
@@ -43,17 +43,16 @@ fun LineChart(
         val width = size.width
         val height = size.height
         
-        val paddingLeft = 40.dp.toPx() // extra space on left for double digit labels like 100%
+        val paddingLeft = 40.dp.toPx()
         val paddingRight = 12.dp.toPx()
         val paddingTop = 12.dp.toPx()
-        val paddingBottom = 24.dp.toPx() // padding bottom to clear the date labels
+        val paddingBottom = 24.dp.toPx()
         
         val chartWidth = width - paddingLeft - paddingRight
         val chartHeight = height - paddingTop - paddingBottom
         
-        val stepX = chartWidth / (defaultData.size - 1).coerceAtLeast(1)
+        val stepX = chartWidth / (data.size - 1).coerceAtLeast(1)
         
-        // draw grid and y-axis labels
         val lines = 5
         val stepY = chartHeight / lines
         for (i in 0..lines) {
@@ -71,7 +70,6 @@ fun LineChart(
                 text = labelText,
                 style = labelStyle
             )
-            // offset the y-axis labels to the left of the grid line
             val textWidth = textLayoutResult.size.width
             val textHeight = textLayoutResult.size.height
             drawText(
@@ -86,7 +84,7 @@ fun LineChart(
         }
         
         val path = Path()
-        defaultData.forEachIndexed { index, value ->
+        data.forEachIndexed { index, value ->
             val x = paddingLeft + index * stepX
             val y = paddingTop + chartHeight - ((value / maxVal) * chartHeight)
             
@@ -103,7 +101,7 @@ fun LineChart(
             style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round)
         )
         
-        defaultData.forEachIndexed { index, value ->
+        data.forEachIndexed { index, value ->
             val x = paddingLeft + index * stepX
             val y = paddingTop + chartHeight - ((value / maxVal) * chartHeight)
             
@@ -118,8 +116,8 @@ fun LineChart(
                 center = Offset(x, y)
             )
             
-            if (index < defaultLabels.size) {
-                val labelText = defaultLabels[index]
+            if (index < labels.size) {
+                val labelText = labels[index]
                 val textLayoutResult = textMeasurer.measure(
                     text = labelText,
                     style = labelStyle
