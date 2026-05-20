@@ -63,6 +63,19 @@
 **Current Phase**: Phase 3 (Testing & Polish) - Refactoring & Branding
 
 ### Recent Accomplishments
+- **Standardised Heading Heights and Spacings**:
+    - Prepended `.statusBarsPadding()` to the row modifier of `DashboardHeader` so that all primary tabs (Home, Analysis, History, Profile) start exactly below the status bar, preventing overlap with system icons when `enableEdgeToEdge()` is active.
+    - Updated `LeaderboardScreen`'s top Row to include `.statusBarsPadding()` and a uniform vertical padding of `16.dp`, matching the height and positioning of the standard tabs.
+    - Unified the spacer height between the `DashboardHeader` and the screen title to `16.dp` on `AnalysisScreen.kt` and `HistoryScreen.kt` to achieve layout parity across the entire application.
+- **Standardized Fixed Top Header (DashboardHeader)**:
+    - Updated `HomeScreen.kt` and `ProfileScreen.kt` to pull the `DashboardHeader` out of the scrollable container, ensuring it stays fixed at the top of the screen.
+    - Discarded complex conditional layout restructurings in `AnalysisScreen.kt` and `HistoryScreen.kt`, reverting them to their clean original states where the `DashboardHeader` is naturally fixed at the top.
+    - Established a consistent, standard top-bar behavior across all screens where only the main content scrolls underneath it, simplifying the codebase for university coursework compliance.
+- **Centered Shot Sequence Card and Subtitle**:
+    - Refactored `ShotSequenceCard` within `AnalysisScreen.kt` to use `Column(modifier = Modifier.fillMaxWidth().padding(16.dp))` to allow correct horizontal alignment inside the full-width card.
+    - Centered the "SHOT-BY-SHOT BREAKDOWN" subtitle using `modifier = Modifier.align(Alignment.CenterHorizontally)`.
+    - Replaced the scrollable `Row` layout with a full-width `LazyRow` using `horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally)` to ensure shots center-align when they fit the screen, while remaining scrollable when they overflow.
+    - Successfully verified compile and build stability via a clean `./gradlew assembleDebug` run.
 - **Launch Screen Dark Background Fix**:
     - Resolved the issue where the first loading screen (the OS-rendered startup window background) displayed a white background, causing a white-on-white layout clash with the brand logo and a bright flash before Compose initialized.
     - Modified `themes.xml` to inherit from `android:Theme.Material.NoActionBar` (dark theme).

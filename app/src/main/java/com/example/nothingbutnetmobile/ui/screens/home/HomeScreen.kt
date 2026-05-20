@@ -42,81 +42,86 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
-                .verticalScroll(scrollState)
                 .padding(horizontal = 20.dp)
         ) {
             DashboardHeader(userName = uiState.userName)
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "Ready to hoop, ${uiState.userName}?",
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Black),
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            RecentSessionCard(
-                percentage = uiState.fgPercentage,
-                ratio = uiState.fgRatio,
-                onViewDetailsClick = { navController.navigate("analysis") }
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
             ) {
-                StatCard(
-                    label = "Total Shots",
-                    value = uiState.totalShots,
-                    icon = Icons.Default.SportsBasketball,
-                    modifier = Modifier.weight(1f)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Ready to hoop, ${uiState.userName}?",
+                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Black),
+                    color = MaterialTheme.colorScheme.onBackground
                 )
-                StatCard(
-                    label = "Streak",
-                    value = uiState.longestStreak,
-                    icon = Icons.Default.LocalFireDepartment,
-                    modifier = Modifier.weight(1f)
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                RecentSessionCard(
+                    percentage = uiState.fgPercentage,
+                    ratio = uiState.fgRatio,
+                    onViewDetailsClick = { navController.navigate("analysis") }
                 )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    StatCard(
+                        label = "Total Shots",
+                        value = uiState.totalShots,
+                        icon = Icons.Default.SportsBasketball,
+                        modifier = Modifier.weight(1f)
+                    )
+                    StatCard(
+                        label = "Streak",
+                        value = uiState.longestStreak,
+                        icon = Icons.Default.LocalFireDepartment,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    StatCard(
+                        label = "Avg Angle",
+                        value = uiState.avgAngle,
+                        icon = Icons.Default.AvTimer,
+                        modifier = Modifier.weight(1f)
+                    )
+                    StatCard(
+                        label = "Make Angle",
+                        value = String.format("%.1f°", uiState.averageMakeAngle),
+                        icon = Icons.Default.CheckCircle,
+                        modifier = Modifier.weight(1f)
+                    )
+                    StatCard(
+                        label = "Miss Angle",
+                        value = String.format("%.1f°", uiState.averageMissAngle),
+                        icon = Icons.Default.Cancel,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                FgProgressionGraph(
+                    fgHistory = uiState.fgHistory,
+                    fgHistoryDates = uiState.fgHistoryDates
+                )
+
+                Spacer(modifier = Modifier.height(40.dp))
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                StatCard(
-                    label = "Avg Angle",
-                    value = uiState.avgAngle,
-                    icon = Icons.Default.AvTimer,
-                    modifier = Modifier.weight(1f)
-                )
-                StatCard(
-                    label = "Make Angle",
-                    value = String.format("%.1f°", uiState.averageMakeAngle),
-                    icon = Icons.Default.CheckCircle,
-                    modifier = Modifier.weight(1f)
-                )
-                StatCard(
-                    label = "Miss Angle",
-                    value = String.format("%.1f°", uiState.averageMissAngle),
-                    icon = Icons.Default.Cancel,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            FgProgressionGraph(
-                fgHistory = uiState.fgHistory,
-                fgHistoryDates = uiState.fgHistoryDates
-            )
-
-            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }

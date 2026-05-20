@@ -4,6 +4,10 @@
 Working on Quality Assurance and Performance Optimization.
 
 ## Completed Tasks
+- [x] **Heading Heights and Spacings Standardisation**:
+    - Added `.statusBarsPadding()` to `DashboardHeader` to push all main tabs below the status bar in edge-to-edge mode.
+    - Updated `LeaderboardScreen`'s custom title Row to use `.statusBarsPadding()` and `16.dp` vertical padding.
+    - Standardised post-header Spacer heights to `16.dp` on `AnalysisScreen.kt` and `HistoryScreen.kt` for visual consistency.
 - [x] **Heading Styles Standardisation**:
     - Identified inconsistency where the "Shot Analysis" heading in `AnalysisScreen.kt` was set to `headlineMedium` and lacked font bolding/weight, while other primary page headings (History, Profile, Leaderboard) used `headlineSmall.copy(fontWeight = FontWeight.Black)`.
     - Standardised primary screen headers to `headlineSmall.copy(fontWeight = FontWeight.Black)` across the application.
@@ -101,6 +105,10 @@ Working on Quality Assurance and Performance Optimization.
     - Updated the parent of `Theme.NothingButNetMobile` in `themes.xml` to `android:Theme.Material.NoActionBar` (dark theme).
     - Explicitly set `android:windowBackground`, `android:statusBarColor`, and `android:navigationBarColor` to `#121212` to match the application's Compose `DarkBackground` color.
     - Verified build compilation using a clean Gradle build.
+- [x] **Standardized Fixed Top Header (DashboardHeader)**:
+    - Updated `HomeScreen.kt` and `ProfileScreen.kt` to pull the `DashboardHeader` out of the scrollable container, ensuring it stays fixed at the top of the screen.
+    - Discarded complex conditional layout restructurings in `AnalysisScreen.kt` and `HistoryScreen.kt`, reverting them to their clean original states where the `DashboardHeader` is naturally fixed at the top.
+    - Established a consistent, standard top-bar behavior across all screens where only the main content scrolls underneath it, simplifying the codebase for university coursework compliance.
 
 
 ## Next Steps

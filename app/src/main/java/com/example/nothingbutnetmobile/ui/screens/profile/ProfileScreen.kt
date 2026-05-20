@@ -57,10 +57,15 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
-                .verticalScroll(scrollState)
                 .padding(horizontal = 20.dp)
         ) {
             DashboardHeader(userName = uiState.userName)
+            
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+            ) {
             
             Row(
                 modifier = Modifier
@@ -269,6 +274,7 @@ fun ProfileScreen(
             }
             
             Spacer(modifier = Modifier.height(40.dp))
+            }
         }
     }
 }

@@ -61,7 +61,7 @@ fun HistoryScreen(
                 DashboardHeader(userName = uiState.userName)
             }
             
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             
             Row(
                 modifier = Modifier
