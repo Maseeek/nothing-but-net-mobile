@@ -18,8 +18,6 @@ import com.example.nothingbutnetmobile.ui.screens.analysis.AnalysisScreen
 import com.example.nothingbutnetmobile.ui.screens.history.HistoryScreen
 import com.example.nothingbutnetmobile.ui.screens.profile.ProfileScreen
 import com.example.nothingbutnetmobile.ui.screens.record.RecordScreen
-import com.example.nothingbutnetmobile.ui.screens.leaderboard.LeaderboardScreen
-import com.example.nothingbutnetmobile.ui.screens.settings.SettingsScreen
 import com.example.nothingbutnetmobile.ui.screens.splash.SplashScreen
 
 @Composable
@@ -127,12 +125,6 @@ fun AppNavigation(tokenManager: TokenManager) {
             ProfileScreen(navController = navController)
         }
 
-        composable("leaderboard") {
-            LeaderboardScreen(navController = navController)
-        }
 
-        composable("settings") {
-            SettingsScreen(navController = navController)
-        }
     }
 }
