@@ -96,7 +96,11 @@ Working on Quality Assurance and Performance Optimization.
     - Replaced the generic `TrendingUp` icon in `ArcAnalysisCard` with a custom-drawn, dynamic quadratic Bezier curve on a `Canvas`, representing the actual release shot trajectory corresponding to the average angle.
     - Redesigned `ShotSequenceCard` from a simple index box row to a scrollable list of custom cards showing the shot index, color-coded result (MAKE/MISS), and individual shot angles.
     - Verified compilation success with a clean Gradle build.
-
+- [x] **Launch Screen Dark Background Fix**:
+    - Identified that the first loading screen (system startup window) displayed a white background, leading to a white-on-white visual clash with the brand logo and a harsh flash before Compose rendered.
+    - Updated the parent of `Theme.NothingButNetMobile` in `themes.xml` to `android:Theme.Material.NoActionBar` (dark theme).
+    - Explicitly set `android:windowBackground`, `android:statusBarColor`, and `android:navigationBarColor` to `#121212` to match the application's Compose `DarkBackground` color.
+    - Verified build compilation using a clean Gradle build.
 
 
 ## Next Steps

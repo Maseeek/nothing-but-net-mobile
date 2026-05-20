@@ -63,6 +63,11 @@
 **Current Phase**: Phase 3 (Testing & Polish) - Refactoring & Branding
 
 ### Recent Accomplishments
+- **Launch Screen Dark Background Fix**:
+    - Resolved the issue where the first loading screen (the OS-rendered startup window background) displayed a white background, causing a white-on-white layout clash with the brand logo and a bright flash before Compose initialized.
+    - Modified `themes.xml` to inherit from `android:Theme.Material.NoActionBar` (dark theme).
+    - Configured `android:windowBackground`, `android:statusBarColor`, and `android:navigationBarColor` to `#121212` in style values to perfectly match the application's Compose `DarkBackground` color.
+    - Verified compilation stability with a clean Gradle build.
 - **Shot Analysis UI Polish and Card Centering**:
     - Enhanced the `StatCard` in `AnalysisScreen.kt` by setting `fillMaxWidth()` on its inner `Column` layout, fixing the centering issue for statistical cards (`TOTAL MAKES`, `MAX STREAK`, `MAKE ANGLE`, `MISS ANGLE`).
     - Upgraded `EfficiencyCard` to accept both the `makes` and `totalShots` values, displaying the actual ratio (e.g. "8/10") under the progress percentage circle gauge.
